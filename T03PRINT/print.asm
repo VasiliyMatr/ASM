@@ -12,12 +12,12 @@ SECTION .data
                                             dq bruhPrint.StringHandler; 's' - string format
 
 SECTION .code
-     GLOBAL bruhPrint 
+     GLOBAL bruhPrint
 
 ;=========================================================================================
 ;  Printf function  
 ;
-;  INPUT:   __cdecl__ - as usual printf
+;  INPUT:   __stdcall as usual printf
 ;  OUTPUT:  NO
 ;
 ;  DESTR:   RAX, RBX, RCX, RDX, RSI, RDI
@@ -50,9 +50,9 @@ bruhPrint:
                     ; making __cdecl format
                         POP     RBX
 
-                        PUSH R9  
+                        PUSH R9
                         PUSH R8
-                        PUSH RCX 
+                        PUSH RCX
                         PUSH RDX
                         PUSH RSI
                         PUSH RDI
@@ -145,7 +145,7 @@ bruhPrint:
 
 SEGMENT .data
                     ; Represented values buff
-                        RepresentBuff:  db "0123456789ABCDEFGH"  
+                        RepresentBuff:  times (64) db 0   
 SEGMENT .code
 
 ;!!!===============================================================================================================
@@ -154,14 +154,14 @@ SEGMENT .code
 ;  INPUT     : RAX - Byte;
 ;  OUTPUT    : RDX - num of symbols; RCX - ptr to represent begin (can have less symbols)
 ;
-;  DESTR     : RAX, RCX, RDX - DONT LOSE YOUR DATA
+;  DESTR     : RAX, RBX, RCX, RDX - DONT LOSE YOUR DATA
 ;!!!===============================================================================================================
 ; Consts
-    SHT_TO_END      EQU 8
+    SHT_TO_END      EQU 64
 
 ; Names for registers
-    %define valueCpy    AH
-    %define value       AL
+    %define valueCpy    RBX
+    %define value       RAX
 
     %define buffSh      RDX
     %define buffPtr     RCX
@@ -206,37 +206,39 @@ RepresentBin:
 ;  INPUT     : RAX - byte;
 ;  OUTPUT    : RDX - num of symbols; RCX - ptr to represent begin
 ;
-;  DESTR     : RAX, RDX, RCX - DON'T LOSE YOUR DATA
+;  DESTR     : RAX, RBX, RDX, RCX - DON'T LOSE YOUR DATA
 ;!!!==================================================================================================
 ; Names for registers
-    %define pointer     RCX
     %define numOfSymb   RDX
-    %define Copy        DL
+    %define pointer     RCX
+    %define value       RAX
+    %define currByte    BL
 RepresentHex:
 
                     ; ptr to buff
-                        MOV     pointer             ,   RepresentBuff         
-                    ; copying number                               
-                        MOV     Copy                ,   AL
-                    ; getting less part 
-                        AND     RAX                 ,   0fh
+                        MOV     pointer             ,   RepresentBuff
+                    ; shift in buff
+                        MOV     numOfSymb           ,   0
+                    ; will be used as addr shift
+                        MOV     RBX                 ,   0
 
-                    ; getting numeral representation & writing data
-                        MOV     AL                  ,   [RAX + Numerals]
-                        MOV     [pointer + 1]       ,   AL
+.Cycle:             ; getting numeral representation & writing data
+                        MOV     BL                              ,   AL
+                        AND     BL                              ,   0xF
+                        MOV     BL                              ,   [RBX + Numerals]
+                        MOV     [pointer + numOfSymb + 15]      ,   BL
 
-                    ; copying data
-                        MOV     AL                  ,   Copy
-                    ; counting high part
-                        SHR     AL                  ,   4
+                    ; shifting value
+                        SHR     RAX                 ,   4
+                        DEC     numOfSymb           
 
-                    ; getting numeral representation & writing data
-                        MOV     AL                  ,   [EAX + Numerals]
-                        MOV     [pointer]           ,   AL   
+                    ; end of cycle check
+                        CMP     RAX                 ,   0
+                        JNE     .Cycle    
 
-                    ; num of symbols
-                        MOV     numOfSymb           ,   2                                                    
-           
+                        ADD     pointer             ,   16
+                        ADD     pointer             ,   numOfSymb
+                        NEG     numOfSymb
                         RET    
 
 SEGMENT .data

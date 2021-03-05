@@ -1,13 +1,12 @@
 
 #include <stdio.h>
 
-extern void bruhPrint( char* formatStr, ... );
+extern void callBruh();
 
-int main()
+
+int main() // TODO: buff
 {
-    /* all features test */
-    bruhPrint ("I love $h$h" "!$b$d$c", 0xF0, 0x0D, 1, 1, '\n');
-    bruhPrint ("$s", "BRUH!", 5);
+    printBruh();
 
     /* std func is working after my func */
     printf    ("\n");
