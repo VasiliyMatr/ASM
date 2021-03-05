@@ -3,29 +3,16 @@ SECTION .data
     formatStr:      db 'Hello $cworld!', 10, 0
 
 ; Addrs table for fast jumps depend on symbol 
-    JMPAddrs:                               dq myPrint.BinHandler   ; 'b' - binary format 1 byte
-                                            dq myPrint.CharHandler  ; 'c' - char
-                                            dq myPrint.DecHandler   ; 'd' - decimal format 2 bytes
-                    times ('g' - 'd')       dq myPrint.Return       ; ('d', 'h') - not supported  
-                                            dq myPrint.HexHandler   ; 'h' - hexidecimal format 1 byte
-                    times ('r' - 'h')       dq myPrint.Return       ; ('h', 's') - not supported
-                                            dq myPrint.StringHandler; 's' - string format
+    JMPAddrs:                               dq bruhPrint.BinHandler   ; 'b' - binary format 1 byte
+                                            dq bruhPrint.CharHandler  ; 'c' - char
+                                            dq bruhPrint.DecHandler   ; 'd' - decimal format 2 bytes
+                    times ('g' - 'd')       dq bruhPrint.Return       ; ('d', 'h') - not supported  
+                                            dq bruhPrint.HexHandler   ; 'h' - hexidecimal format 1 byte
+                    times ('r' - 'h')       dq bruhPrint.Return       ; ('h', 's') - not supported
+                                            dq bruhPrint.StringHandler; 's' - string format
 
 SECTION .code
-     GLOBAL myPrint 
-; 
-; _start:
-;     PUSH    '$'
-;     PUSH    formatStr 
-; 
-;     CALL    myPrint
-;     ADD     RSP     ,   8 * 2
-; 
-;     ; Terminate program
-;     MOV     RAX     ,   1               ; 'exit' system call
-;     MOV     RBX     ,   0               ; exit with error code 0
-;     INT     80h                         ; call the kernel
-
+     GLOBAL bruhPrint 
 
 ;=========================================================================================
 ;  Printf function  
@@ -37,28 +24,42 @@ SECTION .code
 ;=========================================================================================
 
 ; Names for registers
-    %define handlerAddr     RBX
-    %define symbol           AL
-    %define addrsShift      RCX
-    %define formatAddr      RSI
-    %define argsCounter     RDI
+    %define handlerAddr     RBX ; - handler lable addr will be in this register
+    %define symbol           AL ; - synbol will be in this register
+    %define formatAddr      RSI ; - addr of parseble symbol in format str
+    %define argsCounter     RDI ; - arguments counter
 
 ; Names for consts 
-    END_OF_STR_     EQU  0 ; end of str code
-    FORMAT_TERM_    EQU '$'; format output term symbol
-    STD_IO_MODE_    EQU  4 ; input/output syscall mode
-    STD_OUT_        EQU  1 ; output func is used
+    END_OF_STR_     EQU  0      ; - end of str
+    FORMAT_TERM_    EQU '$'     ; - format output term symbol
+; Names for syscall consts
+    STD_IO_MODE_    EQU  4      ; - input/output syscall mode
+    STD_OUT_        EQU  1      ; - output func is used
 
     %macro SYS_PRINT 0 
-                ; MOV     RCX                 ,   POINTER
-                ; MOV     RDX                 ,   LEN
+                ;   MOV     RCX                 ,   POINTER
+                ;   MOV     RDX                 ,   LEN
 
                     MOV     RAX                 ,   STD_IO_MODE_
                     MOV     RBX                 ,   STD_OUT_
                     INT     80h
     %endmacro
 
-myPrint:                ; TODO: stosw
+bruhPrint:                
+
+                    ; making __cdecl format
+                        POP     RBX
+
+                        PUSH R9  
+                        PUSH R8
+                        PUSH RCX 
+                        PUSH RDX
+                        PUSH RSI
+                        PUSH RDI
+                        
+                        PUSH    RBX
+
+                    ; getting str addr & init arguments counter
                         MOV     formatAddr          ,   [RSP + 8]
                         MOV     argsCounter         ,   2
 
@@ -94,11 +95,11 @@ myPrint:                ; TODO: stosw
                     ; Skipping format symbol
                         INC     formatAddr
 
-                    ; Getting handler addr and jump to handler - [8 * code + base addr]
+                    ; Getting handler addr and jump to handler - [8 * symbol-code + base addr]
                         MOV     handlerAddr         ,   [8 * RAX + (JMPAddrs - 8 * 'b')]
                         JMP     handlerAddr
 
-        ; Handlers for diff output formats
+        ; Handlers for diff output formats macro
     %macro HANDLE_DEF 1
 
         .%1Handler: MOV     RAX                 ,   [RSP + argsCounter * 8]
@@ -136,8 +137,11 @@ myPrint:                ; TODO: stosw
 
                         JMP     .Cycle
 
-    .Return:            RET
-
+    .Return:            POP     RBX   
+                        ADD     RSP                 ,   6 * 8
+                        PUSH    RBX         
+    
+                        RET
 
 SEGMENT .data
                     ; Represented values buff
@@ -152,10 +156,10 @@ SEGMENT .code
 ;
 ;  DESTR     : RAX, RCX, RDX - DONT LOSE YOUR DATA
 ;!!!===============================================================================================================
-; CONSTS
+; Consts
     SHT_TO_END      EQU 8
 
-; names for registers
+; Names for registers
     %define valueCpy    AH
     %define value       AL
 
@@ -204,7 +208,7 @@ RepresentBin:
 ;
 ;  DESTR     : RAX, RDX, RCX - DON'T LOSE YOUR DATA
 ;!!!==================================================================================================
-; names for registers
+; Names for registers
     %define pointer     RCX
     %define numOfSymb   RDX
     %define Copy        DL
@@ -248,10 +252,10 @@ SEGMENT .code
 ;
 ;  DESTR     : RAX, RBX, RCX, RDX - DON'T LOSE YOUR DATA
 ;!!!==================================================================================================
-; CONSTS 
+; Consts 
     NUM_OF_DIG      EQU 5
 
-; names for registers
+; Names for registers
     %define buffSh      RBX
     
     %define divider     CX
