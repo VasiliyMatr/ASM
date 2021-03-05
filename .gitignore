@@ -1,0 +1,6 @@
+
+*.o
+*.out
+*.s
+*.asm
+.vscode
