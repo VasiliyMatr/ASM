@@ -115,6 +115,52 @@ size_t getFileLength( FILE* filePtr )
 
 void outPatchInfo()
 {
+    sf::RenderWindow window (sf::VideoMode (1080, 1920), "VZLOM patch wizard v1.3.3.7.");
+
+    sf::Font font;
+    font.loadFromFile ("fonts//OpenSans-Bold.ttf");
+
+    sf::Text text;
+    
+    /* text font setup */
+    text.setFont (font);
+    /* set the string to display */
+    text.setString ("Hello world");
+    /* set the character size */
+    text.setCharacterSize (24);
+    /* set the color */
+    text.setFillColor (sf::Color::Red);
+    /* set the text style */
+    text.setStyle (sf::Text::Bold | sf::Text::Underlined);
+
+    sf::Image image;
+    if (!(image.loadFromFile ("picks//lmao.jpg")))
+    {
+        printf ("no img - no patch, fuck u" "\n\n");
+        return;
+    }
+    
+    sf::Texture texture;
+    texture.loadFromImage (image);
+
+    sf::Sprite sprite;
+    sprite.setTexture (texture);    
+
+    while (window.isOpen ())
+    {
+        sf::Event event;
+        while (window.pollEvent (event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close ();
+        }
+    
+        window.clear ();
+        window.draw (sprite);
+        window.draw (text);
+        window.display ();
+    }
+
     printf ("Hacking ..." "\n")     , fflush (stdout), sleep (3);
     printf ("I'm in  ... ")         , fflush (stdout), sleep (1.5);
     printf ("Your mom"    "\n\n");
