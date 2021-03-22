@@ -119,7 +119,7 @@ void outPatchInfo()
     printf ("I'm in  ... ")         , fflush (stdout), sleep (1.5);
     printf ("Your mom"    "\n\n");
 
-    printf ("Patch version: 2.2.8." "\n\n");
+    printf ("Patch version: 1.3.3.7." "\n\n");
 
     printf ("Patched by Vasiliy" "\n");
 }
