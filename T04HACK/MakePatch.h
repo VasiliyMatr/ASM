@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <string.h>
 
+#include <unistd.h>
+
 /* for error codes */
 enum class patchError : int {
 

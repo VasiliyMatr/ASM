@@ -15,6 +15,9 @@ void fileChange( char* outBuffPtr );
  */
 size_t getFileLength( FILE* filePtr );
 
+/* just to perform joke */
+void outPatchInfo();
+
 /* Main patching function */
 patchError makePatch( const char* inFileName, const char* outFileName )
 {
@@ -58,6 +61,9 @@ patchError makePatch( const char* inFileName, const char* outFileName )
   /* free outBuffPtr memory */
     free (outBuffPtr);
 
+  /* printing patch info */
+    outPatchInfo ();
+
   /* all is good, patch finished */
     return patchError::OK_;
 }
@@ -72,17 +78,25 @@ bool isBadPtr( const void* ptr )
 
 void fileChange( char* outBuffPtr )
 {
-    const size_t PATCH_STR0_BEGIN_POS_ = 0x0000;
-    const char*  PATCH_STR0_ = "\xB0\xFE\xB4\x0A" "\x90\x90\x90\x90\x90\x90\x90\x90\x90";
-    memcpy (outBuffPtr + PATCH_STR0_BEGIN_POS_, PATCH_STR0_, strlen (PATCH_STR0_));
 
-    const size_t PATCH_STR1_BEGIN_POS_ = 0x01F6 - 0x0100;
-    const char*  PATCH_STR1_ = "bcdefghijk";
-    memcpy (outBuffPtr + PATCH_STR1_BEGIN_POS_, PATCH_STR1_, strlen (PATCH_STR1_));
+  /* num of patch pastes */
+    const size_t       PATCH_PASTES_NUMBER_                              = 3;
+  /* addrs to add pastes */
+    const size_t       PATCH_PASTES_POSES_  [PATCH_PASTES_NUMBER_]       = { 0x0000, 0x00F6, 0x015A };
+  /* patch pastes to add to code */
+    const char         PATCH_PASTES_        [PATCH_PASTES_NUMBER_][100]  = {
 
-    const size_t PATCH_STR2_BEGIN_POS_ = 0x025A - 0x0100;
-    const char* PATCH_STR2_ = "HHHHHHHHHH";
-    memcpy (outBuffPtr + PATCH_STR2_BEGIN_POS_, PATCH_STR2_, strlen (PATCH_STR2_));
+        "\xB0\xFE\xB4\x0A" "\x90\x90\x90\x90\x90\x90\x90\x90\x90" ,
+        "bcdefghijk"                                              ,
+        "HHHHHHHHHH"
+
+     };
+
+  /* pasting */
+    for (size_t pasteID = 0; pasteID < PATCH_PASTES_NUMBER_; ++pasteID)
+        memcpy (PATCH_PASTES_POSES_[pasteID] + outBuffPtr ,
+                PATCH_PASTES_[pasteID]                    ,
+                strlen (PATCH_PASTES_[pasteID]));
 }
 
 size_t getFileLength( FILE* filePtr )
@@ -97,4 +111,15 @@ size_t getFileLength( FILE* filePtr )
     rewind (filePtr);
 
     return bytesNum;
+}
+
+void outPatchInfo()
+{
+    printf ("Hacking ..." "\n")     , fflush (stdout), sleep (3);
+    printf ("I'm in  ... ")         , fflush (stdout), sleep (1.5);
+    printf ("Your mom"    "\n\n");
+
+    printf ("Patch version: 2.2.8." "\n\n");
+
+    printf ("Patched by Vasiliy" "\n");
 }
