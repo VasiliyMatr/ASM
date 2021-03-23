@@ -15,12 +15,17 @@ void fileChange( char* outBuffPtr );
  */
 size_t getFileLength( FILE* filePtr );
 
-/* just to perform joke */
-void outPatchInfo();
+/* menu */
+patchError menu();
 
 /* Main patching function */
 patchError makePatch( const char* inFileName, const char* outFileName )
 {
+  /* patch exe menu */
+    patchError menuError = menu();
+    if (menuError != patchError::OK_)
+        return menuError;
+
   /* input & output files names ptrs check */
     if (isBadPtr (inFileName) || isBadPtr (outFileName))
         return patchError::BAD_PTR_;
@@ -34,6 +39,7 @@ patchError makePatch( const char* inFileName, const char* outFileName )
     size_t bytesNum = getFileLength (inFilePtr);
     if (bytesNum == 0)
         return patchError::FILE_ERROR_;
+
   /* allocating memory for output buff - with patched file */
     char* outBuffPtr = (char* )calloc (sizeof (char), bytesNum);
     if (outBuffPtr == nullptr)
@@ -60,9 +66,6 @@ patchError makePatch( const char* inFileName, const char* outFileName )
 
   /* free outBuffPtr memory */
     free (outBuffPtr);
-
-  /* printing patch info */
-    outPatchInfo ();
 
   /* all is good, patch finished */
     return patchError::OK_;
@@ -113,59 +116,68 @@ size_t getFileLength( FILE* filePtr )
     return bytesNum;
 }
 
-void outPatchInfo()
+patchError menu()
 {
-    sf::RenderWindow window (sf::VideoMode (1080, 1920), "VZLOM patch wizard v1.3.3.7.");
+  /* window sizes */
+    const size_t WINDOW_WIDTH_  = 800;
+    const size_t WINDOW_HEIGHT_ = 600;
+  /* Creating main window */
+    sf::RenderWindow window (sf::VideoMode (WINDOW_WIDTH_, WINDOW_HEIGHT_),
+                             "VZLOM patch wizard v1.3.3.7.");
 
-    sf::Font font;
-    font.loadFromFile ("fonts//OpenSans-Bold.ttf");
-
-    sf::Text text;
-    
-    /* text font setup */
-    text.setFont (font);
-    /* set the string to display */
-    text.setString ("Hello world");
-    /* set the character size */
-    text.setCharacterSize (24);
-    /* set the color */
-    text.setFillColor (sf::Color::Red);
-    /* set the text style */
-    text.setStyle (sf::Text::Bold | sf::Text::Underlined);
-
+  /* Drawable picture load */
     sf::Image image;
     if (!(image.loadFromFile ("picks//lmao.jpg")))
-    {
-        printf ("no img - no patch, fuck u" "\n\n");
-        return;
-    }
-    
+        return patchError::FILE_ERROR_;
+  /* Creating texture with picture */
     sf::Texture texture;
     texture.loadFromImage (image);
-
+  /* Creating sprite with picture */
     sf::Sprite sprite;
-    sprite.setTexture (texture);    
+    sprite.setTexture (texture);   
 
+  /* time counter */
+
+
+  /* Main cycle */
     while (window.isOpen ())
     {
+        /* Events processing */
         sf::Event event;
         while (window.pollEvent (event))
         {
-            if (event.type == sf::Event::Closed)
-                window.close ();
+            switch (event.type)
+            {
+                case sf::Event::Closed:
+                    window.close ();
+                    break;
+
+                case sf::Event::MouseButtonPressed:
+
+                  /* for mouse coords */
+                    const sf::Vector2i leftTopPos = sf::Vector2i (315, 465);
+                    const sf::Vector2i righBotPos = sf::Vector2i (480, 500);
+                  /* getting mouse coord */
+                    sf::Vector2i mousePos = sf::Mouse::getPosition (window);
+                  /* button check */
+                    if (mousePos.x >= leftTopPos.x && mousePos.x <= righBotPos.x &&
+                        mousePos.y >= leftTopPos.y && mousePos.y <= righBotPos.y)
+                        {
+                            system ("google-chrome --new-window https:////www.youtube.com//watch?v=YRbpAIn_dg4");
+                            window.close ();
+                        }
+
+                    break;
+            }
         }
-    
+
+        /* Clearing window */
         window.clear ();
+        /* Draw funcs here */
         window.draw (sprite);
-        window.draw (text);
+        /* Displaying result */
         window.display ();
     }
 
-    printf ("Hacking ..." "\n")     , fflush (stdout), sleep (3);
-    printf ("I'm in  ... ")         , fflush (stdout), sleep (1.5);
-    printf ("Your mom"    "\n\n");
-
-    printf ("Patch version: 1.3.3.7." "\n\n");
-
-    printf ("Patched by Vasiliy" "\n");
+    return patchError::OK_;
 }
