@@ -33,7 +33,7 @@ void mandelDraw()
     while (window.isOpen ())
     {
         float fps = (fpsCnt++) * CLOCKS_PER_SEC / ((float)clock () - time);
-        printf ("%f" "\n", fps);
+        // printf ("%f" "\n", fps);
 
         /* Events processing */
         sf::Event event;
@@ -65,7 +65,7 @@ void mandelDraw()
     const float  Y_LIMITS_BOT_   = -1.;
 
 /* Target Radius */
-    const int32_t MAX_RAD_SQ_ = 1000;
+    const int64_t MAX_RAD_SQ_ = 1000;
 
 void clalcMandel( sf::Image& buff )
 {
@@ -76,26 +76,26 @@ void clalcMandel( sf::Image& buff )
             float yOneStepShift = (Y_LIMITS_TOP_  - Y_LIMITS_BOT_)  / WINDOW_HEIGHT_;
             float im_ft_val = Y_LIMITS_BOT_  + (float) y * yOneStepShift;
         
-            __m128 im = { im_ft_val,
-                          im_ft_val + yOneStepShift,
-                          im_ft_val + yOneStepShift * 2,
-                          im_ft_val + yOneStepShift * 3 };
+            __m128 im = { im_ft_val ,
+                          im_ft_val ,
+                          im_ft_val ,
+                          im_ft_val  };
 
         for (size_t x = 0; x < WINDOW_WIDTH_; x += 4)
         {
             float xOneStepShift = (X_LIMITS_RIGH_ - X_LIMITS_LEFT_) / WINDOW_WIDTH_;
             float re_ft_val = X_LIMITS_LEFT_  + (float) x * xOneStepShift;
         
-            __m128 re = { re_ft_val,
-                          re_ft_val + xOneStepShift,
-                          re_ft_val + xOneStepShift * 2,
-                          re_ft_val + xOneStepShift * 3 };
+            __m128  re = {  re_ft_val                       ,
+                            re_ft_val + xOneStepShift       ,
+                            re_ft_val + xOneStepShift * 2   ,
+                            re_ft_val + xOneStepShift * 3    };
 
             __m128i counts = {0, 0};
-            size_t iters = 0;
+            size_t  iters = 0;
 
-            __m128 transIm = im;
-            __m128 transRe = re;
+            __m128  transIm = im;
+            __m128  transRe = re;
 
             for (; iters < MAX_ITERATIONS_NUM_; ++iters)
             {
@@ -110,7 +110,9 @@ void clalcMandel( sf::Image& buff )
 
                 counts = _mm_add_epi32 (counts, bools);
 
-                if (_mm_test_all_zeros (radi, max_rad))
+                int condition = _mm_test_all_zeros (radi, max_rad);
+
+                if (condition)
                     break;
 
                 transIm = _mm_add_ps (transIm, transIm);
@@ -125,7 +127,8 @@ void clalcMandel( sf::Image& buff )
             buff.setPixel (x + 1, y + 1, getColor (counts[0] >> 32));
             buff.setPixel (x + 2, y + 2, getColor (counts[1] & 0xFFFFFFFF));
             buff.setPixel (x + 3, y + 3, getColor (counts[1] >> 32));
-            
+
+            printf ("%f %f" "\n", transIm[1], transRe[1]);   
         }
     }
 }
