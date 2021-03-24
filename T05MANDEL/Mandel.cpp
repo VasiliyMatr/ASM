@@ -71,6 +71,7 @@ void clalcMandel( sf::Image& buff )
 {
     __m128 MAX_RADS_ = _mm_set1_ps (MAX_RAD_SQ_);
     __m128 ones = _mm_set1_ps (1);
+    __m128i MASK_ = _mm_set1_epi8 (0xFF);
 
     for (size_t y = 0; y < WINDOW_HEIGHT_; ++y)
     {
@@ -94,6 +95,8 @@ void clalcMandel( sf::Image& buff )
             __m128  transIm = im;
             __m128  transRe = re;
 
+            __m128i b = _mm_set1_epi32 (1);
+
             for (int cnt = 0; cnt < 0xFF; ++cnt)
             {
                 __m128  imSq = _mm_mul_ps (transIm, transIm);
@@ -101,10 +104,17 @@ void clalcMandel( sf::Image& buff )
 
                 __m128  cmp  = _mm_cmple_ps (MAX_RADS_, _mm_add_ps (imSq, reSq));
 
-                cont = _mm_add_epi32 (cont, _mm_cvtps_epi32 (_mm_add_ps (cmp, ones)));
+                __m128i a = _mm_cvtps_epi32 (_mm_add_ps (cmp, ones));
 
-                if (*((int64_t*)&cmp + 0) != 0 || *((int64_t*)&cmp + 1) != 0)
+                b = _mm_and_si128 (a, b);
+
+                cont = _mm_add_epi32 (cont, b);
+
+                if (_mm_test_all_zeros (MASK_, b))
                     break;
+
+                // if (*((int64_t*)&cmp + 0) != 0 || *((int64_t*)&cmp + 1) != 0)
+                //     break;
 
                 transIm = _mm_add_ps (transIm, transIm);
                 transIm = _mm_mul_ps (transIm, transRe);
