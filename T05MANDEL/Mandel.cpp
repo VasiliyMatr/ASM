@@ -65,75 +65,69 @@ void mandelDraw()
     const float  Y_LIMITS_BOT_   = -1.;
 
 /* Target Radius */
-    const float MAX_RAD_SQ_ = 1000.0;
+    const int32_t MAX_RAD_SQ_ = 100000;
 
 void clalcMandel( sf::Image& buff )
-{
-    const __m128 max_rad = { MAX_RAD_SQ_, MAX_RAD_SQ_, MAX_RAD_SQ_, MAX_RAD_SQ_ };
-
+{;
     for (size_t y = 0; y < WINDOW_HEIGHT_; ++y)
     {
-            float yOneStepShift = (Y_LIMITS_TOP_  - Y_LIMITS_BOT_)  / WINDOW_HEIGHT_;
-            float im_ft_val = Y_LIMITS_BOT_  + (float) y * yOneStepShift;
+            float imVal = Y_LIMITS_BOT_ + (float) y * (Y_LIMITS_TOP_ - Y_LIMITS_BOT_) / WINDOW_HEIGHT_;
         
-            __m128 im = { im_ft_val ,
-                          im_ft_val ,
-                          im_ft_val ,
-                          im_ft_val  };
+            __m128 im = _mm_set1_ps (imVal);
 
         for (size_t x = 0; x < WINDOW_WIDTH_; x += 4)
         {
             float xOneStepShift = (X_LIMITS_RIGH_ - X_LIMITS_LEFT_) / WINDOW_WIDTH_;
-            float re_ft_val = X_LIMITS_LEFT_  + (float) x * xOneStepShift;
-        
-            __m128  re = {  re_ft_val                       ,
-                            re_ft_val + xOneStepShift       ,
-                            re_ft_val + xOneStepShift * 2   ,
-                            re_ft_val + xOneStepShift * 3    };
 
-            __m128i counts = { 0, 0 };
+            __m128 re = _mm_set_ps (X_LIMITS_LEFT_  + (x + 3) * xOneStepShift,
+                                    X_LIMITS_LEFT_  + (x + 2) * xOneStepShift,
+                                    X_LIMITS_LEFT_  + (x + 1) * xOneStepShift,
+                                    X_LIMITS_LEFT_  + (x + 0) * xOneStepShift );
+
+            int  counts [4] = {0, 0, 0, 0};
+            char outFlag[4] = {1, 1, 1, 1};
 
             __m128  transIm = im;
             __m128  transRe = re;
 
-            for (register size_t cnt = 0; cnt < 0xFF; cnt++)
+            for (int cnt = 0; cnt < 0xFF; ++cnt)
             {
                 __m128  imSq = _mm_mul_ps (transIm, transIm);
                 __m128  reSq = _mm_mul_ps (transRe, transRe);
-                
-                __m128  rad  = _mm_add_ps (imSq, reSq);
-                __m128  diff = _mm_cmple_ps (rad, max_rad);
-                
-                if (diff[0] != diff[0])
-                    ++counts[0];
-                if (diff[1] != diff[1])
-                    counts[0] += (uint64_t)1 << 32;
-                if (diff[2] != diff[2])
-                    ++counts[1];
-                if (diff[3] != diff[3])
-                    counts[1] += (uint64_t)1 << 32;
 
-                if (diff[0] == 0 && diff[1] == 0 && diff[2] == 0 && diff[3] == 0)
+                __m128  rad = _mm_add_ps (imSq, reSq);
+
+                float   rads[4] = { _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 0))),
+                                    _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 1))),
+                                    _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 2))),
+                                    _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 3)))};
+
+                for (size_t radId = 0; radId < 4; radId++)
+                    if (rads[radId] >= MAX_RAD_SQ_) outFlag[radId] = 0;
+
+                for (size_t cntId = 0; cntId < 4; cntId++)
+                    counts[cntId] += outFlag[cntId];
+
+                if (!*(int32_t*)outFlag)
                     break;
 
                 transIm = _mm_add_ps (transIm, transIm);
                 transIm = _mm_mul_ps (transIm, transRe);
                 transIm = _mm_add_ps (transIm, im);
-
                 transRe = _mm_sub_ps (reSq, imSq);
                 transRe = _mm_add_ps (transRe, re);
             }
 
-            buff.setPixel (x    , y    , getColor (counts[0] & 0xFF));
-            buff.setPixel (x + 1, y    , getColor (counts[0] >> 32));
-            buff.setPixel (x + 2, y    , getColor (counts[1] & 0xFF));
-            buff.setPixel (x + 3, y    , getColor (counts[1] >> 32)); 
+            buff.setPixel (x    , y    , getColor (counts[0]));
+            buff.setPixel (x + 1, y    , getColor (counts[1]));
+            buff.setPixel (x + 2, y    , getColor (counts[2]));
+            buff.setPixel (x + 3, y    , getColor (counts[3])); 
         }
     }
 }
 
 sf::Color getColor( char iters )
 {
-    return sf::Color
-    (-sin (iters) * sin (iters) * 256, 256 - atan (iters) * 256, iters, 255);
+    return sf::Color (iters, iters, iters, 255);
+    // (-sin (iters) * sin (iters) * 256, 256 - atan (iters) * 256, iters, 255);
 }
