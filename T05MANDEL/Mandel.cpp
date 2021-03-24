@@ -68,7 +68,10 @@ void mandelDraw()
     const int32_t MAX_RAD_SQ_ = 100000;
 
 void clalcMandel( sf::Image& buff )
-{;
+{
+    __m128 MAX_RADS_ = _mm_set1_ps (MAX_RAD_SQ_);
+    __m128 ones = _mm_set1_ps (1);
+
     for (size_t y = 0; y < WINDOW_HEIGHT_; ++y)
     {
             float imVal = Y_LIMITS_BOT_ + (float) y * (Y_LIMITS_TOP_ - Y_LIMITS_BOT_) / WINDOW_HEIGHT_;
@@ -85,7 +88,8 @@ void clalcMandel( sf::Image& buff )
                                     X_LIMITS_LEFT_  + (x + 0) * xOneStepShift );
 
             int  counts [4] = {0, 0, 0, 0};
-            char outFlag[4] = {1, 1, 1, 1};
+
+            __m128i cont = _mm_set1_epi32 (0);
 
             __m128  transIm = im;
             __m128  transRe = re;
@@ -95,20 +99,11 @@ void clalcMandel( sf::Image& buff )
                 __m128  imSq = _mm_mul_ps (transIm, transIm);
                 __m128  reSq = _mm_mul_ps (transRe, transRe);
 
-                __m128  rad = _mm_add_ps (imSq, reSq);
+                __m128  cmp  = _mm_cmple_ps (MAX_RADS_, _mm_add_ps (imSq, reSq));
 
-                float   rads[4] = { _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 0))),
-                                    _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 1))),
-                                    _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 2))),
-                                    _mm_cvtss_f32(_mm_shuffle_ps(rad, rad, _MM_SHUFFLE(0, 0, 0, 3)))};
+                cont = _mm_add_epi32 (cont, _mm_cvtps_epi32 (_mm_add_ps (cmp, ones)));
 
-                for (size_t radId = 0; radId < 4; radId++)
-                    if (rads[radId] >= MAX_RAD_SQ_) outFlag[radId] = 0;
-
-                for (size_t cntId = 0; cntId < 4; cntId++)
-                    counts[cntId] += outFlag[cntId];
-
-                if (!*(int32_t*)outFlag)
+                if (*((int64_t*)&cmp + 0) != 0 || *((int64_t*)&cmp + 1) != 0)
                     break;
 
                 transIm = _mm_add_ps (transIm, transIm);
@@ -117,6 +112,8 @@ void clalcMandel( sf::Image& buff )
                 transRe = _mm_sub_ps (reSq, imSq);
                 transRe = _mm_add_ps (transRe, re);
             }
+
+            counts[0] = _mm_cvtsi128_si32 (cont);
 
             buff.setPixel (x    , y    , getColor (counts[0]));
             buff.setPixel (x + 1, y    , getColor (counts[1]));
