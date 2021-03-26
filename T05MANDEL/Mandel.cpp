@@ -56,65 +56,70 @@ void mandelDraw()
 }
 
 /* Max number of counts in cycle */
-    const size_t MAX_ITERATIONS_NUM_ = 255;
+    const size_t MAX_ITERATIONS_NUM_ = 0xFF;
 
 /* Axis limits */
-    const float  X_LIMITS_RIGH_   = +1.;
-    const float  X_LIMITS_LEFT_   = -1.;
-    const float  Y_LIMITS_TOP_   = +1.;
-    const float  Y_LIMITS_BOT_   = -1.;
+    const float  X_LIMITS_RIGH_   =  1.0;
+    const float  X_LIMITS_LEFT_   = -1.0;
+    const float  Y_LIMITS_TOP_    =  1.0;
+    const float  Y_LIMITS_BOT_    = -1.0;
 
 /* Target Radius */
-    const int32_t MAX_RAD_SQ_ = 100000;
+    const int32_t MAX_RAD_SQ_ = 10;
 
 void clalcMandel( sf::Image& buff )
 {
-    __m128 MAX_RADS_ = _mm_set1_ps (MAX_RAD_SQ_);
-    __m128 ones = _mm_set1_ps (1);
-    __m128i MASK_ = _mm_set1_epi8 (0xFF);
+    const __m128i MAX_RADS_ = _mm_set1_epi32 (MAX_RAD_SQ_);
+    const __m128i MASK_ = _mm_set1_epi8 (0xFF);
 
-    for (size_t y = 0; y < WINDOW_HEIGHT_; ++y)
+    const float imOneStepShift = (Y_LIMITS_TOP_  - Y_LIMITS_BOT_)  / WINDOW_HEIGHT_;
+    const float reOneStepShift = (X_LIMITS_RIGH_ - X_LIMITS_LEFT_) / WINDOW_WIDTH_;
+
+    for (size_t imSteps = 0; imSteps < WINDOW_HEIGHT_; ++imSteps)
     {
-            float imVal = Y_LIMITS_BOT_ + (float) y * (Y_LIMITS_TOP_ - Y_LIMITS_BOT_) / WINDOW_HEIGHT_;
+          /* counting imagined coordinate */
+            float imVal = Y_LIMITS_BOT_ + imSteps * imOneStepShift;
         
+          /* imagined coordinates vector */
             __m128 im = _mm_set1_ps (imVal);
 
-        for (size_t x = 0; x < WINDOW_WIDTH_; x += 4)
+        for (size_t reSteps = 0; reSteps < WINDOW_WIDTH_; reSteps += 4)
         {
-            float xOneStepShift = (X_LIMITS_RIGH_ - X_LIMITS_LEFT_) / WINDOW_WIDTH_;
+          /* real coordinates vector */
+            __m128 re = _mm_set_ps (X_LIMITS_LEFT_  + (reSteps + 3) * reOneStepShift,
+                                    X_LIMITS_LEFT_  + (reSteps + 2) * reOneStepShift,
+                                    X_LIMITS_LEFT_  + (reSteps + 1) * reOneStepShift,
+                                    X_LIMITS_LEFT_  + (reSteps + 0) * reOneStepShift );
 
-            __m128 re = _mm_set_ps (X_LIMITS_LEFT_  + (x + 3) * xOneStepShift,
-                                    X_LIMITS_LEFT_  + (x + 2) * xOneStepShift,
-                                    X_LIMITS_LEFT_  + (x + 1) * xOneStepShift,
-                                    X_LIMITS_LEFT_  + (x + 0) * xOneStepShift );
+          /* iterations counters vector */
+            __m128i count = _mm_set1_epi32 (0);
 
-            int  counts [4] = {0, 0, 0, 0};
-
-            __m128i cont = _mm_set1_epi32 (0);
-
+          /* vectors of countable values */
             __m128  transIm = im;
             __m128  transRe = re;
 
-            __m128i b = _mm_set1_epi32 (1);
+          /* to check bounds cross */
+            __m128i ctrlMask = _mm_set1_epi8 (0xFF);
 
-            for (int cnt = 0; cnt < 0xFF; ++cnt)
+            for (register size_t iterNum = 0; iterNum < MAX_ITERATIONS_NUM_; ++iterNum)
             {
-                __m128  imSq = _mm_mul_ps (transIm, transIm);
-                __m128  reSq = _mm_mul_ps (transRe, transRe);
+              /* coordinates squares vaules vectors */
+                __m128  imSq    = _mm_mul_ps (transIm, transIm);
+                __m128  reSq    = _mm_mul_ps (transRe, transRe);
 
-                __m128  cmp  = _mm_cmple_ps (MAX_RADS_, _mm_add_ps (imSq, reSq));
+              /* integer radius */
+                __m128i radInt  = _mm_cvtps_epi32 (_mm_add_ps (imSq, reSq));
+              /* comparations vector */
+                __m128i cmpMask = _mm_cmplt_epi32 (radInt, MAX_RADS_);
 
-                __m128i a = _mm_cvtps_epi32 (_mm_add_ps (cmp, ones));
+              /* bounds cross vector */
+                ctrlMask = _mm_and_si128 (ctrlMask, cmpMask);
 
-                b = _mm_and_si128 (a, b);
+              /* adding values */
+                count = _mm_sub_epi32 (count, ctrlMask);
 
-                cont = _mm_add_epi32 (cont, b);
-
-                if (_mm_test_all_zeros (MASK_, b))
+                if (_mm_test_all_zeros (MASK_, ctrlMask))
                     break;
-
-                // if (*((int64_t*)&cmp + 0) != 0 || *((int64_t*)&cmp + 1) != 0)
-                //     break;
 
                 transIm = _mm_add_ps (transIm, transIm);
                 transIm = _mm_mul_ps (transIm, transRe);
@@ -123,12 +128,15 @@ void clalcMandel( sf::Image& buff )
                 transRe = _mm_add_ps (transRe, re);
             }
 
-            counts[0] = _mm_cvtsi128_si32 (cont);
+            /* TODO: rm this shittt & make normal */
+              #define SET_COLOR_( PIXEL_ID )                      \
+              buff.setPixel (reSteps + PIXEL_ID, imSteps,         \
+              getColor (_mm_cvtsi128_si32 (_mm_shuffle_epi32      \
+              (count, _MM_SHUFFLE (0, 0, 0, PIXEL_ID)))));
 
-            buff.setPixel (x    , y    , getColor (counts[0]));
-            buff.setPixel (x + 1, y    , getColor (counts[1]));
-            buff.setPixel (x + 2, y    , getColor (counts[2]));
-            buff.setPixel (x + 3, y    , getColor (counts[3])); 
+              SET_COLOR_ (0) SET_COLOR_ (1) SET_COLOR_ (2) SET_COLOR_ (3) 
+
+              #undef SET_COLOR_
         }
     }
 }
@@ -136,5 +144,5 @@ void clalcMandel( sf::Image& buff )
 sf::Color getColor( char iters )
 {
     return sf::Color (iters, iters, iters, 255);
-    // (-sin (iters) * sin (iters) * 256, 256 - atan (iters) * 256, iters, 255);
+    // (sin (iters) * sin (iters) * 128, 256 - atan (iters) * 256, iters, 255);
 }
