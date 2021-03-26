@@ -59,13 +59,13 @@ void mandelDraw()
     const size_t MAX_ITERATIONS_NUM_ = 0xFF;
 
 /* Axis limits */
-    const float  X_LIMITS_RIGH_   =  1.0;
-    const float  X_LIMITS_LEFT_   = -1.0;
-    const float  Y_LIMITS_TOP_    =  1.0;
-    const float  Y_LIMITS_BOT_    = -1.0;
+    const float  X_LIMITS_RIGH_   =  3.0;
+    const float  X_LIMITS_LEFT_   = -3.0;
+    const float  Y_LIMITS_TOP_    =  3.0;
+    const float  Y_LIMITS_BOT_    = -3.0;
 
 /* Target Radius */
-    const int32_t MAX_RAD_SQ_ = 10;
+    const int32_t MAX_RAD_SQ_ = 0xFF;
     const float  imOneStepShift = (Y_LIMITS_TOP_  - Y_LIMITS_BOT_)  / WINDOW_HEIGHT_;
     const float  reOneStepShift = (X_LIMITS_RIGH_ - X_LIMITS_LEFT_) / WINDOW_WIDTH_;
 
@@ -106,9 +106,8 @@ void clalcMandel( sf::Image& buff )
               /* im coordinates squares vaules vectors */
                 __m128  imSq    = _mm_mul_ps (transIm, transIm);
 
-              /* some calculations for next translated values */
-                        transIm = _mm_add_ps (transIm, transIm);
-                        transIm = _mm_mul_ps (transIm, transRe);
+              /* next vals */ transIm = _mm_add_ps (transIm, transIm);
+              /* next vals */ transIm = _mm_mul_ps (transIm, transRe);
               
               /* re coordinates squares vaules vectors */
                 __m128  reSq    = _mm_mul_ps (transRe, transRe);
@@ -116,9 +115,8 @@ void clalcMandel( sf::Image& buff )
               /* integer radius */
                 __m128i radInt  = _mm_cvtps_epi32 (_mm_add_ps (imSq, reSq));
 
-              /* some calculations for next translated values */
-                        transRe = _mm_sub_ps (reSq, imSq);
-                        transRe = _mm_add_ps (transRe, re);
+              /* next vals */ transRe = _mm_sub_ps (reSq, imSq);
+              /* next vals */ transRe = _mm_add_ps (transRe, re);
 
               /* comparations vector */
                 __m128i cmpMask = _mm_cmplt_epi32 (radInt, MAX_RADS_);
@@ -129,11 +127,10 @@ void clalcMandel( sf::Image& buff )
               /* adding values */
                 count = _mm_sub_epi32 (count, ctrlMask);
 
+              /* next vals */ transIm = _mm_add_ps (transIm, im);
+
                 if (ctrlMask[0] == 0 && ctrlMask[1] == 0)
                     break;
-
-              /* some calculations for next translated values */
-                        transIm = _mm_add_ps (transIm, im);
             }
 
             /* TODO: rm this shittt & make normal */
@@ -151,6 +148,6 @@ void clalcMandel( sf::Image& buff )
 
 sf::Color getColor( char iters )
 {
-    return sf::Color // (iters, iters, iters, 255);
-    (sin (iters) * sin (iters) * 128, 256 - atan (iters) * 256, iters, 255);
+    return sf::Color (iters, iters, iters, 255);
+    // (-cosh (iters) * iters, 256 - sin (iters) * 256, iters, sin (iters) * sin (iters) * sin (iters) * sin (iters) * iters * 16 );
 }
