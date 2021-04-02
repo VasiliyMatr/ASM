@@ -1,8 +1,8 @@
 
-#include <cstdio>
-#include <cstdlib>
+#ifndef LIST_HPP_INCL_
+#define LIST_HPP_INCL_
 
-typedef int data_t;
+#include "local-utils.hpp"
 
 class List{
 
@@ -44,6 +44,7 @@ private:
 public:
 
   /* Ctor & dtor */
+    List();
    ~List();
 
   /* deleted stuff */
@@ -53,13 +54,24 @@ public:
   /* To get data by listElem_t ptr */
     data_t getData( listElem_t* listElemPtr );
 
+  /* To get List head & tail */
+    listElem_t* getHead();
+    listElem_t* getTail();
+
   /* To get ptr to prev/next list element */
     listElem_t* getPrevOrNext( listElem_t* listElemPtr, listElemSide_t side );
 
-  /* To add new list element prev/next to choosed list element */
+  /* To add new list element prev/next to choosed list element;
+   * It adds head if list is empty
+   */
     listElem_t* addPrevOrNext( listElem_t* listElemPtr, listElemSide_t side,
                                data_t newElemData );
     
   /* To delete list element */
     listError_t delElem( listElem_t* listElem2DelPtr );
+
+  /* Text dump */
+    void dump( char* buff );
 };
+
+#endif
