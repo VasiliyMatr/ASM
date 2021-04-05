@@ -4,7 +4,7 @@
 
 #include "local-utils.hpp"
 
-class List{
+class List {
 
 /* List data types */
 public:
@@ -13,11 +13,11 @@ public:
     struct listElem_t {
 
       /* This element data */
-        data_t data;
+        HashTableUnit_t data_;
 
       /* Prev & next ptrs */
-        listElem_t* prev = nullptr;
-        listElem_t* next = nullptr;
+        listElem_t* prev_ = nullptr;
+        listElem_t* next_ = nullptr;
 
     };
 
@@ -25,12 +25,6 @@ public:
     enum class listElemSide_t {
           PREV_             = 'P',
           NEXT_             = 'N'
-    };
-
-  /* List error type - for errors output */
-    enum class listError_t {
-        OK_                 =   0       ,
-        PTR_ERR_            =  -0xFFFF  ,
     };
 
 /* Fields */
@@ -52,7 +46,7 @@ public:
     List operator =( const List& ) = delete;
 
   /* To get data by listElem_t ptr */
-    data_t getData( listElem_t* listElemPtr );
+    HashTableUnit_t getData( listElem_t* listElemPtr );
 
   /* To get List head & tail */
     listElem_t* getHead();
@@ -65,10 +59,10 @@ public:
    * It adds head if list is empty
    */
     listElem_t* addPrevOrNext( listElem_t* listElemPtr, listElemSide_t side,
-                               data_t newElemData );
+                               HashTableUnit_t newElemData );
     
   /* To delete list element */
-    listError_t delElem( listElem_t* listElem2DelPtr );
+    Error_t delElem( listElem_t* listElem2DelPtr );
 
   /* Text dump */
     void dump( char* buff );

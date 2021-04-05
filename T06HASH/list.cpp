@@ -12,7 +12,7 @@ List::~List()
     while (currElem != nullptr)
     {
         listElem_t* freeElemAddr = currElem;
-        currElem = currElem->next;
+        currElem = currElem->next_;
         free (freeElemAddr);
     }
 
@@ -21,9 +21,9 @@ List::~List()
     tail_ = nullptr;
 }
 
-data_t List::getData( listElem_t* listElemPtr )
+HashTableUnit_t List::getData( listElem_t* listElemPtr )
 {
-    return listElemPtr->data;
+    return listElemPtr->data_;
 }
 
 
@@ -43,13 +43,13 @@ List::listElem_t* List::getPrevOrNext( listElem_t* listElemPtr, listElemSide_t s
         return nullptr;
 
     if (side == listElemSide_t::NEXT_)
-        return listElemPtr->next;
+        return listElemPtr->next_;
 
-    return listElemPtr->prev;
+    return listElemPtr->prev_;
 }
 
 List::listElem_t* List::addPrevOrNext( listElem_t* listElemPtr, listElemSide_t side,
-                               data_t newElemData )
+                                       HashTableUnit_t newElemData )
 {
     if (listElemPtr == nullptr)
     {
@@ -58,9 +58,9 @@ List::listElem_t* List::addPrevOrNext( listElem_t* listElemPtr, listElemSide_t s
             head_ = (listElem_t* )calloc (1, sizeof (listElem_t));
             if (head_ == nullptr) return nullptr;
 
-            head_->data = newElemData;
-            head_->next = nullptr;
-            head_->prev = nullptr;
+            head_->data_ = newElemData;
+            head_->next_ = nullptr;
+            head_->prev_ = nullptr;
 
             tail_ = head_;
             return tail_;
@@ -74,17 +74,17 @@ List::listElem_t* List::addPrevOrNext( listElem_t* listElemPtr, listElemSide_t s
     if (newElem == nullptr) return nullptr;
 
   /* writing new data */
-    newElem->data = newElemData;
+    newElem->data_ = newElemData;
 
   /* interconnect ptrs */
     if (side == listElemSide_t::NEXT_)
     {
-        newElem->next = listElemPtr->next;
-        newElem->prev = listElemPtr;
-        listElemPtr->next = newElem;
+        newElem->next_      = listElemPtr->next_;
+        newElem->prev_      = listElemPtr;
+        listElemPtr->next_  = newElem;
         
-        if (newElem->next != nullptr)
-            newElem->next->prev = newElem;
+        if (newElem->next_ != nullptr)
+            newElem->next_->prev_ = newElem;
 
         if (listElemPtr == tail_)
             tail_ = newElem;
@@ -92,12 +92,12 @@ List::listElem_t* List::addPrevOrNext( listElem_t* listElemPtr, listElemSide_t s
 
     else
     {
-        newElem->next = listElemPtr;
-        newElem->prev = listElemPtr->prev;
-        listElemPtr->prev = newElem;
+        newElem->next_      = listElemPtr;
+        newElem->prev_      = listElemPtr->prev_;
+        listElemPtr->prev_   = newElem;
 
-        if (newElem->prev != nullptr)
-            newElem->prev->next = newElem;
+        if (newElem->prev_ != nullptr)
+            newElem->prev_->next_ = newElem;
 
         if (listElemPtr == head_)
             head_ = newElem;
@@ -106,27 +106,27 @@ List::listElem_t* List::addPrevOrNext( listElem_t* listElemPtr, listElemSide_t s
     return newElem;
 }
 
-List::listError_t List::delElem( listElem_t* listElem2DelPtr )
+Error_t List::delElem( listElem_t* listElem2DelPtr )
 {
     if (listElem2DelPtr == nullptr)
-        return listError_t::PTR_ERR_;
+        return Error_t::PTR_ERR_;
 
-    if (listElem2DelPtr->next != nullptr)
-        listElem2DelPtr->next->prev = listElem2DelPtr->prev;
+    if (listElem2DelPtr->next_ != nullptr)
+        listElem2DelPtr->next_->prev_ = listElem2DelPtr->prev_;
     else
-        tail_ = listElem2DelPtr->prev;
+        tail_ = listElem2DelPtr->prev_;
     
-    if (listElem2DelPtr->prev != nullptr)
-        listElem2DelPtr->prev->next = listElem2DelPtr->next;
+    if (listElem2DelPtr->prev_ != nullptr)
+        listElem2DelPtr->prev_->next_ = listElem2DelPtr->next_;
     else
-        head_ = listElem2DelPtr->next;
+        head_ = listElem2DelPtr->next_;
 
-    listElem2DelPtr->next = nullptr;
-    listElem2DelPtr->prev = nullptr;
+    listElem2DelPtr->next_ = nullptr;
+    listElem2DelPtr->prev_ = nullptr;
 
     free (listElem2DelPtr);
 
-    return listError_t::OK_;
+    return Error_t::OK_;
 }
 
 void List::dump( char* buff )
@@ -138,7 +138,7 @@ void List::dump( char* buff )
 
     while (currElemAddr != nullptr)
     {
-        shift += printData (buff + shift, currElemAddr->data);
-        currElemAddr = currElemAddr->next;
+        shift += printData (buff + shift, currElemAddr->data_);
+        currElemAddr = currElemAddr->next_;
     }
 }

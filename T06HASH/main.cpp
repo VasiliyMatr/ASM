@@ -16,11 +16,12 @@ int main()
     List::listElem_t* ptr = nullptr;
 
     for (int i = 0; i < LIST_SIZE_; i++)
-        ptr = list.addPrevOrNext (ptr, List::listElemSide_t::NEXT_, i);
+        ptr = list.addPrevOrNext (ptr, List::listElemSide_t::NEXT_,
+                                  HashTableUnit_t{ "zalupa", 10 });
 
     for (int i = 0; i < LIST_SIZE_; i++)
     {
-        printf ("%d" "\n", list.getData (ptr));
+        printf ("%s" "\n", (list.getData (ptr)).data_);
         ptr = list.getPrevOrNext (ptr, List::listElemSide_t::PREV_);
     }
 
