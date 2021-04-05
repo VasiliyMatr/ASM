@@ -6,35 +6,78 @@ HashTable::HashTable()
 
 HashTable::~HashTable()
 {
+  /* Need to free strs buff */
     if (buffP_ != nullptr)
       free (buffP_); 
 }
 
-Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
+HashTableUnit_t HashTable::get( hashTableData_t data2Seek )
 {
-    Error_t error = reset ();
-    if (error != Error_t::OK_)
-        return error;
+    size_t listId = hashFuncP_ (data2Seek) % HASH_TABLE_SIZE_;
 
-    if (isBadPtr ((void* )hashFuncP))
-        return Error_t::PTR_ERR_;
+    List* listP = hashTableP_ + listId;
+    List::ListElem_t* elemP = listP->getHead ();
 
-    size_t numOfBytes = 0;
+    while (elemP != nullptr)
+    {
+        if (!strcmp (elemP->data_.data_, data2Seek))
+            return elemP->data_;
 
-    error = readFile2Buff (inFileNameP, &buffP_, &numOfBytes);
-    if (error != Error_t::OK_)
-        return error;
+        elemP = listP->getPrevOrNext (elemP, List::listElemSide_t::NEXT_);
+    }
 
-    hashFuncP_ = hashFuncP;
+    return { "" };
+}
 
-    error = buff2HashTable (buffP_, numOfBytes);
-    if (error != Error_t::OK_)
-      return error;
+Error_t HashTable::add( HashTableUnit_t unit2Add )
+{
+    size_t listId = hashFuncP_ (unit2Add.data_) % HASH_TABLE_SIZE_;
+
+    List* listP = hashTableP_ + listId;
+    List::ListElem_t* elemP = listP->getHead ();
+
+    while (elemP != nullptr)
+    {
+        if (!strcmp (elemP->data_.data_, unit2Add.data_))
+            return Error_t::VAL_EXIST_ERR_;
+
+        elemP = listP->getPrevOrNext (elemP, List::listElemSide_t::NEXT_);
+    }
+
+    listP->addPrevOrNext (listP->getTail (), List::listElemSide_t::NEXT_, unit2Add);
 
     return Error_t::OK_;
 }
 
-Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
+Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
+{
+  /* Resetting at first */
+    Error_t error = reset ();
+    if (error != Error_t::OK_)
+        return error;
+
+  /* Initing hash function */
+    if (isBadPtr ((void* )hashFuncP))
+        return Error_t::PTR_ERR_;
+
+    hashFuncP_ = hashFuncP;
+
+  /* Reading data from file */
+    size_t numOfBytes = 0;
+    error = readFile2Buff (inFileNameP, &buffP_, &numOfBytes);
+    if (error != Error_t::OK_)
+        return error;
+
+  /* Adding buff to hash table */
+    error = buff2HashTable (numOfBytes);
+    if (error != Error_t::OK_)
+      return error;
+
+  /* All is ok */
+    return Error_t::OK_;
+}
+
+Error_t HashTable::buff2HashTable( const size_t numOfBytes )
 {
   /* Format str for words scanning */
     static const char formatStr[] = "%*[a-zA-Z]%n";
@@ -44,15 +87,14 @@ Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
     int buffAdditionalShift = 0;
 
   /* Last parced str */
-    char* lastStr = buffP;
+    char* lastStr = buffP_;
 
-  /* Sipping begin spaces */
-    sscanf (buffP, " %n", &buffShift);
-
-    lastStr = buffP + buffShift;
+  /* Skipping begin spaces */
+    sscanf (buffP_, " %n", &buffShift);
+    lastStr = buffP_ + buffShift;
 
   /* Reading until file end */
-    while (sscanf (buffP + buffShift, formatStr, &buffAdditionalShift) != EOF)
+    while (sscanf (buffP_ + buffShift, formatStr, &buffAdditionalShift) != EOF)
     {
       /* Should read word & it's size should be less than STR_MAX_SIZE_ */
         if (buffAdditionalShift <= 0 || buffAdditionalShift > STR_MAX_SIZE_)
@@ -60,26 +102,30 @@ Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
 
       /* Unit to store in hash table */
         HashTableUnit_t hashTableUnit = { lastStr };
+
       /* Counting list id */
         size_t listId = hashFuncP_ (lastStr) % HASH_TABLE_SIZE_;
+
       /* Getting needed list tail */
         List::ListElem_t* needListTail = hashTableP_[listId].getTail ();
+
       /* Adding unit */
         hashTableP_[listId].
         addPrevOrNext (needListTail, List::listElemSide_t::NEXT_, hashTableUnit);
 
       /* Plusing additional shift & putting str end for comfortable work with buff */
         buffShift += buffAdditionalShift;
-        buffP[buffShift++] = '\0';
+        buffP_[buffShift++] = '\0';
         
       /* Skippint spaces */
-        sscanf (buffP + buffShift, " %n", &buffAdditionalShift);
+        sscanf (buffP_ + buffShift, " %n", &buffAdditionalShift);
         buffShift += buffAdditionalShift;
 
       /* Nulling additional shift */
         buffAdditionalShift = 0;
     }
 
+  /* All is ok */
     return Error_t::OK_;
 }
 

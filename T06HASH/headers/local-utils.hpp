@@ -14,6 +14,7 @@ enum class Error_t {
     MEM_ERR_                    ,
     FILE_ERR_                   ,
     PARCE_ERR_                  ,
+    VAL_EXIST_ERR_              ,
 
 };
 

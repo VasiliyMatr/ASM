@@ -28,7 +28,7 @@ Error_t readFile2Buff( const char* const inFileNameP,
         return Error_t::FILE_ERR_;
 
   /* Allocating memory for buff */
-    char* buffP = (char* )calloc (sizeof (char), bytesNum);
+    char* buffP = (char* )calloc (sizeof (char), bytesNum + 1);
     if (buffP == nullptr)
     {
         fclose (inFileP);

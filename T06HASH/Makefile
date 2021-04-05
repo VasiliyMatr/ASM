@@ -1,4 +1,6 @@
 
+all: build
+
 build:
 	g++ -g source/*.cpp -o hash
 

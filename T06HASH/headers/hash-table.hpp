@@ -48,14 +48,16 @@ public:
       Error_t reset();
 
     /* To get element by key */
-      HashTableUnit_t  get  ( key_t key );
+      HashTableUnit_t  get  ( hashTableData_t hashTableUnitData );
+    /* To add element */
+      Error_t          add  ( HashTableUnit_t hashTableUnit );
 
     /* Dump function */
       void dump( const char* const outFileName );
 
 private:
     /* To put all words from text file to hash table */
-      Error_t buff2HashTable( char* const buffP, const size_t numOfBytes );
+      Error_t buff2HashTable( const size_t numOfBytes );
 
 };
 
