@@ -10,8 +10,8 @@ bool isBadPtr( const void* ptr )
 }
 
 Error_t readFile2Buff( const char* const inFileNameP,
-                       const char** buffPP ,
-                       size_t* sizeP )
+                       char**  const buffPP ,
+                       size_t* const sizeP )
 {
   /* Pointers check */
     if (isBadPtr (inFileNameP) || isBadPtr (buffPP) || isBadPtr (sizeP))

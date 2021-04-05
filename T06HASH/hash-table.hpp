@@ -49,7 +49,7 @@ public:
 
 private:
     /* To put all words from text file to hash table */
-      Error_t buff2HashTable( const char* const buffP, const size_t numOfBytes );
+      Error_t buff2HashTable( char* const buffP, const size_t numOfBytes );
 
 };
 

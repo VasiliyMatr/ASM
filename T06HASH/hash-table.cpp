@@ -6,7 +6,7 @@ HashTable::HashTable()
 
 Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
 {
-    if (isBadPtr (hashFuncP))
+    if (isBadPtr ((void* )hashFuncP))
         return Error_t::PTR_ERR_;
 
     size_t numOfBytes = 0;
@@ -19,34 +19,50 @@ Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
     buff2HashTable (buffP, numOfBytes);
 
     hashFuncP_ = hashFuncP;
+
+    return Error_t::OK_;
 }
 
 
-Error_t HashTable::buff2HashTable( const char* const buffP, const size_t numOfBytes )
+Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
 {
   /* Format str for words scanning */
-    static const char formatStr[] = "%*s[a-zA-Z] %n";
+    static const char formatStr[] = "%*[a-zA-Z]%n";
   /* buffP shift */
-    size_t buffShift = 0;
+    int buffShift = 0;
   /* buffP additional shift value for 1 sscanf */
-    size_t buffAdditionalShift = 0;
+    int buffAdditionalShift = 0;
+
+  /* Last parced str */
+    char* lastStr = buffP;
 
   /* Sipping begin spaces */
     sscanf (buffP, " %n", &buffShift);
 
+    lastStr = buffP + buffShift;
+
   /* Reading until file end */
     while (sscanf (buffP + buffShift, formatStr, &buffAdditionalShift) != EOF)
-    { 
-        if (buffAdditionalShift == 0)
+    {
+      /* Should read word & it's size should be less than STR_MAX_SIZE_ */
+        if (buffAdditionalShift <= 0 || buffAdditionalShift > STR_MAX_SIZE_)
             return Error_t::PARCE_ERR_;
-
-        printf ("%.10s" "\n", buffP + buffShift);
-
+        
+      /* Plusing additional shift & putting str end for comfortable work with buff */
         buffShift += buffAdditionalShift;
+        buffP[buffShift++] = '\0';
+        
+      /* Skippint spaces */
+        sscanf (buffP + buffShift, " %n", &buffAdditionalShift);
+        buffShift += buffAdditionalShift;
+
+      /* Test stuff */
+        printf ("%s" "\n", lastStr);
+        lastStr = buffP + buffShift;
+
+      /* Nulling additional shift */
         buffAdditionalShift = 0;
     }
-
-    buffShift += buffAdditionalShift;
 
     return Error_t::OK_;
 }

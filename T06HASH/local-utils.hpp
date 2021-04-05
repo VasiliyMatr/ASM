@@ -40,8 +40,8 @@ enum class Error_t {
 
 /* To read file to buff */
   Error_t readFile2Buff( const char* const inFileNameP,
-                         const char** buffPP,
-                         size_t* sizeP );
+                         char**  const buffPP,
+                         size_t* const sizeP );
 
 /* To get file length */
   size_t getFileLength( FILE* const filePtr );
