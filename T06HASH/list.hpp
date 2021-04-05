@@ -10,14 +10,14 @@ class List {
 public:
 
   /* List elements type */
-    struct listElem_t {
+    struct ListElem_t {
 
       /* This element data */
         HashTableUnit_t data_;
 
       /* Prev & next ptrs */
-        listElem_t* prev_ = nullptr;
-        listElem_t* next_ = nullptr;
+        ListElem_t* prev_ = nullptr;
+        ListElem_t* next_ = nullptr;
 
     };
 
@@ -31,8 +31,8 @@ public:
 private:
 
   /* head and tail of list */
-    listElem_t* head_ = nullptr; 
-    listElem_t* tail_ = nullptr;
+    ListElem_t* head_ = nullptr; 
+    ListElem_t* tail_ = nullptr;
 
 /* Methods */
 public:
@@ -45,24 +45,27 @@ public:
     List           ( const List& ) = delete;
     List operator =( const List& ) = delete;
 
-  /* To get data by listElem_t ptr */
-    HashTableUnit_t getData( listElem_t* listElemPtr );
+  /* To get data by ListElem_t ptr */
+    HashTableUnit_t getData( ListElem_t* listElemPtr );
 
   /* To get List head & tail */
-    listElem_t* getHead();
-    listElem_t* getTail();
+    ListElem_t* getHead();
+    ListElem_t* getTail();
 
   /* To get ptr to prev/next list element */
-    listElem_t* getPrevOrNext( listElem_t* listElemPtr, listElemSide_t side );
+    ListElem_t* getPrevOrNext( ListElem_t* listElemPtr, listElemSide_t side );
 
   /* To add new list element prev/next to choosed list element;
    * It adds head if list is empty
    */
-    listElem_t* addPrevOrNext( listElem_t* listElemPtr, listElemSide_t side,
+    ListElem_t* addPrevOrNext( ListElem_t* listElemPtr, listElemSide_t side,
                                HashTableUnit_t newElemData );
     
   /* To delete list element */
-    Error_t delElem( listElem_t* listElem2DelPtr );
+    Error_t delElem( ListElem_t* listElem2DelPtr );
+
+  /* To delete all list elements */
+    Error_t reset();
 
   /* Text dump */
     size_t dump( char* buff );

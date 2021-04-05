@@ -12,12 +12,16 @@ HashTable::~HashTable()
 
 Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
 {
+    Error_t error = reset ();
+    if (error != Error_t::OK_)
+        return error;
+
     if (isBadPtr ((void* )hashFuncP))
         return Error_t::PTR_ERR_;
 
     size_t numOfBytes = 0;
 
-    Error_t error = readFile2Buff (inFileNameP, &buffP_, &numOfBytes);
+    error = readFile2Buff (inFileNameP, &buffP_, &numOfBytes);
     if (error != Error_t::OK_)
         return error;
 
@@ -59,7 +63,7 @@ Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
       /* Counting list id */
         size_t listId = hashFuncP_ (lastStr) % HASH_TABLE_SIZE_;
       /* Getting needed list tail */
-        List::listElem_t* needListTail = hashTableP_[listId].getTail ();
+        List::ListElem_t* needListTail = hashTableP_[listId].getTail ();
       /* Adding unit */
         hashTableP_[listId].
         addPrevOrNext (needListTail, List::listElemSide_t::NEXT_, hashTableUnit);
@@ -78,6 +82,20 @@ Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
 
       /* Nulling additional shift */
         buffAdditionalShift = 0;
+    }
+
+    return Error_t::OK_;
+}
+
+Error_t HashTable::reset()
+{
+    hashFuncP_ = nullptr;
+
+    for (size_t listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
+    {
+        Error_t error = hashTableP_[listId].reset();
+        if (error != Error_t::OK_)
+          return error;
     }
 
     return Error_t::OK_;

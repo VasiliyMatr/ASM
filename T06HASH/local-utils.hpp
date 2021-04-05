@@ -1,7 +1,8 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <assert.h>
+#include <cassert>
+#include <cstring>
 
 #ifndef LOCAL_UTILS_HPP_INCL_
 #define LOCAL_UTILS_HPP_INCL_
