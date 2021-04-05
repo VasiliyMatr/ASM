@@ -19,11 +19,14 @@ public:
 /* Fields */
 private:
 
-    /* Used hash func */
-      HashFunc_t* hashFuncP_ = nullptr;
-
     /* Hash table size */
       static const size_t HASH_TABLE_SIZE_ = 1003;
+
+    /* Used hash func */
+      HashFunc_t* hashFuncP_ = nullptr;
+    
+    /* Buff with strs */
+      char* buffP_ = nullptr;
 
     /* Hash table */
       List hashTableP_ [HASH_TABLE_SIZE_];
@@ -32,6 +35,9 @@ private:
 public:
     /* Ctor */
       HashTable ();
+
+    /* Dtor */
+     ~HashTable ();
 
     /* Deleted stuff */
       HashTable           (const HashTable &) = delete;

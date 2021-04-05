@@ -129,7 +129,7 @@ Error_t List::delElem( listElem_t* listElem2DelPtr )
     return Error_t::OK_;
 }
 
-void List::dump( char* buff )
+size_t List::dump( char* buff )
 {
     listElem_t* currElemAddr = head_;
     int shift = 0;
@@ -141,4 +141,6 @@ void List::dump( char* buff )
         shift += printData (buff + shift, currElemAddr->data_);
         currElemAddr = currElemAddr->next_;
     }
+
+    return shift;
 }

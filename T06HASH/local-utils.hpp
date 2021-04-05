@@ -31,7 +31,6 @@ enum class Error_t {
   struct HashTableUnit_t {
   
       hashTableData_t data_ = "";
-      hashTableKey_t  key_  = INIT_KEY_T_VAL_;
   
   };
 

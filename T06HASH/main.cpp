@@ -10,4 +10,5 @@ int main()
 {
     HashTable hashTable;
     hashTable.setup (testHash, "test.txt");
+    hashTable.dump  ("out.txt");
 }

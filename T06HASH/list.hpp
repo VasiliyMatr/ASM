@@ -65,7 +65,7 @@ public:
     Error_t delElem( listElem_t* listElem2DelPtr );
 
   /* Text dump */
-    void dump( char* buff );
+    size_t dump( char* buff );
 };
 
 #endif

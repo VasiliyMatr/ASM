@@ -66,8 +66,7 @@ int printData( char* buff, const HashTableUnit_t &hashTableUnit )
 
     shift = sprintf (buff,
                      "\t\t"   "UNIT:" "\n"
-                     "\t\t\t"     "data: %.10s..." "\n"
-                     "\t\t\t"     "key : %d"       "\n" ,
-                     hashTableUnit.data_, hashTableUnit.key_);
+                     "\t\t\t"     "data: %.5s..." "\n",
+                     hashTableUnit.data_);
     return shift;
 }
