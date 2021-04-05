@@ -1,5 +1,5 @@
 
-#include "hash-table.hpp"
+#include "../headers/hash-table.hpp"
 
 HashTable::HashTable()
 {}
@@ -76,10 +76,6 @@ Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
         sscanf (buffP + buffShift, " %n", &buffAdditionalShift);
         buffShift += buffAdditionalShift;
 
-      /* Test stuff */
-        printf ("%s" "\n", lastStr);
-        lastStr = buffP + buffShift;
-
       /* Nulling additional shift */
         buffAdditionalShift = 0;
     }
@@ -90,6 +86,12 @@ Error_t HashTable::buff2HashTable( char* const buffP, const size_t numOfBytes )
 Error_t HashTable::reset()
 {
     hashFuncP_ = nullptr;
+
+    if (buffP_ != nullptr)
+    {
+        free (buffP_);
+        buffP_ = nullptr;
+    }
 
     for (size_t listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
     {

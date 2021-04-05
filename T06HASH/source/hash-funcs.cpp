@@ -1,5 +1,5 @@
 
-#include "hash-funcs.hpp"
+#include "../headers/hash-funcs.hpp"
 
 hashTableKey_t oneValHash( hashTableData_t hashTableData )
 {
