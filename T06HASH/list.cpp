@@ -137,5 +137,8 @@ void List::dump( char* buff )
     sprintf (buff, "\tLIST:" "\n" "%n", &shift);
 
     while (currElemAddr != nullptr)
+    {
         shift += printData (buff + shift, currElemAddr->data);
+        currElemAddr = currElemAddr->next;
+    }
 }

@@ -23,4 +23,10 @@ int main()
         printf ("%d" "\n", list.getData (ptr));
         ptr = list.getPrevOrNext (ptr, List::listElemSide_t::PREV_);
     }
+
+    list.dump (buff);
+
+    printf ("%s", buff);
+
+    free (buff);
 }
