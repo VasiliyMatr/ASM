@@ -20,7 +20,7 @@ public:
 private:
 
     /* Hash table size */
-      static const size_t HASH_TABLE_SIZE_ = 1003;
+      static const size_t HASH_TABLE_SIZE_ = 1013;
 
     /* Used hash func */
       const  HashFunc_t* hashFuncP_ = nullptr;

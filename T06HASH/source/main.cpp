@@ -8,14 +8,16 @@
 int main()
 {
     HashTable hashTable;
-    // hashTable.setup (oneValHash         , DATA_BASE_PATH_);
-    // hashTable.dump  (DATA_PATH_ "outOneVal.txt");
-    // hashTable.setup (firstLetterHash    , DATA_BASE_PATH_);
-    // hashTable.dump  (DATA_PATH_ "outFirstLetter.txt");
-    // hashTable.setup (lettersSummHash    , DATA_BASE_PATH_);
+    hashTable.setup   (oneValHash         , DATA_BASE_PATH_);
+    hashTable.outStat (DATA_PATH_ "oneValStat.txt");
+    hashTable.setup   (firstLetterHash    , DATA_BASE_PATH_);
+    hashTable.outStat (DATA_PATH_ "firstLetterStat.txt");
+    hashTable.setup   (lettersSummHash    , DATA_BASE_PATH_);
+    hashTable.outStat (DATA_PATH_ "lettersSumStat.txt");
     hashTable.setup   (lettersAvgHash     , DATA_BASE_PATH_);
-    hashTable.dump  (DATA_PATH_ "outLettersAvg.txt");
     hashTable.outStat (DATA_PATH_ "lettersAvgStat.txt");
+    hashTable.setup   (crc32Hash          , DATA_BASE_PATH_);
+    hashTable.outStat (DATA_PATH_ "crc32Stat.txt");
 }
 
 #undef DATA_PATH_
