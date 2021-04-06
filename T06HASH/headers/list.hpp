@@ -36,6 +36,9 @@ private:
     ListElem_t* headP_ = nullptr; 
     ListElem_t* tailP_ = nullptr;
 
+  /* List size */
+    size_t size_ = 0;
+
 /* Methods */
 public:
 
@@ -50,9 +53,11 @@ public:
   /* To get data by ListElem_t ptr */
     HashTableUnit_t getData( ListElem_t* listElemP );
 
-  /* To get List headP_ & tailP_ */
+  /* To get List headP_ & tailP_ & size_ */
     ListElem_t* getHeadP();
     ListElem_t* getTailP();
+
+    size_t getSize();
 
   /* To get ptr to prev/next list element */
     ListElem_t* getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side );

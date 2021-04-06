@@ -25,6 +25,9 @@ private:
     /* Used hash func */
       const  HashFunc_t* hashFuncP_ = nullptr;
     
+    /* Num of units in table */
+      size_t numOfUnits_ = 0; 
+
     /* Buff with strs */
       char*  buffP_ = nullptr;
 
@@ -43,14 +46,20 @@ public:
       HashTable           (const HashTable &) = delete;
       HashTable operator= (const HashTable &) = delete;
 
-    /* Hash table setup & reset */
+    /* To set hash func */
+      Error_t setHashFunc( HashFunc_t hashFunc );
+
+    /* Hash table setup (read base from file) & reset */
       Error_t setup( const HashFunc_t hashFunc , const char* const inFileName );
       Error_t reset();
 
     /* To get unit by hashableData */
-      HashTableUnit_t  get  ( HashableData_t  data2Seek );
+      HashTableUnit_t get  ( HashableData_t  data2Seek );
     /* To add unit */
-      Error_t          add  ( HashTableUnit_t unit2Add );
+      Error_t         add  ( HashTableUnit_t unit2Add );
+
+    /* To out statistics of hash func */
+      Error_t outStat ( char const * const outFileNameP );
 
     /* Dump function */
       void dump( const char* const outFileName );

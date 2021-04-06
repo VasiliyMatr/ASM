@@ -19,6 +19,7 @@ List::~List()
     /* Nulling all ptrs */
     headP_ = nullptr;
     tailP_ = nullptr;
+    size_  = 0;
 }
 
 HashTableUnit_t List::getData( ListElem_t* listElemP )
@@ -35,6 +36,12 @@ List::ListElem_t* List::getHeadP()
 List::ListElem_t* List::getTailP()
 {
     return tailP_;
+}
+
+
+size_t List::getSize()
+{
+    return size_;
 }
 
 List::ListElem_t* List::getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side )
@@ -66,6 +73,8 @@ List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemP, ListElemSide_t sid
             headP_->nextP_        = nullptr;
             headP_->prevP_        = nullptr;
             tailP_ = headP_;
+
+            size_ = 1;
 
             /* All is ok */
             return tailP_;
@@ -112,6 +121,8 @@ List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemP, ListElemSide_t sid
             headP_ = newElemP;
     }
 
+    ++size_;
+
     return newElemP;
 }
 
@@ -135,6 +146,8 @@ Error_t List::delElem( ListElem_t* listElem2DelP )
 
     free (listElem2DelP);
 
+    --size_;
+    
     return Error_t::OK_;
 }
 

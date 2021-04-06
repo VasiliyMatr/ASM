@@ -11,8 +11,26 @@ HashTable::~HashTable()
       free (buffP_); 
 }
 
+Error_t HashTable::setHashFunc( HashFunc_t hashFuncP )
+{
+    if (isBadPtr ((void* )hashFuncP))
+        return Error_t::PTR_ERR_;
+
+    Error_t error = reset ();
+
+    if (error != Error_t::OK_)
+        return error;
+
+    hashFuncP_ = hashFuncP;
+
+    return Error_t::OK_;
+}
+
 HashTableUnit_t HashTable::get( HashableData_t data2Seek )
 {
+    if (hashFuncP_ == nullptr)
+        return { INIT_HASHABLE_DATA_VAL_ };
+
     size_t listId = hashFuncP_ (data2Seek) % HASH_TABLE_SIZE_;
 
     List* listP = hashTableP_ + listId;
@@ -31,6 +49,9 @@ HashTableUnit_t HashTable::get( HashableData_t data2Seek )
 
 Error_t HashTable::add( HashTableUnit_t unit2Add )
 {
+    if (hashFuncP_ == nullptr)
+        return Error_t::PTR_ERR_;
+
     size_t listId = hashFuncP_ (unit2Add.hashableData_) % HASH_TABLE_SIZE_;
 
     List* listP = hashTableP_ + listId;
@@ -45,6 +66,8 @@ Error_t HashTable::add( HashTableUnit_t unit2Add )
     }
 
     listP->addPrevOrNext (listP->getTailP (), List::ListElemSide_t::NEXT_, unit2Add);
+
+    ++numOfUnits_;
 
     return Error_t::OK_;
 }
@@ -145,6 +168,38 @@ Error_t HashTable::reset()
         if (error != Error_t::OK_)
           return error;
     }
+
+    numOfUnits_ = 0;
+
+    return Error_t::OK_;
+}
+
+Error_t HashTable::outStat ( char const * const outFileNameP )
+{
+    if (isBadPtr (outFileNameP))
+        return Error_t::PTR_ERR_;
+
+    char* outBuffP = (char*) calloc (sizeof (char), HASH_TABLE_SIZE_ * 20);
+    if (outBuffP == nullptr)
+        return Error_t::MEM_ERR_;
+
+    size_t buffShift = 0;
+
+    for (size_t listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
+        buffShift += sprintf (outBuffP + buffShift,
+                              "%d" "\n",
+                              hashTableP_[listId].getSize());
+
+    FILE* outFileP = fopen (outFileNameP, "wb");
+    if (outFileP == nullptr)
+    {
+        free (outBuffP);
+        return Error_t::MEM_ERR_;
+    }
+
+    fwrite (outBuffP, sizeof (char), buffShift, outFileP);
+    fclose (outFileP);
+    free (outBuffP);
 
     return Error_t::OK_;
 }
