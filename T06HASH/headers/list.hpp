@@ -62,6 +62,10 @@ public:
   /* To get ptr to prev/next list element */
     ListElem_t* getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side );
 
+  /* To add elements to tail/head */
+    ListElem_t* add2Head ( HashTableUnit_t newElemData );
+    ListElem_t* add2Tail ( HashTableUnit_t newElemData );
+
   /* To add new list element prev/next to choosed list element;
    * It adds head if list is empty
    */

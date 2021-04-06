@@ -187,7 +187,7 @@ Error_t HashTable::outStat ( char const * const outFileNameP )
 
     for (size_t listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
         buffShift += sprintf (outBuffP + buffShift,
-                              "%d" "\n",
+                              "%ld" "\n",
                               hashTableP_[listId].getSize());
 
     FILE* outFileP = fopen (outFileNameP, "wb");
@@ -209,8 +209,15 @@ void HashTable::dump( const char* const outFileNameP )
     if (isBadPtr (outFileNameP))
         return;
 
+  /* Sizes for allocation */
+    static const size_t SYMBOLS_FOR_ONE_LIST_DUMP_ = 20;
+    static const size_t SYMBOLS_FOR_ONE_UNIT_DUMP_ = 30;
+
     size_t dumpBuffOffset = 0;
-    char* dumpBuffP = (char* )calloc (sizeof (char), 25000 * 30);
+    char* dumpBuffP = (char* )calloc (sizeof (char),
+        HASH_TABLE_SIZE_ * SYMBOLS_FOR_ONE_LIST_DUMP_ +
+        numOfUnits_      * SYMBOLS_FOR_ONE_UNIT_DUMP_);
+
     if (dumpBuffP == nullptr)
         return;
 

@@ -13,8 +13,8 @@ int main()
     // hashTable.setup (firstLetterHash    , DATA_BASE_PATH_);
     // hashTable.dump  (DATA_PATH_ "outFirstLetter.txt");
     // hashTable.setup (lettersSummHash    , DATA_BASE_PATH_);
-    // hashTable.dump  (DATA_PATH_ "outLettersSum.txt");
     hashTable.setup   (lettersAvgHash     , DATA_BASE_PATH_);
+    hashTable.dump  (DATA_PATH_ "outLettersAvg.txt");
     hashTable.outStat (DATA_PATH_ "lettersAvgStat.txt");
 }
 

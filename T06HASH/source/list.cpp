@@ -55,34 +55,88 @@ List::ListElem_t* List::getPrevOrNext( ListElem_t* listElemP, ListElemSide_t sid
     return listElemP->prevP_;
 }
 
+List::ListElem_t* List::add2Head ( HashTableUnit_t newElemData )
+{
+    /* Allocating */
+    ListElem_t* newElemP = (ListElem_t* )calloc (1, sizeof (ListElem_t));
+    if (newElemP == nullptr)
+        return nullptr;
+
+    newElemP->listElemData_ = newElemData;
+    newElemP->prevP_ = nullptr;
+
+    if (headP_ == nullptr)
+    {
+        headP_ = newElemP;
+
+        /* Initing head & tail */
+        headP_->nextP_        = nullptr;
+        tailP_ = headP_;
+    }
+
+    else
+    {
+        newElemP->nextP_ = headP_;
+        headP_->prevP_ = newElemP;
+        headP_ = newElemP;
+    }
+
+    ++size_;
+
+    /* All is ok */
+    return newElemP;
+}
+
+List::ListElem_t* List::add2Tail ( HashTableUnit_t newElemData )
+{
+    /* Allocating */
+    ListElem_t* newElemP = (ListElem_t* )calloc (1, sizeof (ListElem_t));
+    if (newElemP == nullptr)
+        return nullptr;
+
+    newElemP->listElemData_ = newElemData;
+    newElemP->nextP_ = nullptr;
+
+    if (tailP_ == nullptr)
+    {
+        headP_ = newElemP;
+
+        /* Initing head & tail */
+        headP_->nextP_        = nullptr;
+        tailP_ = headP_;
+    }
+
+    else
+    {
+        newElemP->prevP_ = tailP_;
+        tailP_->nextP_ = newElemP;
+        tailP_ = newElemP;
+    }
+
+    ++size_;
+
+    /* All is ok */
+    return newElemP;
+}
+
+
 List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemP, ListElemSide_t side,
                                        HashTableUnit_t newElemData )
 {
     /* Empty list */
-    if (listElemP == nullptr)
+    if (size_ == 0)
     {
-        if (headP_ == nullptr)
-        {
-            /* Allocating */
-            headP_ = (ListElem_t* )calloc (1, sizeof (ListElem_t));
-            if (headP_ == nullptr)
-                return nullptr;
+        if (listElemP == nullptr)
+            return add2Head (newElemData);
 
-            /* Initing head & tail */
-            headP_->listElemData_ = newElemData;
-            headP_->nextP_        = nullptr;
-            headP_->prevP_        = nullptr;
-            tailP_ = headP_;
-
-            size_ = 1;
-
-            /* All is ok */
-            return tailP_;
-        }
-
-        /* Error */
         return nullptr;
     }
+
+    /* Head or tail attach */
+    if (listElemP == tailP_ && side == ListElemSide_t::NEXT_)
+        return add2Tail (newElemData);
+    if (listElemP == headP_ && side == ListElemSide_t::PREV_)
+        return add2Head (newElemData);
 
   /* Allocation */
     ListElem_t* newElemP = (ListElem_t* )calloc (1, sizeof (ListElem_t));
@@ -95,30 +149,18 @@ List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemP, ListElemSide_t sid
   /* Interconnect ptrs */
     if (side == ListElemSide_t::NEXT_)
     {
-        newElemP->nextP_  = listElemP->nextP_;
-        newElemP->prevP_  = listElemP;
-        listElemP->nextP_ = newElemP;
-        
-        if (newElemP->nextP_ != nullptr)
-            newElemP->nextP_->prevP_ = newElemP;
-
-        /* Attached on tail */
-        if (listElemP == tailP_)
-            tailP_ = newElemP;
+        newElemP->nextP_         = listElemP->nextP_;
+        newElemP->prevP_         = listElemP;
+        listElemP->nextP_        = newElemP;
+        newElemP->nextP_->prevP_ = newElemP;
     }
 
     else
     {
-        newElemP->nextP_  = listElemP;
-        newElemP->prevP_  = listElemP->prevP_;
-        listElemP->prevP_ = newElemP;
-
-        if (newElemP->prevP_ != nullptr)
-            newElemP->prevP_->nextP_ = newElemP;
-
-        /* Attached on head */
-        if (listElemP == headP_)
-            headP_ = newElemP;
+        newElemP->nextP_         = listElemP;
+        newElemP->prevP_         = listElemP->prevP_;
+        listElemP->prevP_        = newElemP;
+        newElemP->prevP_->nextP_ = newElemP;
     }
 
     ++size_;
