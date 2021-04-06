@@ -1,7 +1,8 @@
 
 #include "../headers/local-utils.hpp"
 
-bool isBadPtr( const void* ptr )
+/* TODO: normal ptr validity check */
+bool isBadPtr( const void* const ptr )
 {
     if (ptr == nullptr)
         return true;
@@ -9,9 +10,9 @@ bool isBadPtr( const void* ptr )
     return false;
 }
 
-Error_t readFile2Buff( const char* const inFileNameP,
-                       char**  const buffPP ,
-                       size_t* const sizeP )
+Error_t readFile2Buff( const char*   const inFileNameP,
+                             char**  const buffPP ,
+                             size_t* const sizeP )
 {
   /* Pointers check */
     if (isBadPtr (inFileNameP) || isBadPtr (buffPP) || isBadPtr (sizeP))
@@ -46,27 +47,27 @@ Error_t readFile2Buff( const char* const inFileNameP,
     return Error_t::OK_;
 }
 
-size_t getFileLength( FILE* const filePtr )
+size_t getFileLength( FILE* const fileP )
 {
-    assert (!isBadPtr (filePtr));
+    assert (!isBadPtr (fileP));
 
-  /* moving to file end */
-    fseek (filePtr, 0, SEEK_END);
-  /* getting num of bytes */
-    int bytesNum = ftell (filePtr);
-  /* rewinding file back to begin */
-    rewind (filePtr);
+  /* Moving to file end */
+    fseek (fileP, 0, SEEK_END);
+  /* Getting num of bytes */
+    int bytesNum = ftell (fileP);
+  /* Rewinding file back to begin */
+    rewind (fileP);
 
     return bytesNum;
 }
 
-int printData( char* buff, const HashTableUnit_t &hashTableUnit )
+int printData( char* buffP, const HashTableUnit_t &hashTableUnit )
 {
     int shift = 0;
 
-    shift = sprintf (buff,
+    shift = sprintf (buffP,
                      "\t\t"   "UNIT:" "\n"
                      "\t\t\t"     "data: %.5s..." "\n",
-                     hashTableUnit.data_);
+                     hashTableUnit.hashableData_);
     return shift;
 }

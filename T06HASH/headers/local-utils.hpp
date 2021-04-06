@@ -7,47 +7,64 @@
 #ifndef LOCAL_UTILS_HPP_INCL_
 #define LOCAL_UTILS_HPP_INCL_
 
+/* For errors info output */
 enum class Error_t {
 
+/* NO ERRORS */
+  /* No errors */
     OK_                 =  0    ,
+
+/* COMMON ERRORS */
+  /* Not valid ptr */
     PTR_ERR_            = -0xFF ,
+  /* Error with memory allocation */
     MEM_ERR_                    ,
+  /* Error with file (can't open, etc) */
     FILE_ERR_                   ,
+
+/* HASH TABLE ERRORS */
+  /* Error with hash table loading from file - wrong characters found */
     PARCE_ERR_                  ,
+  /* Tried to add data with hashable value that is already exist in table */
     VAL_EXIST_ERR_              ,
 
 };
 
-/* Max str size */
+/* Max str size - it is limited for really fast optimizations */
   const size_t STR_MAX_SIZE_ = 64; 
 
-/* Hash table storable data */
-  typedef const char*     hashTableData_t;
+/* Hash table hashable data - it is used to seek for needed data in table */
+  typedef const char*     HashableData_t;
 /* Hash table key value type */
-  typedef unsigned int    hashTableKey_t;
+  typedef unsigned int    HashTableKey_t;
 
-/* Init value for hashTableKey_t */
-  const hashTableKey_t  INIT_KEY_T_VAL_  = 0xAB0BA;
+/* Init value for HashTableKey_t */
+  const HashTableKey_t  INIT_KEY_T_VAL_  = 0xAB0BA;
+/* Iuit value for HashableData_t - can't be met in table */
+  const HashableData_t  INIT_HASHABLE_DATA_VAL_ = "";
 
 /* Unit to store in hash table lists as element */
   struct HashTableUnit_t {
-  
-      hashTableData_t data_ = "";
+
+      /* Data, that is used for search in table */
+      HashableData_t hashableData_ = INIT_HASHABLE_DATA_VAL_;
+
+      /* Other data can be placed here */
   
   };
 
 /* To check ptrs validity */
-  bool isBadPtr( const void* ptr );
+  bool isBadPtr( const void* const ptr );
 
 /* To read file to buff */
-  Error_t readFile2Buff( const char* const inFileNameP,
-                         char**  const buffPP,
-                         size_t* const sizeP );
+  Error_t readFile2Buff( const char*   const inFileNameP,
+                               char**  const buffPP,
+                               size_t* const sizeP );
 
 /* To get file length */
-  size_t getFileLength( FILE* const filePtr );
+  size_t getFileLength( FILE* const fileP );
 
 /* Func to print hash table units in dump buffer  */
-  int printData( char* buff, const HashTableUnit_t &hashTableUnit );
+  int printData( char* buffP, const HashTableUnit_t &hashTableUnit );
 
 #endif

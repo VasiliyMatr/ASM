@@ -6,134 +6,143 @@ List::List()
 
 List::~List()
 {
-    ListElem_t* currElem = head_;
+    ListElem_t* currElemP = headP_;
 
-    /* free all memory */
-    while (currElem != nullptr)
+    /* Free all memory */
+    while (currElemP != nullptr)
     {
-        ListElem_t* freeElemAddr = currElem;
-        currElem = currElem->next_;
-        free (freeElemAddr);
+        ListElem_t* freeElemP = currElemP;
+        currElemP = currElemP->nextP_;
+        free (freeElemP);
     }
 
-    /* nulling all ptrs */
-    head_ = nullptr;
-    tail_ = nullptr;
+    /* Nulling all ptrs */
+    headP_ = nullptr;
+    tailP_ = nullptr;
 }
 
-HashTableUnit_t List::getData( ListElem_t* listElemPtr )
+HashTableUnit_t List::getData( ListElem_t* listElemP )
 {
-    return listElemPtr->data_;
+    return listElemP->listElemData_;
 }
 
 
-List::ListElem_t* List::getHead()
+List::ListElem_t* List::getHeadP()
 {
-    return head_;
+    return headP_;
 }
 
-List::ListElem_t* List::getTail()
+List::ListElem_t* List::getTailP()
 {
-    return tail_;
+    return tailP_;
 }
 
-List::ListElem_t* List::getPrevOrNext( ListElem_t* listElemPtr, listElemSide_t side )
+List::ListElem_t* List::getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side )
 {
-    if (listElemPtr == nullptr)
+    if (isBadPtr (listElemP))
         return nullptr;
 
-    if (side == listElemSide_t::NEXT_)
-        return listElemPtr->next_;
+    if (side == ListElemSide_t::NEXT_)
+        return listElemP->nextP_;
 
-    return listElemPtr->prev_;
+    return listElemP->prevP_;
 }
 
-List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemPtr, listElemSide_t side,
+List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemP, ListElemSide_t side,
                                        HashTableUnit_t newElemData )
 {
-    if (listElemPtr == nullptr)
+    /* Empty list */
+    if (listElemP == nullptr)
     {
-        if (head_ == nullptr)
+        if (headP_ == nullptr)
         {
-            head_ = (ListElem_t* )calloc (1, sizeof (ListElem_t));
-            if (head_ == nullptr) return nullptr;
+            /* Allocating */
+            headP_ = (ListElem_t* )calloc (1, sizeof (ListElem_t));
+            if (headP_ == nullptr)
+                return nullptr;
 
-            head_->data_ = newElemData;
-            head_->next_ = nullptr;
-            head_->prev_ = nullptr;
+            /* Initing head & tail */
+            headP_->listElemData_ = newElemData;
+            headP_->nextP_        = nullptr;
+            headP_->prevP_        = nullptr;
+            tailP_ = headP_;
 
-            tail_ = head_;
-            return tail_;
+            /* All is ok */
+            return tailP_;
         }
 
+        /* Error */
         return nullptr;
     }
 
-  /* mem allocation */
-    ListElem_t* newElem = (ListElem_t* )calloc (1, sizeof (ListElem_t));
-    if (newElem == nullptr) return nullptr;
+  /* Allocation */
+    ListElem_t* newElemP = (ListElem_t* )calloc (1, sizeof (ListElem_t));
+    if (newElemP == nullptr)
+        return nullptr;
 
   /* writing new data */
-    newElem->data_ = newElemData;
+    newElemP->listElemData_ = newElemData;
 
-  /* interconnect ptrs */
-    if (side == listElemSide_t::NEXT_)
+  /* Interconnect ptrs */
+    if (side == ListElemSide_t::NEXT_)
     {
-        newElem->next_      = listElemPtr->next_;
-        newElem->prev_      = listElemPtr;
-        listElemPtr->next_  = newElem;
+        newElemP->nextP_  = listElemP->nextP_;
+        newElemP->prevP_  = listElemP;
+        listElemP->nextP_ = newElemP;
         
-        if (newElem->next_ != nullptr)
-            newElem->next_->prev_ = newElem;
+        if (newElemP->nextP_ != nullptr)
+            newElemP->nextP_->prevP_ = newElemP;
 
-        if (listElemPtr == tail_)
-            tail_ = newElem;
+        /* Attached on tail */
+        if (listElemP == tailP_)
+            tailP_ = newElemP;
     }
 
     else
     {
-        newElem->next_      = listElemPtr;
-        newElem->prev_      = listElemPtr->prev_;
-        listElemPtr->prev_   = newElem;
+        newElemP->nextP_  = listElemP;
+        newElemP->prevP_  = listElemP->prevP_;
+        listElemP->prevP_ = newElemP;
 
-        if (newElem->prev_ != nullptr)
-            newElem->prev_->next_ = newElem;
+        if (newElemP->prevP_ != nullptr)
+            newElemP->prevP_->nextP_ = newElemP;
 
-        if (listElemPtr == head_)
-            head_ = newElem;
+        /* Attached on head */
+        if (listElemP == headP_)
+            headP_ = newElemP;
     }
 
-    return newElem;
+    return newElemP;
 }
 
-Error_t List::delElem( ListElem_t* listElem2DelPtr )
+Error_t List::delElem( ListElem_t* listElem2DelP )
 {
-    if (listElem2DelPtr == nullptr)
+    if (isBadPtr (listElem2DelP))
         return Error_t::PTR_ERR_;
 
-    if (listElem2DelPtr->next_ != nullptr)
-        listElem2DelPtr->next_->prev_ = listElem2DelPtr->prev_;
+    if (listElem2DelP->nextP_ != nullptr)
+        listElem2DelP->nextP_->prevP_ = listElem2DelP->prevP_;
     else
-        tail_ = listElem2DelPtr->prev_;
+        tailP_ = listElem2DelP->prevP_;
     
-    if (listElem2DelPtr->prev_ != nullptr)
-        listElem2DelPtr->prev_->next_ = listElem2DelPtr->next_;
+    if (listElem2DelP->prevP_ != nullptr)
+        listElem2DelP->prevP_->nextP_ = listElem2DelP->nextP_;
     else
-        head_ = listElem2DelPtr->next_;
+        headP_ = listElem2DelP->nextP_;
 
-    listElem2DelPtr->next_ = nullptr;
-    listElem2DelPtr->prev_ = nullptr;
+    listElem2DelP->nextP_ = nullptr;
+    listElem2DelP->prevP_ = nullptr;
 
-    free (listElem2DelPtr);
+    free (listElem2DelP);
 
     return Error_t::OK_;
 }
 
 Error_t List::reset()
 {
-    while (head_ != nullptr)
+    while (headP_ != nullptr)
     {
-        Error_t error = delElem (head_);
+        Error_t error = delElem (headP_);
         if (error != Error_t::OK_)
             return error;
     }
@@ -141,18 +150,18 @@ Error_t List::reset()
     return Error_t::OK_;
 }
 
-size_t List::dump( char* buff )
+size_t List::dump( char* const buffP )
 {
-    ListElem_t* currElemAddr = head_;
-    int shift = 0;
+    ListElem_t* currElemP = headP_;
+    int buffShift = 0;
 
-    sprintf (buff, "\tLIST:" "\n" "%n", &shift);
+    sprintf (buffP, "\tLIST:" "\n" "%n", &buffShift);
 
-    while (currElemAddr != nullptr)
+    while (currElemP != nullptr)
     {
-        shift += printData (buff + shift, currElemAddr->data_);
-        currElemAddr = currElemAddr->next_;
+        buffShift += printData (buffP + buffShift, currElemP->listElemData_);
+        currElemP = currElemP->nextP_;
     }
 
-    return shift;
+    return buffShift;
 }

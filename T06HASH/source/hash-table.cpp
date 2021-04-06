@@ -11,40 +11,40 @@ HashTable::~HashTable()
       free (buffP_); 
 }
 
-HashTableUnit_t HashTable::get( hashTableData_t data2Seek )
+HashTableUnit_t HashTable::get( HashableData_t data2Seek )
 {
     size_t listId = hashFuncP_ (data2Seek) % HASH_TABLE_SIZE_;
 
     List* listP = hashTableP_ + listId;
-    List::ListElem_t* elemP = listP->getHead ();
+    List::ListElem_t* elemP = listP->getHeadP ();
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->data_.data_, data2Seek))
-            return elemP->data_;
+        if (!strcmp (elemP->listElemData_.hashableData_, data2Seek))
+            return elemP->listElemData_;
 
-        elemP = listP->getPrevOrNext (elemP, List::listElemSide_t::NEXT_);
+        elemP = listP->getPrevOrNext (elemP, List::ListElemSide_t::NEXT_);
     }
 
-    return { "" };
+    return { INIT_HASHABLE_DATA_VAL_ };
 }
 
 Error_t HashTable::add( HashTableUnit_t unit2Add )
 {
-    size_t listId = hashFuncP_ (unit2Add.data_) % HASH_TABLE_SIZE_;
+    size_t listId = hashFuncP_ (unit2Add.hashableData_) % HASH_TABLE_SIZE_;
 
     List* listP = hashTableP_ + listId;
-    List::ListElem_t* elemP = listP->getHead ();
+    List::ListElem_t* elemP = listP->getHeadP ();
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->data_.data_, unit2Add.data_))
+        if (!strcmp (elemP->listElemData_.hashableData_, unit2Add.hashableData_))
             return Error_t::VAL_EXIST_ERR_;
 
-        elemP = listP->getPrevOrNext (elemP, List::listElemSide_t::NEXT_);
+        elemP = listP->getPrevOrNext (elemP, List::ListElemSide_t::NEXT_);
     }
 
-    listP->addPrevOrNext (listP->getTail (), List::listElemSide_t::NEXT_, unit2Add);
+    listP->addPrevOrNext (listP->getTailP (), List::ListElemSide_t::NEXT_, unit2Add);
 
     return Error_t::OK_;
 }
@@ -80,47 +80,47 @@ Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
 Error_t HashTable::buff2HashTable( const size_t numOfBytes )
 {
   /* Format str for words scanning */
-    static const char formatStr[] = "%*[a-zA-Z]%n";
-  /* buffP shift */
+    static const char formatStr[] = "%*[a-zA-Z0-9]%n";
+
+  /* buffP shift & buffP additional shift */
     int buffShift = 0;
-  /* buffP additional shift value for 1 sscanf */
     int buffAdditionalShift = 0;
 
   /* Last parced str */
-    char* lastStr = buffP_;
+    char* lastStrP = buffP_;
 
   /* Skipping begin spaces */
     sscanf (buffP_, " %n", &buffShift);
-    lastStr = buffP_ + buffShift;
+    lastStrP = buffP_ + buffShift;
 
-  /* Reading until file end */
+  /* Reading until str end */
     while (sscanf (buffP_ + buffShift, formatStr, &buffAdditionalShift) != EOF)
     {
+
+    /* Str stuff */
       /* Should read word & it's size should be less than STR_MAX_SIZE_ */
         if (buffAdditionalShift <= 0 || buffAdditionalShift > STR_MAX_SIZE_)
             return Error_t::PARCE_ERR_;
-
-      /* Unit to store in hash table */
-        HashTableUnit_t hashTableUnit = { lastStr };
-
-      /* Counting list id */
-        size_t listId = hashFuncP_ (lastStr) % HASH_TABLE_SIZE_;
-
-      /* Getting needed list tail */
-        List::ListElem_t* needListTail = hashTableP_[listId].getTail ();
-
-      /* Adding unit */
-        hashTableP_[listId].
-        addPrevOrNext (needListTail, List::listElemSide_t::NEXT_, hashTableUnit);
-
-      /* Plusing additional shift & putting str end for comfortable work with buff */
+      /* Plusing additional shift */
         buffShift += buffAdditionalShift;
+      /* Putting str end for comfortable work with buff */
         buffP_[buffShift++] = '\0';
-        
+
+    /* Hash stuff */
+      /* Unit to store in hash table */
+        HashTableUnit_t hashTableUnit = { lastStrP };
+
+        Error_t error = add (hashTableUnit);
+        if (error != Error_t::OK_)
+            return error;
+
+    /* Str stuff */
       /* Skippint spaces */
         sscanf (buffP_ + buffShift, " %n", &buffAdditionalShift);
         buffShift += buffAdditionalShift;
 
+      /* Updating str ptr */
+        lastStrP = buffP_ + buffShift;
       /* Nulling additional shift */
         buffAdditionalShift = 0;
     }
@@ -149,13 +149,13 @@ Error_t HashTable::reset()
     return Error_t::OK_;
 }
 
-void HashTable::dump( const char* const outFileName )
+void HashTable::dump( const char* const outFileNameP )
 {
-    if (isBadPtr (outFileName))
+    if (isBadPtr (outFileNameP))
         return;
 
     size_t dumpBuffOffset = 0;
-    char* dumpBuffP = (char* )calloc (sizeof (char), HASH_TABLE_SIZE_ * 100);
+    char* dumpBuffP = (char* )calloc (sizeof (char), 25000 * 30);
     if (dumpBuffP == nullptr)
         return;
 
@@ -164,7 +164,7 @@ void HashTable::dump( const char* const outFileName )
     for (size_t listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
         dumpBuffOffset += hashTableP_[listId].dump (dumpBuffP + dumpBuffOffset);
 
-    FILE* outFileP = fopen (outFileName, "wb");
+    FILE* outFileP = fopen (outFileNameP, "wb");
     if (outFileP == nullptr)
     {
         free (dumpBuffP);

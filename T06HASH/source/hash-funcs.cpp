@@ -1,28 +1,28 @@
 
 #include "../headers/hash-funcs.hpp"
 
-hashTableKey_t oneValHash( hashTableData_t hashTableData )
+HashTableKey_t oneValHash( HashableData_t hashableData )
 {
     return 0;
 }
 
-hashTableKey_t firstLetterHash( hashTableData_t hashTableData )
+HashTableKey_t firstLetterHash( HashableData_t hashableData )
 {
-    return *hashTableData;
+    return *hashableData;
 }
 
-hashTableKey_t lettersSummHash( hashTableData_t hashTableData )
+HashTableKey_t lettersSummHash( HashableData_t hashableData )
 {
     int hash = 0;
     int hashTableDataShift = 0;
 
-    for (; hashTableData [hashTableDataShift] != '\0'; ++hashTableDataShift)
-        hash += hashTableData [hashTableDataShift];
+    for (; hashableData [hashTableDataShift] != '\0'; ++hashTableDataShift)
+        hash += hashableData [hashTableDataShift];
 
     return hash;
 }
 
-hashTableKey_t lettersAvgHash( hashTableData_t hashTableData )
+HashTableKey_t lettersAvgHash( HashableData_t hashableData )
 {
-    return lettersSummHash (hashTableData) / strlen (hashTableData);
+    return lettersSummHash (hashableData) / strlen (hashableData);
 }

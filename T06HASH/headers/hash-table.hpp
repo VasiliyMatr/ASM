@@ -14,7 +14,7 @@ class HashTable {
 public:
 
     /* Hash func type */
-      typedef hashTableKey_t HashFunc_t (hashTableData_t);
+      typedef HashTableKey_t HashFunc_t (HashableData_t);
 
 /* Fields */
 private:
@@ -23,13 +23,13 @@ private:
       static const size_t HASH_TABLE_SIZE_ = 1003;
 
     /* Used hash func */
-      HashFunc_t* hashFuncP_ = nullptr;
+      const  HashFunc_t* hashFuncP_ = nullptr;
     
     /* Buff with strs */
-      char* buffP_ = nullptr;
+      char*  buffP_ = nullptr;
 
     /* Hash table */
-      List hashTableP_ [HASH_TABLE_SIZE_];
+      List   hashTableP_ [HASH_TABLE_SIZE_];
 
 /* Methods */
 public:
@@ -44,13 +44,13 @@ public:
       HashTable operator= (const HashTable &) = delete;
 
     /* Hash table setup & reset */
-      Error_t setup( HashFunc_t const hashFunc , const char* const inFileName );
+      Error_t setup( const HashFunc_t hashFunc , const char* const inFileName );
       Error_t reset();
 
-    /* To get element by key */
-      HashTableUnit_t  get  ( hashTableData_t hashTableUnitData );
-    /* To add element */
-      Error_t          add  ( HashTableUnit_t hashTableUnit );
+    /* To get unit by hashableData */
+      HashTableUnit_t  get  ( HashableData_t  data2Seek );
+    /* To add unit */
+      Error_t          add  ( HashTableUnit_t unit2Add );
 
     /* Dump function */
       void dump( const char* const outFileName );
