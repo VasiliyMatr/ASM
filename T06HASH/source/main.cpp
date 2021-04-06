@@ -16,6 +16,8 @@ int main()
     hashTable.outStat (DATA_PATH_ "lettersSumStat.txt");
     hashTable.setup   (lettersAvgHash     , DATA_BASE_PATH_);
     hashTable.outStat (DATA_PATH_ "lettersAvgStat.txt");
+    hashTable.setup   (myHash             , DATA_BASE_PATH_);
+    hashTable.outStat (DATA_PATH_ "myStat.txt");
     hashTable.setup   (crc32Hash          , DATA_BASE_PATH_);
     hashTable.outStat (DATA_PATH_ "crc32Stat.txt");
 }

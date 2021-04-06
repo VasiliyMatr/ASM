@@ -27,6 +27,19 @@ HashTableKey_t lettersAvgHash( HashableData_t hashableData )
     return lettersSummHash (hashableData) / strlen (hashableData);
 }
 
+HashTableKey_t myHash( HashableData_t hashableData )
+{
+    const size_t byte_move = sizeof (HashTableKey_t) - 1;
+    int hash = 0xAB0BA;
+
+    for (size_t i = 0; hashableData[i] != '\0'; i++)
+    {
+        hash = (-hash * *(hashableData + i) + hash >> byte_move ^ hash << 1) + hash - i;
+    }
+
+    return hash;
+}
+
 HashTableKey_t crc32Hash( HashableData_t hashableData )
 {
   /* Not initing data for speed */
