@@ -20,7 +20,7 @@ plt.plot (x, y, 'o', markersize = 2.0)
 plt.title  (os.path.basename (name))
 plt.xlabel ("listId")
 plt.ylabel ("elements")
-plt.text   (max (x) * 0.7, max (y), 'Dispercion = ' + str (float (np.var (y))))
+plt.text   (max (x) * 0.7, max (y), 'Dispercion = ' + str (int (np.var (y))))
 plt.ylim   ([0, max (y) * 1.2])
 
 plt.savefig (name + '.png')
