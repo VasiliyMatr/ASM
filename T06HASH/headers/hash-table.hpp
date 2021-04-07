@@ -59,7 +59,9 @@ public:
       Error_t         add  ( HashTableUnit_t unit2Add );
 
     /* To out statistics of hash func */
-      Error_t outStat ( char const * const outFileNameP );
+      Error_t outStat( char const * const outFileNameP );
+    /* For speed tests */
+      void    speedTest();
 
     /* Dump function */
       void dump( const char* const outFileName );

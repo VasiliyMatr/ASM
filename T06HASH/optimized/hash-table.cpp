@@ -204,6 +204,21 @@ Error_t HashTable::outStat ( char const * const outFileNameP )
     return Error_t::OK_;
 }
 
+void HashTable::speedTest()
+{
+    for (int listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
+    {
+        List* listP = hashTableP_ + listId;
+        List::ListElem_t* elemP = listP->getHeadP ();
+
+        while (elemP != nullptr)
+        {
+            get (elemP->listElemData_.hashableData_);
+            elemP = elemP->nextP_;
+        }
+    }
+}
+
 void HashTable::dump( const char* const outFileNameP )
 {
     if (isBadPtr (outFileNameP))

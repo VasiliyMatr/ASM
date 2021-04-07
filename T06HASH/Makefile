@@ -2,18 +2,19 @@
 TABLE_SIZE_ = 1013
 DATA_PATH_  = data/
 
-all: build
-build:
-	g++ -O2 -g source/*.cpp -o hash
+all: unopt opt
 
-run:
-	./hash
+unopt:
+	g++ -O2 -g main.cpp unoptimized/*.cpp -o hash
+
+opt:
+	g++ -O2 -g main.cpp optimized/*.cpp -o oHash
 
 memCheck:
 	valgrind --leak-check=full ./hash
 
 profile:
-	valgrind --tool=callgrind ./hash
+	valgrind --tool=callgrind ./oHash
 	kcachegrind callgrind.out.*
 	rm callgrind.out.*
 
