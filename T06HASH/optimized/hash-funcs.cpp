@@ -1,5 +1,6 @@
 
 #include "../headers/hash-funcs.hpp"
+#include <nmmintrin.h>
 
 HashTableKey_t oneValHash( HashableData_t hashableData )
 {
@@ -42,26 +43,12 @@ HashTableKey_t myHash( HashableData_t hashableData )
 
 HashTableKey_t crc32Hash( HashableData_t hashableData )
 {
-  /* Not initing data for speed */
-    unsigned int crc32Table[256];
-    unsigned int crc32Hash;
-    int i, j;
+    int            symbolId = 0;
+    char           symbol   = hashableData[0];
+    HashTableKey_t hash     = 0xFFFFFFFF;
 
-    int len = strlen (hashableData);
+    for (; symbol != '\0'; symbol = hashableData[++symbolId])
+        hash = _mm_crc32_u8 (hash, symbol);
 
-    for (i = 0; i < 256; i++)
-    {
-        crc32Hash = i;
-        for (j = 0; j < 8; j++)
-            crc32Hash = crc32Hash & 1 ? (crc32Hash >> 1) ^ 0xEDB88320UL : crc32Hash >> 1;
-
-        crc32Table[i] = crc32Hash;
-    };
-
-    crc32Hash = 0xFFFFFFFFUL;
-
-    while (len--)
-        crc32Hash = crc32Table[(crc32Hash ^ *hashableData++) & 0xFF] ^ (crc32Hash >> 8);
-
-    return crc32Hash ^ 0xFFFFFFFFUL;
+    return hash;
 }

@@ -9,7 +9,7 @@ int main()
 {
     HashTable hashTable;
     hashTable.setup   (crc32Hash          , DATA_BASE_PATH_);
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < 1000; ++i)
         hashTable.speedTest ();
 }
 

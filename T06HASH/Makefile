@@ -8,7 +8,7 @@ unopt:
 	g++ -O2 -g main.cpp unoptimized/*.cpp -o hash
 
 opt:
-	g++ -O2 -g main.cpp optimized/*.cpp -o oHash
+	g++ -O2 -msse4.2 -g main.cpp optimized/*.cpp -o oHash
 
 memCheck:
 	valgrind --leak-check=full ./hash
