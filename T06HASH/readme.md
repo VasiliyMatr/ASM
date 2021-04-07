@@ -28,13 +28,13 @@ I've tested six hash functions:
 
 Here are the results:
 
-![](/data/oneValStat.png)     |  ![](/data/firstLetterStat.png)
+![](data/oneValStat.png)     |  ![](data/firstLetterStat.png)
 ------------------------------|------------------------------
 
-![](/data/lettersAvgStat.png) | ![](/data/lettersSumStat.png)
+![](data/lettersAvgStat.png) | ![](data/lettersSumStat.png)
 ------------------------------|------------------------------
 
-![](/data/myStat.png)         | ![](/data/crc32Stat.png)
+![](data/myStat.png)         | ![](data/crc32Stat.png)
 ------------------------------|------------------------------
 
 I decided to use crc32 for next task, but i would like to note that my hash function showed pretty good results to.
@@ -44,9 +44,11 @@ I decided to use crc32 for next task, but i would like to note that my hash func
 I used callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
 
 Here is the first time test results:
+
 ![](data/firstCmp.png)
 
 Here is the first profile retults:
+
 ![](data/firstProfile.png)
 
 As you can see, crc32 hash function has used ~96% of all execution time.
@@ -103,9 +105,11 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 ```
 
 And you can see dramatic optimization result:
+
 ![](data/secondCmp.png)
 
 Then we are profiling again:
+
 ![](data/secondProfile.png)
 
 As you can see, List class getter for left/right pointer is using  ~25% of all execution time.
@@ -126,9 +130,11 @@ To this:
 ```
 
 And perfomance became a bit better:
+
 ![](data/thirdCmp.png)
 
 Then i've profiled my hash table for last time:
+
 ![](data/thirdProfile.png)
 
 As you can see, the only function, that can be refactored for better results is the hash table get function. But the only place, that can became better is that while cycle:
@@ -145,7 +151,8 @@ As you can see, the only function, that can be refactored for better results is 
 
 ```
 
-But i've checked asm code, that g++ generates for this func:
+But i've checked asm code, that g++ generates for this while:
+
 ![](data/asmFirst.png)
 
 And this asm code is quite optimized. So i decided to stop with optimizations.
