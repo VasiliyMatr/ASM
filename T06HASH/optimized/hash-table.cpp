@@ -34,14 +34,14 @@ HashTableUnit_t HashTable::get( HashableData_t data2Seek )
     size_t listId = hashFuncP_ (data2Seek) % HASH_TABLE_SIZE_;
 
     List* listP = hashTableP_ + listId;
-    List::ListElem_t* elemP = listP->getHeadP ();
+    register List::ListElem_t* elemP = listP->getHeadP ();
 
     while (elemP != nullptr)
     {
         if (!strcmp (elemP->listElemData_.hashableData_, data2Seek))
             return elemP->listElemData_;
 
-        elemP = listP->getPrevOrNext (elemP, List::ListElemSide_t::NEXT_);
+        elemP = elemP->nextP_;
     }
 
     return { INIT_HASHABLE_DATA_VAL_ };

@@ -7,7 +7,7 @@ bool isBadPtr( const void* const ptr )
     if (ptr == nullptr)
         return true;
 
-    return false;
+    return ptr == nullptr;
 }
 
 Error_t readFile2Buff( const char*   const inFileNameP,
