@@ -8,9 +8,14 @@
 int main()
 {
     HashTable hashTable;
-    hashTable.setup   (crc32Hash          , DATA_BASE_PATH_);
-    for (int i = 0; i < 1000; ++i)
-        hashTable.speedTest ();
+    hashTable.setHashFunc (crc32Hash);
+    hashTable.transText2Bin ("text.txt", "out.hs");
+    Error_t error = hashTable.readFromBin (DATA_PATH_ "word_set.hs");
+    error = hashTable.readFromBin ("out.hs");
+
+    HashableData_t aboba = "aboba";
+
+    printf ("%s", hashTable.get (aboba));
 }
 
 #undef DATA_PATH_

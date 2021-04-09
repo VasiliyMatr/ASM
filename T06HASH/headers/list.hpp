@@ -63,8 +63,8 @@ public:
     ListElem_t* getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side );
 
   /* To add elements to tail/head */
-    ListElem_t* add2Head ( const HashTableUnit_t& newElemData );
-    ListElem_t* add2Tail ( const HashTableUnit_t& newElemData );
+    ListElem_t* add2Head( const HashTableUnit_t& newElemData );
+    ListElem_t* add2Tail( const HashTableUnit_t& newElemData );
 
   /* To add new list element prev/next to choosed list element;
    * It adds head if list is empty

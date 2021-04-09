@@ -4,14 +4,11 @@ DATA_PATH_  = data/
 
 all: opt
 
-unopt:
-	g++ -O2 -g main.cpp unoptimized/*.cpp -o hash
-
 opt:
 	g++ -O2 -msse4.2 -g main.cpp optimized/*.cpp -o oHash
 
 memCheck:
-	valgrind --leak-check=full ./hash
+	valgrind --leak-check=full ./oHash
 
 profile:
 	valgrind --tool=callgrind ./oHash
