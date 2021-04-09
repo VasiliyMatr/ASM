@@ -6,7 +6,7 @@
 * Test different hash functions values uniformity to choose the best one for next task.
 * Optimize element search function.  
 
-### ___Hash Table realization:___
+### ___Hash Table implementation:___
 
 My hash table unoptimized code is here:
 https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
