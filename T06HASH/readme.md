@@ -11,7 +11,7 @@
 My hash table unoptimized code is here:
 https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
 
-I have used ded32's word set to test my hash table, you can find it here:
+I have used word set to test my hash table, you can find it here:
 https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/data/word_set.txt
 
 Also, hash table size were specially choosed too tiny for test word set. It has helped to find bad optimized code later.
@@ -45,7 +45,7 @@ I used callgrind utility to profile my program and time utility to compare execu
 
 Here is the first time test results:
 
-![](data/firstCmp.png)
+![](data/timeCheck.png)
 
 Here is the first profile retults:
 
@@ -106,7 +106,15 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 
 And you can see dramatic optimization result:
 
-![](data/secondCmp.png)
+Were:
+
+![](data/unoptTime.png)
+
+Now:
+
+![](data/secondTime.png)
+
+Works ~ 9.9 times faster now
 
 Then we are profiling again:
 
@@ -131,13 +139,66 @@ To this:
 
 And perfomance became a bit better:
 
-![](data/thirdCmp.png)
+Were:
 
-Then i've profiled my hash table for last time:
+![](data/secondTime.png)
+
+Now:
+
+![](data/thirdTime.png)
+
+Works ~ 1.3 times faster now
+
+Then i've profiled my hash table again:
 
 ![](data/thirdProfile.png)
 
-As you can see, the only function, that can be refactored for better results is the hash table get function. But the only place, that can became better is that while cycle:
+As you can see, we need to optimize strcmp function. I've refactored hash tabel for fast comparations & written my own strcmp function.
+
+Cmp function code:
+```c++
+
+int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
+{
+    static const int mask = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_EACH;
+
+    __m128i str1Part = _mm_set_epi64x (*(long long*)str1, *((long long*)str1 + 1));
+    __m128i str2Part = _mm_set_epi64x (*(long long*)str2, *((long long*)str2 + 1));
+
+    str1Part = _mm_cmpeq_epi64 (str1Part, str2Part);
+    register size_t result = _mm_movemask_epi8 (str1Part);
+
+    if (result != 0xffff)
+        return 1;
+
+    str1Part = _mm_set_epi64x (*((long long*)str1 + 2), *((long long*)str1 + 3));
+    str2Part = _mm_set_epi64x (*((long long*)str2 + 2), *((long long*)str2 + 3));
+
+    str1Part = _mm_cmpeq_epi64 (str1Part, str2Part);
+    return _mm_movemask_epi8 (str1Part) != 0xffff;
+}
+
+```
+
+Also check refactor branch final commit for details.
+
+And here is result:
+
+Were:
+
+![](data/thirdTime.png)
+
+Now:
+
+![](data/fourthTime.png)
+
+Works ~ 1.5 times faster now
+
+Then i've checked profile info for last time:
+
+![](data/fourtProfile.png)
+
+As we can see, all most slow funcs are optimized now, the only place, that can be optimized is that cycle:
 
 ```c++
 
@@ -157,4 +218,9 @@ But i've checked asm code, that g++ generates for this while:
 
 And this asm code is quite optimized. So i decided to stop with optimizations.
 
-### ___Test programm is working ~13 times faster now.___
+### ___Final comparation:___
+
+![](data/unoptTime.png)
+![](data/fourthTime.png)
+
+### ___Test programm is working ~20 times faster now.___
