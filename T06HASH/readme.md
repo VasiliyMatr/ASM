@@ -2,8 +2,8 @@
 ### __This is the 6th lab in ded32's 2nd semester course__
 
 ### ___The tasks:___
-* Realize chained hash table.
-* Test different hash functions dispercion uniformity to choose the best one for next task.
+* Implement chained hash table.
+* Test different hash functions values uniformity to choose the best one for next task.
 * Optimize element search function.  
 
 ### ___Hash Table realization:___
@@ -204,7 +204,7 @@ As we can see, all most slow funcs are optimized now, the only place, that can b
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->listElemData_.hashableData_, data2Seek))
+        if (!fastStrCmp (elemP->listElemData_.hashableData_, data2Seek))
             return elemP->listElemData_;
 
         elemP = elemP->nextP_;
