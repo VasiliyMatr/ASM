@@ -51,7 +51,7 @@ public:
     List operator =( const List& ) = delete;
 
   /* To get data by ListElem_t ptr */
-    HashTableUnit_t getData( ListElem_t* listElemP );
+    HashTableUnit_t& getData( ListElem_t* listElemP );
 
   /* To get List headP_ & tailP_ & size_ */
     ListElem_t* getHeadP();
@@ -63,14 +63,14 @@ public:
     ListElem_t* getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side );
 
   /* To add elements to tail/head */
-    ListElem_t* add2Head ( HashTableUnit_t newElemData );
-    ListElem_t* add2Tail ( HashTableUnit_t newElemData );
+    ListElem_t* add2Head ( const HashTableUnit_t& newElemData );
+    ListElem_t* add2Tail ( const HashTableUnit_t& newElemData );
 
   /* To add new list element prev/next to choosed list element;
    * It adds head if list is empty
    */
     ListElem_t* addPrevOrNext( ListElem_t* listElemP, ListElemSide_t side,
-                               HashTableUnit_t newElemData );
+                               const HashTableUnit_t& newElemData );
     
   /* To delete list element */
     Error_t delElem( ListElem_t* listElem2DelP );

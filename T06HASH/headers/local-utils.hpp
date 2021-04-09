@@ -34,7 +34,7 @@ enum class Error_t {
   const size_t STR_MAX_SIZE_ = 64; 
 
 /* Hash table hashable data - it is used to seek for needed data in table */
-  typedef const char*     HashableData_t;
+  typedef char            HashableData_t [STR_MAX_SIZE_];
 /* Hash table key value type */
   typedef unsigned int    HashTableKey_t;
 
@@ -47,10 +47,14 @@ enum class Error_t {
   struct HashTableUnit_t {
 
       /* Data, that is used for search in table */
-      HashableData_t hashableData_ = INIT_HASHABLE_DATA_VAL_;
+      HashableData_t hashableData_ = "";
 
       /* Other data can be placed here */
   
+      /* Needed methods */
+      HashTableUnit_t operator=( const HashTableUnit_t& rval);
+      HashTableUnit_t operator=( char* rval );
+
   };
 
 /* To check ptrs validity */

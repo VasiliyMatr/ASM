@@ -2,7 +2,7 @@
 TABLE_SIZE_ = 1013
 DATA_PATH_  = data/
 
-all: unopt opt
+all: opt
 
 unopt:
 	g++ -O2 -g main.cpp unoptimized/*.cpp -o hash

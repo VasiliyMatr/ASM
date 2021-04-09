@@ -71,3 +71,18 @@ int printData( char* buffP, const HashTableUnit_t &hashTableUnit )
                      hashTableUnit.hashableData_);
     return shift;
 }
+
+HashTableUnit_t HashTableUnit_t::operator=( const HashTableUnit_t& rval )
+{
+    strcpy (hashableData_, rval.hashableData_);
+
+    return *this;
+}
+
+
+HashTableUnit_t HashTableUnit_t::operator=( char* rval )
+{
+    strcpy (hashableData_, rval);
+
+    return *this;
+}

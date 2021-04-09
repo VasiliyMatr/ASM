@@ -14,7 +14,7 @@ class HashTable {
 public:
 
     /* Hash func type */
-      typedef HashTableKey_t HashFunc_t (HashableData_t);
+      typedef HashTableKey_t HashFunc_t (const HashableData_t&);
 
 /* Fields */
 private:
@@ -47,16 +47,16 @@ public:
       HashTable operator= (const HashTable &) = delete;
 
     /* To set hash func */
-      Error_t setHashFunc( HashFunc_t hashFunc );
+      Error_t setHashFunc( const HashFunc_t hashFunc );
 
     /* Hash table setup (read base from file) & reset */
       Error_t setup( const HashFunc_t hashFunc , const char* const inFileName );
       Error_t reset();
 
     /* To get unit by hashableData */
-      HashTableUnit_t get  ( HashableData_t  data2Seek );
+      HashTableUnit_t get  ( const HashableData_t&  data2Seek );
     /* To add unit */
-      Error_t         add  ( HashTableUnit_t unit2Add );
+      Error_t         add  ( const HashTableUnit_t& unit2Add );
 
     /* To out statistics of hash func */
       Error_t outStat( char const * const outFileNameP );

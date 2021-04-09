@@ -11,7 +11,7 @@ HashTable::~HashTable()
       free (buffP_); 
 }
 
-Error_t HashTable::setHashFunc( HashFunc_t hashFuncP )
+Error_t HashTable::setHashFunc( const HashFunc_t hashFuncP )
 {
     if (isBadPtr ((void* )hashFuncP))
         return Error_t::PTR_ERR_;
@@ -26,10 +26,10 @@ Error_t HashTable::setHashFunc( HashFunc_t hashFuncP )
     return Error_t::OK_;
 }
 
-HashTableUnit_t HashTable::get( HashableData_t data2Seek )
+HashTableUnit_t HashTable::get( const HashableData_t& data2Seek )
 {
     if (hashFuncP_ == nullptr)
-        return { INIT_HASHABLE_DATA_VAL_ };
+        return { "" };
 
     size_t listId = hashFuncP_ (data2Seek) % HASH_TABLE_SIZE_;
 
@@ -44,10 +44,10 @@ HashTableUnit_t HashTable::get( HashableData_t data2Seek )
         elemP = elemP->nextP_;
     }
 
-    return { INIT_HASHABLE_DATA_VAL_ };
+    return { "" };
 }
 
-Error_t HashTable::add( HashTableUnit_t unit2Add )
+Error_t HashTable::add( const HashTableUnit_t& unit2Add )
 {
     if (hashFuncP_ == nullptr)
         return Error_t::PTR_ERR_;
@@ -131,7 +131,8 @@ Error_t HashTable::buff2HashTable( const size_t numOfBytes )
 
     /* Hash stuff */
       /* Unit to store in hash table */
-        HashTableUnit_t hashTableUnit = { lastStrP };
+        HashTableUnit_t hashTableUnit;
+        hashTableUnit = lastStrP;
 
         Error_t error = add (hashTableUnit);
         if (error != Error_t::OK_)
