@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cstring>
 
+#include <nmmintrin.h>
+
 #ifndef LOCAL_UTILS_HPP_INCL_
 #define LOCAL_UTILS_HPP_INCL_
 
@@ -73,4 +75,6 @@ enum class Error_t {
 /* Func to print hash table units in dump buffer  */
   int printData( char* buffP, const HashTableUnit_t &hashTableUnit );
 
+/* For fast strmcp in my format */
+  int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 );
 #endif

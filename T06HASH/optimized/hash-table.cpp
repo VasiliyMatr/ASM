@@ -36,7 +36,7 @@ HashTableUnit_t& HashTable::get( const HashableData_t& data2Seek )
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->listElemData_.hashableData_, data2Seek))
+        if (!fastStrCmp (elemP->listElemData_.hashableData_, data2Seek))
             return elemP->listElemData_;
 
         elemP = elemP->nextP_;
@@ -57,7 +57,7 @@ Error_t HashTable::add( const HashTableUnit_t& unit2Add )
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->listElemData_.hashableData_, unit2Add.hashableData_))
+        if (!fastStrCmp (elemP->listElemData_.hashableData_, unit2Add.hashableData_))
             return Error_t::VAL_EXIST_ERR_;
 
         elemP = listP->getPrevOrNext (elemP, List::ListElemSide_t::NEXT_);
@@ -182,7 +182,7 @@ Error_t HashTable::readFromBin( const char* const inFileNameP )
 
     for (int wordId = 0; wordId < numOFBytes / STR_MAX_SIZE_; wordId++)
     {
-        HashableData_t data;
+        HashableData_t data = "";
         memcpy (data, inBuffP + wordId * STR_MAX_SIZE_, STR_MAX_SIZE_);
 
         error = add (HashTableUnit_t (data));
