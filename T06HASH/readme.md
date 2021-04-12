@@ -224,4 +224,5 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 ![](data/unoptTime.png)
 ![](data/fourthTime.png)
 
-### ___Test programm is working ~20 times faster now.___
+### ___Optimization results:___
+I've increased my hash table performance dramaticly: test programm on my asset of words is working ___~20 times___ faster now.
