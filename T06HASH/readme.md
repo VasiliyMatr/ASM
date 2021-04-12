@@ -1,4 +1,5 @@
 
+
 ### __This is the 6th lab in ded32's 2nd-semester course__
 
 ### ___The tasks:___
@@ -44,14 +45,14 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 I will compare 2 programs, compiled with the ___g++ -O2___ option: unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
 I used Callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
 
-I've copied functions realization in optimized folder.
+I've copied functions realization in an optimized folder.
 Here are the first time tests results:
 
 ![](data/timeCheck.png)
 
-We can see that all works correct and I can optimize my code and easilly test performanse improvements now.
+We can see that all works correctly and I can optimize my code and easily test performance improvements now.
 
-Now let's profile test program with Callgrind.
+Now let's profile the test program with Callgrind.
 Here are the first profile results:
 
 ![](data/firstProfile.png)
@@ -229,4 +230,4 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 ![](data/fourthTime.png)
 
 ### ___Optimization results:___
-I've increased my hash table performance dramatically: the test program on my asset of words is working ___~20 times___ faster now. As you can see, profiling tools are quite usefull and can help to easily increase programs efficiency.
+As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
