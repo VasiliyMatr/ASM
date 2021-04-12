@@ -1,9 +1,9 @@
 
-### __This is the 6th lab in ded32's 2nd semester course__
+### __This is the 6th lab in ded32's 2nd-semester course__
 
 ### ___The tasks:___
 * Implement chained hash table.
-* Test different hash functions values uniformity to choose the best one for next task.
+* Test different hash functions values uniformity to choose the best one for the next task.
 * Optimize element search function.  
 
 ### ___Hash Table implementation:___
@@ -11,10 +11,10 @@
 My hash table unoptimized code is here:
 https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
 
-I have used word set to test my hash table, you can find it here:
+I have used a word set to test my hash table, you can find it here:
 https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/data/word_set.txt
 
-Also, hash table size were specially choosed too tiny for test word set. It has helped to find bad optimized code later.
+Also, hash table size were specially chosen too tiny for the test word set. It has helped to find badly optimized code later.
 
 ### ___Hash functions tests:___
 
@@ -23,35 +23,36 @@ I've tested six hash functions:
 * First letter hash func - returns first letter code
 * Letters sum hash func - returns all letters codes sum
 * Letters avg hash func - returns all letters codes avg value
-* My hash func used in 3rd lab of ded32's 1st semester course
+* My hash func used in 3rd lab of ded32's 1st-semester course
 * Crc32 hash func
 
 Here are the results:
 
-![](data/oneValStat.png)     |  ![](data/firstLetterStat.png)
-------------------------------|------------------------------
+![](data/oneValStat.png)   |  ![](data/firstLetterStat.png)
+---------------------------|------------------------------
 
 ![](data/lettersAvgStat.png) | ![](data/lettersSumStat.png)
-------------------------------|------------------------------
+-----------------------------|------------------------------
 
-![](data/myStat.png)         | ![](data/crc32Stat.png)
-------------------------------|------------------------------
+![](data/myStat.png)  | ![](data/crc32Stat.png)
+----------------------|------------------------------
 
-I decided to use crc32 for next task, but i would like to note that my hash function showed pretty good results to.
+I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too.
 
 ### ___Optimization:___
 
-I used callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
+I will compare 2 programs, compiled with the g++ -O2 option: unoptimized and optimized versions (hash and oHash).
+I used Callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
 
-Here is the first time test results:
+Here are the first time test results:
 
 ![](data/timeCheck.png)
 
-Here is the first profile retults:
+Here are the first profile results:
 
 ![](data/firstProfile.png)
 
-As you can see, crc32 hash function has used ~96% of all execution time.
+As you can see, the crc32 hash function has used ~96% of all execution time.
 
 I've used _mm_crc32_u8 function to optimize crc32 hash function code.
 
@@ -120,8 +121,8 @@ Then we are profiling again:
 
 ![](data/secondProfile.png)
 
-As you can see, List class getter for left/right pointer is using  ~25% of all execution time.
-I've simply changed this place in hash table get function:
+As you can see, the List class getter for left/right pointer is using  ~25% of all execution time.
+I've simply changed this place in the hash table get function:
 
 ```c++
 
@@ -137,7 +138,7 @@ To this:
 
 ```
 
-And perfomance became a bit better:
+And performance became a bit better:
 
 Were:
 
@@ -149,11 +150,11 @@ Now:
 
 Works ~ 1.3 times faster now
 
-Then i've profiled my hash table again:
+Then I've profiled my hash table again:
 
 ![](data/thirdProfile.png)
 
-As you can see, we need to optimize strcmp function. I've refactored hash tabel for fast comparations & written my own strcmp function.
+As you can see, we need to optimize the strcmp function. I've refactored the hash table for fast comparations & written my strcmp function.
 
 Cmp function code:
 ```c++
@@ -180,9 +181,9 @@ int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
 
 ```
 
-Also check refactor branch final commit for details.
+Also, check the refactor branch final commit for details.
 
-And here is result:
+And here is the result:
 
 Were:
 
@@ -194,11 +195,11 @@ Now:
 
 Works ~ 1.5 times faster now
 
-Then i've checked profile info for last time:
+Then I've checked profile info for last time:
 
 ![](data/fourtProfile.png)
 
-As we can see, all most slow funcs are optimized now, the only place, that can be optimized is that cycle:
+As we can see, all slowest funcs are optimized now, the only place, that can be optimized is that cycle:
 
 ```c++
 
@@ -212,15 +213,161 @@ As we can see, all most slow funcs are optimized now, the only place, that can b
 
 ```
 
-But i've checked asm code, that g++ generates for this while:
+But I've checked ASM code, that g++ generates for this while:
 
 ![](data/asmFirst.png)
 
-And this asm code is quite optimized. So i decided to stop with optimizations.
+And this ASM code is quite optimized. So I decided to stop with optimizations.
 
-### ___Final comparation:___
+### ___Final comparison:___
 
 ![](data/unoptTime.png)
 ![](data/fourthTime.png)
 
-### ___Test programm is working ~20 times faster now.___
+### ___Test programm is working ~20 times faster now.___​
+2
+### __This is the 6th lab in ded32's 2nd semester course__
+3
+​
+4
+### ___The tasks:___
+5
+* Implement chained hash table.
+6
+* Test different hash functions values uniformity to choose the best one for next task.
+7
+* Optimize element search function.  
+8
+​
+9
+### ___Hash Table implementation:___
+10
+​
+11
+My hash table unoptimized code is here:
+12
+https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
+13
+​
+14
+I have used word set to test my hash table, you can find it here:
+15
+https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/data/word_set.txt
+16
+​
+17
+Also, hash table size were specially choosed too tiny for test word set. It has helped to find bad optimized code later.
+18
+​
+19
+### ___Hash functions tests:___
+20
+​
+21
+I've tested six hash functions:
+22
+* One value hash func - returns 0 in all cases
+23
+* First letter hash func - returns first letter code
+24
+* Letters sum hash func - returns all letters codes sum
+25
+* Letters avg hash func - returns all letters codes avg value
+26
+* My hash func used in 3rd lab of ded32's 1st semester course
+27
+* Crc32 hash func
+28
+​
+29
+Here are the results:
+30
+​
+31
+![](data/oneValStat.png)   |  ![](data/firstLetterStat.png)
+32
+---------------------------|------------------------------
+33
+​
+34
+![](data/lettersAvgStat.png) | ![](data/lettersSumStat.png)
+35
+-----------------------------|------------------------------
+36
+​
+37
+![](data/myStat.png)  | ![](data/crc32Stat.png)
+38
+----------------------|------------------------------
+39
+​
+40
+I decided to use crc32 for next task, but i would like to note that my hash function showed pretty good results to.
+41
+​
+42
+### ___Optimization:___
+43
+​
+44
+I will compare 2 programs, compiled with g++ -O2 option: unoptimized and optimized versions (hash and oHash).
+45
+I used callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
+46
+​
+47
+Here is the first time test results:
+48
+​
+49
+![](data/timeCheck.png)
+50
+​
+51
+Here is the first profile retults:
+52
+​
+53
+![](data/firstProfile.png)
+54
+​
+55
+As you can see, crc32 hash function has used ~96% of all execution time.
+56
+​
+57
+I've used _mm_crc32_u8 function to optimize crc32 hash function code.
+58
+​
+59
+Were:
+60
+```c++
+61
+​
+62
+HashTableKey_t crc32Hash( HashableData_t hashableData )
+63
+{
+64
+  /* Not initing data for speed */
+65
+    unsigned int crc32Table[256];
+66
+    unsigned int crc32Hash;
+67
+    int i, j;
+68
+​
+69
+    int len = strlen (hashableData);
+70
+​
+71
+    for (i = 0; i < 256; i++)
+72
+    {
+73
+        crc32Hash = i;
+74
+        for (j = 0; j < 8; j++)
