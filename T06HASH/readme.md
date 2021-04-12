@@ -41,7 +41,7 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 
 ### ___Optimization:___
 
-I will compare 2 programs, compiled with the g++ -O2 option: unoptimized and optimized versions (hash and oHash).
+I will compare 2 programs, compiled with the ___g++ -O2___ option: unoptimized and optimized versions (___hash___ and ___oHash___).
 I used Callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
 
 Here are the first time test results:
@@ -52,7 +52,7 @@ Here are the first profile results:
 
 ![](data/firstProfile.png)
 
-As you can see, the crc32 hash function has used ~96% of all execution time.
+As you can see, the crc32 hash function has used ___~96%___ of all execution time.
 
 I've used _mm_crc32_u8 function to optimize crc32 hash function code.
 
@@ -115,13 +115,13 @@ Now:
 
 ![](data/secondTime.png)
 
-Works ~ 9.9 times faster now
+Works ~ ___9.9___ times faster now
 
 Then we are profiling again:
 
 ![](data/secondProfile.png)
 
-As you can see, the List class getter for left/right pointer is using  ~25% of all execution time.
+As you can see, the List class getter for left/right pointer is using  ___~25%___ of all execution time.
 I've simply changed this place in the hash table get function:
 
 ```c++
@@ -148,7 +148,7 @@ Now:
 
 ![](data/thirdTime.png)
 
-Works ~ 1.3 times faster now
+Works ___~1.3___ times faster now
 
 Then I've profiled my hash table again:
 
@@ -193,7 +193,7 @@ Now:
 
 ![](data/fourthTime.png)
 
-Works ~ 1.5 times faster now
+Works ___~1.5___ times faster now
 
 Then I've checked profile info for last time:
 
