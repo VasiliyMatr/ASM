@@ -45,7 +45,7 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 I will compare 2 programs, compiled with the ___g++ -O2___ option: unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
 I used Callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
 
-I've copied functions realization in an optimized folder: https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized
+I've copied functions realization in an optimized folder: https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized. <br/>
 Here are the first time tests results:
 
 ![](data/timeCheck.png)
