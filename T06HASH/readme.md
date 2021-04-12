@@ -189,11 +189,11 @@ Also, check the refactor branch final commit for details.
 
 And here is the result:
 
-Were with ___g++ -O2 and all previous optimizations :
+Were with ___g++ -O2 and all previous optimizations___:
 
 ![](data/thirdTime.png)
 
-Now with ___g++ -O2, all previous optimization and fastStrCmp func:
+Now with ___g++ -O2, all previous optimization and fastStrCmp func___:
 
 ![](data/fourthTime.png)
 
@@ -229,4 +229,4 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 ![](data/fourthTime.png)
 
 ### ___Optimization results:___
-I've increased my hash table performance dramatically: the test program on my asset of words is working ### ___~20 times___ faster now. As you can see, profiling tools are quite usefull and can help to easily increase programs efficiency.
+I've increased my hash table performance dramatically: the test program on my asset of words is working ___~20 times___ faster now. As you can see, profiling tools are quite usefull and can help to easily increase programs efficiency.
