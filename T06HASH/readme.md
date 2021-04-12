@@ -116,7 +116,7 @@ Were with ___g++ -O2 compilation flag and NO my additional optimizations___:
 
 ![](data/unoptTime.png)
 
-Now with ___g++ -O2 compilation flag and my Crc32 hash func optimization___ :
+Now with ___g++ -O2 compilation flag and my Crc32 hash func optimization___:
 
 ![](data/secondTime.png)
 
@@ -145,11 +145,11 @@ To this:
 
 And performance became a bit better:
 
-Were with ___g++ -O2 optimization flag and only my Crc32 hash function optimization___:
+Were with ___g++ -O2 compilation flag and only my Crc32 hash function optimization___:
 
 ![](data/secondTime.png)
 
-Now with ___g++ -O2 optimization, my Crc32 hash function optimization and List next/prev pointers getter inline___:
+Now with ___g++ -O2 compilation flag, my Crc32 hash function optimization and List next/prev pointers getter inline___:
 
 ![](data/thirdTime.png)
 
@@ -190,11 +190,11 @@ Also, check the refactor branch final commit for details.
 
 And here is the result:
 
-Were with ___g++ -O2 and all previous optimizations___:
+Were with ___g++ -O2 compilation flag and all previous optimizations___:
 
 ![](data/thirdTime.png)
 
-Now with ___g++ -O2, all previous optimization and fastStrCmp func___:
+Now with ___g++ -O2 compilation flag, all previous optimization and fastStrCmp func___:
 
 ![](data/fourthTime.png)
 
@@ -230,4 +230,5 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 ![](data/fourthTime.png)
 
 ## ___Optimization results:___
-#### As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about 40 lines( thanks to Intel intrinsics ) in my code and it is working ___~20 times___ faster on the test words asset now.
+#### As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about
+40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
