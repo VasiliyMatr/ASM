@@ -41,13 +41,17 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 
 ### ___Optimization:___
 
-I will compare 2 programs, compiled with the ___g++ -O2___ option: unoptimized and optimized versions (___hash___ and ___oHash___).
+I will compare 2 programs, compiled with the ___g++ -O2___ option: unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
 I used Callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
 
-Here are the first time test results:
+I've copied functions realization in optimized folder.
+Here are the first time tests results:
 
 ![](data/timeCheck.png)
 
+We can see that all works correct and I can optimize my code and easilly test performanse improvements now.
+
+Now let's profile test program with Callgrind.
 Here are the first profile results:
 
 ![](data/firstProfile.png)
@@ -105,17 +109,17 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 
 ```
 
-And you can see dramatic optimization result:
+And you can see dramatic optimization results:
 
-Were:
+Were with ___g++ -O2 compilation flag and NO my additional optimizations___:
 
 ![](data/unoptTime.png)
 
-Now:
+Now with ___g++ -O2 compilation flag and my Crc32 hash func optimization___ :
 
 ![](data/secondTime.png)
 
-Works ~ ___9.9___ times faster now
+Code, optimized by me works ~ ___9.9___ times faster now.
 
 Then we are profiling again:
 
@@ -140,11 +144,11 @@ To this:
 
 And performance became a bit better:
 
-Were:
+Were with ___g++ -O2 optimization flag and only my Crc32 hash function optimization___:
 
 ![](data/secondTime.png)
 
-Now:
+Now with ___g++ -O2 optimization, my Crc32 hash function optimization and List next/prev pointers getter inline___:
 
 ![](data/thirdTime.png)
 
@@ -156,7 +160,7 @@ Then I've profiled my hash table again:
 
 As you can see, we need to optimize the strcmp function. I've refactored the hash table for fast comparations & written my strcmp function.
 
-Cmp function code:
+fastStrCmp function code:
 ```c++
 
 int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
@@ -185,11 +189,11 @@ Also, check the refactor branch final commit for details.
 
 And here is the result:
 
-Were:
+Were with ___g++ -O2 and all previous optimizations :
 
 ![](data/thirdTime.png)
 
-Now:
+Now with ___g++ -O2, all previous optimization and fastStrCmp func:
 
 ![](data/fourthTime.png)
 
@@ -225,4 +229,4 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 ![](data/fourthTime.png)
 
 ### ___Optimization results:___
-I've increased my hash table performance dramatically: the test program on my asset of words is working ___~20 times___ faster now.
+I've increased my hash table performance dramatically: the test program on my asset of words is working ### ___~20 times___ faster now. As you can see, profiling tools are quite usefull and can help to easily increase programs efficiency.
