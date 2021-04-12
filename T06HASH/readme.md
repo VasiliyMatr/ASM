@@ -230,5 +230,4 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 ![](data/fourthTime.png)
 
 ## ___Optimization results:___
-#### As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about
-#### 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
+#### As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about <br/> 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
