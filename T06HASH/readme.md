@@ -28,10 +28,10 @@ I've tested six hash functions:
 * My hash func used in 3rd lab of ded32's 1st-term course
 * Crc32 hash func
 
-Here are the results: <br/>
-<img src = "data/oneValStat.png"     width = "470" /> <img src = "data/firstLetterStat.png" width = "470" /> 
-<img src = "data/lettersAvgStat.png" width = "470" /> <img src = "data/lettersSumStat.png"  width = "470" /> 
-<img src = "data/myStat.png"         width = "470" /> <img src = "data/crc32Stat.png"       width = "470" /> 
+### Here are the results: <br/>
+><img src = "data/oneValStat.png"     width = "470" /> <img src = "data/firstLetterStat.png" width = "470" /> 
+><img src = "data/lettersAvgStat.png" width = "470" /> <img src = "data/lettersSumStat.png"  width = "470" /> 
+><img src = "data/myStat.png"         width = "470" /> <img src = "data/crc32Stat.png"       width = "470" /> 
 
 I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too.
 
