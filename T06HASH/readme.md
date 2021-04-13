@@ -62,15 +62,14 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
   /* Not initing data for speed */
     static unsigned int crc32Table[256] = { 1 };
     unsigned int crc32Hash = 0;
-    int i = 0, j = 0;
 
     int len = strlen (hashableData);
 
     if (crc32Table [0] == 1)
-        for (i = 0; i < 256; i++)
+        for (int i = 0; i < 256; i++)
         {
             crc32Hash = i;
-            for (j = 0; j < 8; j++)
+            for (int j = 0; j < 8; j++)
                 crc32Hash = crc32Hash & 1 ? (crc32Hash >> 1) ^ 0xEDB88320UL : crc32Hash >> 1;
 
             crc32Table[i] = crc32Hash;
