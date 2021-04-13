@@ -275,12 +275,45 @@ But I've checked ASM code, that `g++` generates for this while with `-O2` option
   ...
 ```
 
-And this ASM code is quite optimized. So I decided to stop with optimizations.
+And this ASM code is quite optimized. But, I can use inline for this while!
+
+With inline:<br/>
+```ASM
+...
+
+.L33:
+	vmovq	xmm3, QWORD PTR 8[rax]
+	vpinsrq	xmm0, xmm3, QWORD PTR [rax], 1
+	vpcmpeqq	xmm0, xmm0, xmm2
+	vpmovmskb	edx, xmm0
+	cmp	edx, 65535
+	jne	.L31
+	vmovq	xmm4, QWORD PTR 24[rax]
+	vmovq	xmm5, QWORD PTR 24[rbx]
+	vpinsrq	xmm0, xmm4, QWORD PTR 16[rax], 1
+	vpinsrq	xmm1, xmm5, QWORD PTR 16[rbx], 1
+	vpcmpeqq	xmm0, xmm0, xmm1
+	vpmovmskb	edx, xmm0
+	cmp	edx, 65535
+	je	.L46
+.L31:
+	mov	rax, QWORD PTR 40[rax]
+	test	rax, rax
+	jne	.L33
+
+...
+```
+
+Were without inlines:<br/>
+<img src="data/fifthTime.png" width="500" />
+
+Now, with inlines:<br/>
+<img src="data/sixthTime.png" width="500" />
 
 ## ___Optimization results:___
 
 ### Final comparison:<br/>
 <img src="data/unoptTime.png" width="500" /><br/>
-<img src="data/fifthTime.png" width="500" />
+<img src="data/sixthTime.png" width="500" />
 
-## As you can see, profiling tools are quite useful. They can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~30 times___ faster on the test words asset now.
+## As you can see, profiling tools are quite useful. They can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~36 times___ faster on the test words asset now.
