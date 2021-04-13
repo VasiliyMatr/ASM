@@ -1,10 +1,6 @@
 
 # __This is the 6th lab in ded32's 2nd-semester course__
 
-![GitHub repo size](https://img.shields.io/github/repo-size/derzhavin3016/2_sem?style=for-the-badge)
-![GitHub last commit](https://img.shields.io/github/last-commit/derzhavin3016/2_sem?color=red&style=for-the-badge)
-![GitHub lines](https://img.shields.io/tokei/lines/github/derzhavin3016/2_sem?style=for-the-badge)
-
 ## ___The tasks:___
 * Implement chained hash table.
 * Test different hash functions values uniformity to choose the best one for the next task.
