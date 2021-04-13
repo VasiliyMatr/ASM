@@ -27,21 +27,21 @@ Also, hash table size were specially chosen too tiny for the test word set. It h
 * Crc32 hash func
 
 ### Here are the results: <br/>
-><img src = "data/oneValStat.png"     width = "470" /> <img src = "data/firstLetterStat.png" width = "470" /> 
-><img src = "data/lettersAvgStat.png" width = "470" /> <img src = "data/lettersSumStat.png"  width = "470" /> 
-><img src = "data/myStat.png"         width = "470" /> <img src = "data/crc32Stat.png"       width = "470" /> 
+><img src = "data/oneValStat.png"     width = "460" /> <img src = "data/firstLetterStat.png" width = "460" /> 
+><img src = "data/lettersAvgStat.png" width = "460" /> <img src = "data/lettersSumStat.png"  width = "460" /> 
+><img src = "data/myStat.png"         width = "460" /> <img src = "data/crc32Stat.png"       width = "460" /> 
 
 #### _I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too._
 
 ## ___Optimization:___
 
-I will compare 2 programs, both compiled with the `g++ -O2` compilation flag: unoptimized and optimized versions (`hash` and `oHash` respectively).
+I will compare 2 programs, both compiled with the `g++ -O2` compilation flag: unoptimized and optimized versions.
 I've used `Callgrind` utility to profile my program and `time` utility to compare execution times of optimized and unoptimized versions.
 
 I've copied functions realization in an optimized folder:
 >https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized.
 
-Here are the first time tests results:<br/>
+Here are the first time tests results (`hash` - unoptimized; `oHash` - optimized):<br/>
 <img src="data/timeCheck.png" width="500" />
 
 We can see that all works correctly and I can optimize my code and easily test performance improvements now.<br/>
