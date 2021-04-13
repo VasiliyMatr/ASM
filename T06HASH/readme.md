@@ -10,10 +10,10 @@
 ## ___Hash Table implementation:___
 
 My hash table unoptimized code is here:
-https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
+>https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
 
 I have used a word set to test my hash table, you can find it here:
-https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/data/word_set.txt
+>https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/data/word_set.txt
 
 Also, hash table size were specially chosen too tiny for the test word set. It has helped to find badly optimized code later.
 
@@ -45,7 +45,9 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 I will compare 2 programs, both compiled with the ___g++ -O2 compilation flag___ : unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
 I've used ___Callgrind___ utility to profile my program and ___time___ utility to compare execution times of optimized and unoptimized versions.
 
-I've copied functions realization in an optimized folder: https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized. <br/>
+I've copied functions realization in an optimized folder:
+>https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized. <br/>
+
 Here are the first time tests results:
 
 <img src="data/timeCheck.png" width="500" />
@@ -61,7 +63,7 @@ As you can see, the crc32 hash function has used ___~96%___ of all execution tim
 
 I've used _mm_crc32_u8 function to optimize crc32 hash function code.
 
-Were:
+Old crc32Hash code:
 ```c++
 
 HashTableKey_t crc32Hash( HashableData_t hashableData )
@@ -120,14 +122,15 @@ Now with ___g++ -O2 and my Crc32 hash___:
 
 <img src="data/secondTime.png" width="500" />
 
-#### Code, works ~ ___9.9___ times faster after Crc32 optimization.
+#### Code works ~ ___9.9___ times faster after Crc32 optimization.
 
 ### Then we are profiling again:
 
 <img src="data/secondProfile.png" width="1000" />
 
 As you can see, the List class getter for left/right pointer is using  ___~25%___ of all execution time.
-I've simply changed this place in the hash table get function:
+
+I've simply changed this line in the hash table get function:
 
 ```c++
 
@@ -135,7 +138,7 @@ I've simply changed this place in the hash table get function:
 
 ```
 
-To this:
+To this line:
 
 ```c++
 
@@ -187,9 +190,9 @@ int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
 
 ```
 
-Also, check the refactor branch final commit for details:
+Also, check the refactor branch final commit for refactor details:
 
-https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/edit/refactor/T06HASH/
+>https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/edit/refactor/T06HASH/
 
 And here is the result:
 
