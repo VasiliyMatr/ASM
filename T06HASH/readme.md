@@ -112,7 +112,7 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 
 ```
 
-And you can see dramatic optimization results:
+### And you can see dramatic optimization results:
 
 Were with ___g++ -O2 and NO my optimizations___:
 
@@ -146,15 +146,12 @@ To this line:
 
 ```
 
-And performance became a bit better:
+### And performance became a bit better:
 
 Were with ___g++ -O2 and only my Crc32 hash___:
-
 <img src="data/secondTime.png" width="500" />
 
 Now with ___g++ -O2, my Crc32 hash and next/prev getter inline___:
-
-
 <img src="data/thirdTime.png" width="500" />
 
 #### Works ___~1.3___ times faster now.
@@ -194,7 +191,7 @@ Also, check the refactor branch final commit for refactor details:
 
 >https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/edit/refactor/T06HASH/
 
-And here is the result:
+### And here is the result:
 
 Were with ___g++ -O2 and all previous optimizations___:
 
@@ -210,7 +207,9 @@ Now with ___g++ -O2, all previous optimization and fastStrCmp___:
 
 <img src="data/fourtProfile.png" width="1000" />
 
-As we can see, all slowest funcs are optimized now, the only place, that can be optimized is that cycle:
+As we can see, all slowest funcs are optimized now.
+
+The only place, that can be optimized is that cycle:
 
 ```c++
 
