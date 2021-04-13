@@ -281,6 +281,6 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 
 ### Final comparison:<br/>
 <img src="data/unoptTime.png" width="500" /><br/>
-<img src="data/fourthTime.png" width="500" />
+<img src="data/fifthTime.png" width="500" />
 
 ## As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~30 times___ faster on the test words asset now.
