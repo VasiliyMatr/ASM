@@ -20,7 +20,7 @@ Also, hash table size were specially chosen too tiny for the test word set. It h
 
 ## ___Hash functions tests:___
 
-I've tested six hash functions:
+### I've tested six hash functions:
 * One value hash func - returns 0 in all cases
 * First letter hash func - returns first letter code
 * Letters sum hash func - returns all letters codes sum
@@ -33,7 +33,7 @@ I've tested six hash functions:
 ><img src = "data/lettersAvgStat.png" width = "470" /> <img src = "data/lettersSumStat.png"  width = "470" /> 
 ><img src = "data/myStat.png"         width = "470" /> <img src = "data/crc32Stat.png"       width = "470" /> 
 
-I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too.
+#### _I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too._
 
 ## ___Optimization:___
 
