@@ -95,10 +95,9 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
     char           symbol   = hashableData[0];
     HashTableKey_t hash     = 0xFFFFFFFF;
 
-    for (; symbol != '\0'; symbol = hashableData[++symbolId])
-        hash = _mm_crc32_u8 (hash, symbol);
+    hash = _mm_crc32_u64 (hash, *(unsigned long long*) hashableData);
 
-    return hash;
+    return _mm_crc32_u64 (hash, *(((unsigned long long*) hashableData) + 1));
 }
 
 ```
