@@ -95,23 +95,3 @@ HashTableUnit_t::HashTableUnit_t( const char* str )
 
     strcpy (hashableData_, str);
 }
-
-int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
-{
-    static const int mask = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_EACH;
-
-    __m128i str1Part = _mm_set_epi64x (*(long long*)str1, *((long long*)str1 + 1));
-    __m128i str2Part = _mm_set_epi64x (*(long long*)str2, *((long long*)str2 + 1));
-
-    str1Part = _mm_cmpeq_epi64 (str1Part, str2Part);
-    register size_t result = _mm_movemask_epi8 (str1Part);
-
-    if (result != 0xffff)
-        return 1;
-
-    str1Part = _mm_set_epi64x (*((long long*)str1 + 2), *((long long*)str1 + 3));
-    str2Part = _mm_set_epi64x (*((long long*)str2 + 2), *((long long*)str2 + 3));
-
-    str1Part = _mm_cmpeq_epi64 (str1Part, str2Part);
-    return _mm_movemask_epi8 (str1Part) != 0xffff;
-}
