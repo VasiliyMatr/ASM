@@ -1,5 +1,6 @@
 
 
+
 # __This is the 6th lab in ded32's 2nd-semester course__
 
 ## ___The tasks:___
@@ -36,7 +37,7 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 
 ## ___Optimization:___
 
-I will compare 2 programs, both compiled with the `g++ -O2` compilation flag : unoptimized and optimized versions (`hash` and `oHash` respectively).
+I will compare 2 programs, both compiled with the `g++ -O2` compilation flag: unoptimized and optimized versions (`hash` and `oHash` respectively).
 I've used `Callgrind` utility to profile my program and `time` utility to compare execution times of optimized and unoptimized versions.
 
 I've copied functions realization in an optimized folder:
@@ -175,7 +176,7 @@ int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
 
 ```
 
-Also, check the refactor branch final commit for refactor details:<br/>
+Also, check the refactor branch final commit for refactoring details:<br/>
 >https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/edit/refactor/T06HASH/
 
 ### And here is the result:
@@ -191,7 +192,7 @@ Now with `g++ -O2`, all previous optimization and fastStrCmp:<br/>
 ### Then I've checked profile info for last time:<br/>
 <img src="data/fourtProfile.png" width="1000" />
 
-As we can see, all slowest funcs are optimized now.<br/>
+As we can see, all the slowest funcs are optimized now.<br/>
 The only place, that can be optimized is that cycle:
 
 ```c++
