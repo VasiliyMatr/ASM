@@ -24,23 +24,13 @@ I've tested six hash functions:
 * First letter hash func - returns first letter code
 * Letters sum hash func - returns all letters codes sum
 * Letters avg hash func - returns all letters codes avg value
-* My hash func used in 3rd lab of ded32's 1st-semester course
+* My hash func used in 3rd lab of ded32's 1st-term course
 * Crc32 hash func
 
-Here are the results:
-
+Here are the results: <br/>
 <img src = "data/oneValStat.png"     width = "470" /> <img src = "data/firstLetterStat.png" width = "470" /> 
 <img src = "data/lettersAvgStat.png" width = "470" /> <img src = "data/lettersSumStat.png"  width = "470" /> 
 <img src = "data/myStat.png"         width = "470" /> <img src = "data/crc32Stat.png"       width = "470" /> 
-
-![](data/oneValStat.png)   |  ![](data/firstLetterStat.png)
----------------------------|------------------------------
-
-![](data/lettersAvgStat.png) | ![](data/lettersSumStat.png)
------------------------------|------------------------------
-
-![](data/myStat.png)  | ![](data/crc32Stat.png)
-----------------------|------------------------------
 
 I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too.
 
