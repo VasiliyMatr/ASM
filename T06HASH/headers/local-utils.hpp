@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cstring>
 
+#include <nmmintrin.h>
+
 #ifndef LOCAL_UTILS_HPP_INCL_
 #define LOCAL_UTILS_HPP_INCL_
 
@@ -31,26 +33,32 @@ enum class Error_t {
 };
 
 /* Max str size - it is limited for really fast optimizations */
-  const size_t STR_MAX_SIZE_ = 64; 
+  const size_t STR_MAX_SIZE_ = 32; 
 
 /* Hash table hashable data - it is used to seek for needed data in table */
-  typedef const char*     HashableData_t;
+  typedef char            HashableData_t [STR_MAX_SIZE_];
 /* Hash table key value type */
   typedef unsigned int    HashTableKey_t;
 
 /* Init value for HashTableKey_t */
   const HashTableKey_t  INIT_KEY_T_VAL_  = 0xAB0BA;
-/* Iuit value for HashableData_t - can't be met in table */
-  const HashableData_t  INIT_HASHABLE_DATA_VAL_ = "";
 
 /* Unit to store in hash table lists as element */
   struct HashTableUnit_t {
 
       /* Data, that is used for search in table */
-      HashableData_t hashableData_ = INIT_HASHABLE_DATA_VAL_;
+      HashableData_t hashableData_ = "";
 
       /* Other data can be placed here */
-  
+
+      /* Needed methods */
+      HashTableUnit_t          ( const HashTableUnit_t& rvalue );
+      HashTableUnit_t operator=( const HashTableUnit_t& rvalue );
+
+      /* !Should be rewritten if new data added to HashTableUnit_t! */
+      HashTableUnit_t          ( const HashableData_t& hashableData_ );
+      HashTableUnit_t          ( const char* str );
+
   };
 
 /* To check ptrs validity */
@@ -67,4 +75,6 @@ enum class Error_t {
 /* Func to print hash table units in dump buffer  */
   int printData( char* buffP, const HashTableUnit_t &hashTableUnit );
 
+/* For fast strmcp in my format */
+  int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 );
 #endif

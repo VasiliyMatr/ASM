@@ -5,13 +5,9 @@ HashTable::HashTable()
 {}
 
 HashTable::~HashTable()
-{
-  /* Need to free strs buff */
-    if (buffP_ != nullptr)
-      free (buffP_); 
-}
+{}
 
-Error_t HashTable::setHashFunc( HashFunc_t hashFuncP )
+Error_t HashTable::setHashFunc( const HashFunc_t hashFuncP )
 {
     if (isBadPtr ((void* )hashFuncP))
         return Error_t::PTR_ERR_;
@@ -26,10 +22,12 @@ Error_t HashTable::setHashFunc( HashFunc_t hashFuncP )
     return Error_t::OK_;
 }
 
-HashTableUnit_t HashTable::get( HashableData_t data2Seek )
+HashTableUnit_t& HashTable::get( const HashableData_t& data2Seek )
 {
+    static HashTableUnit_t BAD_VAL_("");
+
     if (hashFuncP_ == nullptr)
-        return { INIT_HASHABLE_DATA_VAL_ };
+        return BAD_VAL_;
 
     size_t listId = hashFuncP_ (data2Seek) % HASH_TABLE_SIZE_;
 
@@ -38,16 +36,16 @@ HashTableUnit_t HashTable::get( HashableData_t data2Seek )
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->listElemData_.hashableData_, data2Seek))
+        if (!fastStrCmp (elemP->listElemData_.hashableData_, data2Seek))
             return elemP->listElemData_;
 
         elemP = elemP->nextP_;
     }
 
-    return { INIT_HASHABLE_DATA_VAL_ };
+    return BAD_VAL_;
 }
 
-Error_t HashTable::add( HashTableUnit_t unit2Add )
+Error_t HashTable::add( const HashTableUnit_t& unit2Add )
 {
     if (hashFuncP_ == nullptr)
         return Error_t::PTR_ERR_;
@@ -59,7 +57,7 @@ Error_t HashTable::add( HashTableUnit_t unit2Add )
 
     while (elemP != nullptr)
     {
-        if (!strcmp (elemP->listElemData_.hashableData_, unit2Add.hashableData_))
+        if (!fastStrCmp (elemP->listElemData_.hashableData_, unit2Add.hashableData_))
             return Error_t::VAL_EXIST_ERR_;
 
         elemP = listP->getPrevOrNext (elemP, List::ListElemSide_t::NEXT_);
@@ -72,96 +70,137 @@ Error_t HashTable::add( HashTableUnit_t unit2Add )
     return Error_t::OK_;
 }
 
-Error_t HashTable::setup (HashFunc_t hashFuncP, const char* const inFileNameP )
+Error_t HashTable::transText2Bin( const char* const inFileNameP, const char* const outFileNameP )
 {
-  /* Resetting at first */
-    Error_t error = reset ();
-    if (error != Error_t::OK_)
-        return error;
-
-  /* Initing hash function */
-    if (isBadPtr ((void* )hashFuncP))
+    if (isBadPtr (inFileNameP) || isBadPtr (outFileNameP))
         return Error_t::PTR_ERR_;
 
-    hashFuncP_ = hashFuncP;
+  /* Number of bytes in input file */
+    size_t inNumOfBytes = 0;
+  /* Number of bytes in output file */
+    size_t outNumOfBytes = 0
+    ;
+  /* In buff ptr */
+    char* inBuffP = nullptr;
+  /* Out buff ptr */
+    char* outBuffP = nullptr;
 
   /* Reading data from file */
-    size_t numOfBytes = 0;
-    error = readFile2Buff (inFileNameP, &buffP_, &numOfBytes);
+    Error_t error = readFile2Buff (inFileNameP, &inBuffP, &inNumOfBytes);
     if (error != Error_t::OK_)
         return error;
 
+    outBuffP = (char*)calloc (sizeof (char), inNumOfBytes * STR_MAX_SIZE_ / 2);
+    if (outBuffP == nullptr)
+    {
+        free (inBuffP);
+        return Error_t::MEM_ERR_;
+    }
+
   /* Adding buff to hash table */
-    error = buff2HashTable (numOfBytes);
+    error = buff2Bin (inBuffP, outBuffP, &outNumOfBytes);
+    free (inBuffP);
     if (error != Error_t::OK_)
-      return error;
+    {
+        free (outBuffP);
+        return error;
+    }
+
+  /* Writing to out file */
+    FILE* outFileP = fopen (outFileNameP, "wb");
+    if (outFileP == nullptr)
+    {
+        free (outBuffP);
+        return Error_t::FILE_ERR_;
+    }
+
+    fwrite (outBuffP, sizeof (char), outNumOfBytes, outFileP);
+    fclose (outFileP);
+    free (outBuffP);
 
   /* All is ok */
     return Error_t::OK_;
 }
 
-Error_t HashTable::buff2HashTable( const size_t numOfBytes )
+Error_t HashTable::buff2Bin( const char* const inBuffP, char* outBuffP, size_t* outNumOfBytesP )
 {
-  /* Format str for words scanning */
-    static const char formatStr[] = "%*[a-zA-Z0-9]%n";
+  /* Needed assertions */
+    assert (!isBadPtr (inBuffP));
+    assert (!isBadPtr (outBuffP));
+    assert (!isBadPtr (outNumOfBytesP));
 
-  /* buffP shift & buffP additional shift */
-    int buffShift = 0;
-    int buffAdditionalShift = 0;
+  /* in & outt buffs shifts */
+    int inBuffShift  = 0;
+    int outBuffShift = 0;
 
-  /* Last parced str */
-    char* lastStrP = buffP_;
+  /* additional shift for sscanf and other stuff */
+    int additionalShift = 0;
 
   /* Skipping begin spaces */
-    sscanf (buffP_, " %n", &buffShift);
-    lastStrP = buffP_ + buffShift;
+    sscanf (inBuffP, " %n", &inBuffShift);
 
   /* Reading until str end */
-    while (sscanf (buffP_ + buffShift, formatStr, &buffAdditionalShift) != EOF)
+    while (sscanf (inBuffP + inBuffShift,
+                   "%32s%n",
+                   outBuffP + outBuffShift, &additionalShift) != EOF)
     {
 
-    /* Str stuff */
       /* Should read word & it's size should be less than STR_MAX_SIZE_ */
-        if (buffAdditionalShift <= 0 || buffAdditionalShift > STR_MAX_SIZE_)
+        if (additionalShift <= 0)
             return Error_t::PARCE_ERR_;
+
       /* Plusing additional shift */
-        buffShift += buffAdditionalShift;
-      /* Putting str end for comfortable work with buff */
-        buffP_[buffShift++] = '\0';
+        inBuffShift  += additionalShift;
+        outBuffShift += additionalShift;
 
-    /* Hash stuff */
-      /* Unit to store in hash table */
-        HashTableUnit_t hashTableUnit = { lastStrP };
-
-        Error_t error = add (hashTableUnit);
-        if (error != Error_t::OK_)
-            return error;
-
-    /* Str stuff */
+      /* Filling with zeroes */
+        for (; outBuffShift % STR_MAX_SIZE_ != 0; ++outBuffShift)
+            outBuffP[outBuffShift] = '\0';
+          
       /* Skippint spaces */
-        sscanf (buffP_ + buffShift, " %n", &buffAdditionalShift);
-        buffShift += buffAdditionalShift;
+        sscanf (inBuffP + inBuffShift, " %n", &additionalShift);
+        inBuffShift += additionalShift;
 
-      /* Updating str ptr */
-        lastStrP = buffP_ + buffShift;
       /* Nulling additional shift */
-        buffAdditionalShift = 0;
+        additionalShift = 0;
+
     }
 
   /* All is ok */
+    *outNumOfBytesP = outBuffShift;
+    return Error_t::OK_;
+}
+
+Error_t HashTable::readFromBin( const char* const inFileNameP )
+{
+    char* inBuffP = nullptr;
+    size_t numOFBytes = 0;
+
+    Error_t error = readFile2Buff (inFileNameP, &inBuffP, &numOFBytes);
+    if (error != Error_t::OK_)
+        return Error_t::PARCE_ERR_;
+
+    for (int wordId = 0; wordId < numOFBytes / STR_MAX_SIZE_; wordId++)
+    {
+        HashableData_t data = "";
+        memcpy (data, inBuffP + wordId * STR_MAX_SIZE_, STR_MAX_SIZE_);
+
+        error = add (HashTableUnit_t (data));
+        if (error != Error_t::OK_)
+        {
+            reset ();
+            free (inBuffP);
+            return error;
+        }
+    }
+
+    free (inBuffP);
+
     return Error_t::OK_;
 }
 
 Error_t HashTable::reset()
 {
-    hashFuncP_ = nullptr;
-
-    if (buffP_ != nullptr)
-    {
-        free (buffP_);
-        buffP_ = nullptr;
-    }
-
     for (size_t listId = 0; listId < HASH_TABLE_SIZE_; ++listId)
     {
         Error_t error = hashTableP_[listId].reset();
