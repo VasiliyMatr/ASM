@@ -14,7 +14,7 @@ class HashTable {
 public:
 
     /* Hash func type */
-      typedef HashTableKey_t HashFunc_t (HashableData_t);
+      typedef HashTableKey_t HashFunc_t( const HashableData_t& hashableData );
 
 /* Fields */
 private:
@@ -26,10 +26,7 @@ private:
       const  HashFunc_t* hashFuncP_ = nullptr;
     
     /* Num of units in table */
-      size_t numOfUnits_ = 0; 
-
-    /* Buff with strs */
-      char*  buffP_ = nullptr;
+      size_t numOfUnits_ = 0;
 
     /* Hash table */
       List   hashTableP_ [HASH_TABLE_SIZE_];
@@ -43,32 +40,35 @@ public:
      ~HashTable ();
 
     /* Deleted stuff */
-      HashTable           (const HashTable &) = delete;
-      HashTable operator= (const HashTable &) = delete;
+      HashTable          ( const HashTable & ) = delete;
+      HashTable operator=( const HashTable & ) = delete;
 
     /* To set hash func */
-      Error_t setHashFunc( HashFunc_t hashFunc );
+      Error_t setHashFunc( const HashFunc_t hashFunc );
 
-    /* Hash table setup (read base from file) & reset */
-      Error_t setup( const HashFunc_t hashFunc , const char* const inFileName );
+    /* To transform text file to bin file */
+      Error_t transText2Bin( const char* const inFileName, const char* const outFileName );
+    /* To add elements form binary file */
+      Error_t readFromBin( const char* const inFileName );
+    /* All hash table units free */
       Error_t reset();
 
     /* To get unit by hashableData */
-      HashTableUnit_t get  ( HashableData_t  data2Seek );
+      HashTableUnit_t& get( const HashableData_t&  data2Seek );
     /* To add unit */
-      Error_t         add  ( HashTableUnit_t unit2Add );
+      Error_t add( const HashTableUnit_t& unit2Add );
 
     /* To out statistics of hash func */
       Error_t outStat( char const * const outFileNameP );
     /* For speed tests */
-      void    speedTest();
+      void speedTest();
 
     /* Dump function */
       void dump( const char* const outFileName );
 
 private:
-    /* To put all words from text file to hash table */
-      Error_t buff2HashTable( const size_t numOfBytes );
+    /* To put all words from text buff to bin buff */
+      Error_t buff2Bin( const char* const inBuffP, char* outBuffP, size_t* outNumOfBytesP );
 
 };
 

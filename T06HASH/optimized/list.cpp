@@ -22,11 +22,10 @@ List::~List()
     size_  = 0;
 }
 
-HashTableUnit_t List::getData( ListElem_t* listElemP )
+HashTableUnit_t& List::getData( ListElem_t* listElemP )
 {
     return listElemP->listElemData_;
 }
-
 
 List::ListElem_t* List::getHeadP()
 {
@@ -38,7 +37,6 @@ List::ListElem_t* List::getTailP()
     return tailP_;
 }
 
-
 size_t List::getSize()
 {
     return size_;
@@ -46,16 +44,13 @@ size_t List::getSize()
 
 List::ListElem_t* List::getPrevOrNext( ListElem_t* listElemP, ListElemSide_t side )
 {
-    if (isBadPtr (listElemP))
-        return nullptr;
-
     if (side == ListElemSide_t::NEXT_)
         return listElemP->nextP_;
 
     return listElemP->prevP_;
 }
 
-List::ListElem_t* List::add2Head ( HashTableUnit_t newElemData )
+List::ListElem_t* List::add2Head ( const HashTableUnit_t& newElemData )
 {
     /* Allocating */
     ListElem_t* newElemP = (ListElem_t* )calloc (1, sizeof (ListElem_t));
@@ -87,7 +82,7 @@ List::ListElem_t* List::add2Head ( HashTableUnit_t newElemData )
     return newElemP;
 }
 
-List::ListElem_t* List::add2Tail ( HashTableUnit_t newElemData )
+List::ListElem_t* List::add2Tail ( const HashTableUnit_t& newElemData )
 {
     /* Allocating */
     ListElem_t* newElemP = (ListElem_t* )calloc (1, sizeof (ListElem_t));
@@ -121,7 +116,7 @@ List::ListElem_t* List::add2Tail ( HashTableUnit_t newElemData )
 
 
 List::ListElem_t* List::addPrevOrNext( ListElem_t* listElemP, ListElemSide_t side,
-                                       HashTableUnit_t newElemData )
+                                       const HashTableUnit_t& newElemData )
 {
     /* Empty list */
     if (size_ == 0)

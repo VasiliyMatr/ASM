@@ -2,17 +2,17 @@
 #include "../headers/hash-funcs.hpp"
 #include <nmmintrin.h>
 
-HashTableKey_t oneValHash( HashableData_t hashableData )
+HashTableKey_t oneValHash( const HashableData_t& hashableData )
 {
     return 0;
 }
 
-HashTableKey_t firstLetterHash( HashableData_t hashableData )
+HashTableKey_t firstLetterHash( const HashableData_t& hashableData )
 {
     return *hashableData;
 }
 
-HashTableKey_t lettersSummHash( HashableData_t hashableData )
+HashTableKey_t lettersSummHash( const HashableData_t& hashableData )
 {
     int hash = 0;
     int hashTableDataShift = 0;
@@ -23,12 +23,12 @@ HashTableKey_t lettersSummHash( HashableData_t hashableData )
     return hash;
 }
 
-HashTableKey_t lettersAvgHash( HashableData_t hashableData )
+HashTableKey_t lettersAvgHash( const HashableData_t& hashableData )
 {
     return lettersSummHash (hashableData) / strlen (hashableData);
 }
 
-HashTableKey_t myHash( HashableData_t hashableData )
+HashTableKey_t myHash( const HashableData_t& hashableData )
 {
     const size_t byte_move = sizeof (HashTableKey_t) - 1;
     int hash = 0xAB0BA;
@@ -41,7 +41,7 @@ HashTableKey_t myHash( HashableData_t hashableData )
     return hash;
 }
 
-HashTableKey_t crc32Hash( HashableData_t hashableData )
+HashTableKey_t crc32Hash( const HashableData_t& hashableData )
 {
     int            symbolId = 0;
     char           symbol   = hashableData[0];
