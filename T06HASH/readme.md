@@ -1,13 +1,13 @@
 
 
-### __This is the 6th lab in ded32's 2nd-semester course__
+# __This is the 6th lab in ded32's 2nd-semester course__
 
-### ___The tasks:___
+## ___The tasks:___
 * Implement chained hash table.
 * Test different hash functions values uniformity to choose the best one for the next task.
 * Optimize element search function.  
 
-### ___Hash Table implementation:___
+## ___Hash Table implementation:___
 
 My hash table unoptimized code is here:
 https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/unoptimized
@@ -17,7 +17,7 @@ https://github.com/VasiliyMatr/ASM/blob/master/T06HASH/data/word_set.txt
 
 Also, hash table size were specially chosen too tiny for the test word set. It has helped to find badly optimized code later.
 
-### ___Hash functions tests:___
+## ___Hash functions tests:___
 
 I've tested six hash functions:
 * One value hash func - returns 0 in all cases
@@ -40,22 +40,22 @@ Here are the results:
 
 I decided to use crc32 for the next task, but I would like to note that my hash function showed pretty good results too.
 
-### ___Optimization:___
+## ___Optimization:___
 
-I will compare 2 programs, compiled with the ___g++ -O2___ option: unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
-I used Callgrind utility to profile my program and time utility to compare execution times of optimized and unoptimized versions.
+I will compare 2 programs, both compiled with the ___g++ -O2 compilation flag___ : unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
+I've used ___Callgrind___ utility to profile my program and ___time___ utility to compare execution times of optimized and unoptimized versions.
 
 I've copied functions realization in an optimized folder: https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized. <br/>
 Here are the first time tests results:
 
-![](data/timeCheck.png)
+<img src="data/timeCheck.png" width="500" />
 
 We can see that all works correctly and I can optimize my code and easily test performance improvements now.
 
 Now let's profile the test program with Callgrind.
-Here are the first profile results:
+### Here are the first profile results:
 
-![](data/firstProfile.png)
+<img src="data/firstProfile.png" width="1000" />
 
 As you can see, the crc32 hash function has used ___~96%___ of all execution time.
 
@@ -112,19 +112,19 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 
 And you can see dramatic optimization results:
 
-Were with ___g++ -O2 compilation flag and NO my additional optimizations___:
+Were with ___g++ -O2 and NO my optimizations___:
 
-![](data/unoptTime.png)
+<img src="data/unoptTime.png" width="500" />
 
-Now with ___g++ -O2 compilation flag and my Crc32 hash func optimization___:
+Now with ___g++ -O2 and my Crc32 hash___:
 
-![](data/secondTime.png)
+<img src="data/secondTime.png" width="500" />
 
-Code, optimized by me works ~ ___9.9___ times faster now.
+#### Code, works ~ ___9.9___ times faster after Crc32 optimization.
 
-Then we are profiling again:
+### Then we are profiling again:
 
-![](data/secondProfile.png)
+<img src="data/secondProfile.png" width="1000" />
 
 As you can see, the List class getter for left/right pointer is using  ___~25%___ of all execution time.
 I've simply changed this place in the hash table get function:
@@ -145,19 +145,20 @@ To this:
 
 And performance became a bit better:
 
-Were with ___g++ -O2 compilation flag and only my Crc32 hash function optimization___:
+Were with ___g++ -O2 and only my Crc32 hash___:
 
-![](data/secondTime.png)
+<img src="data/secondTime.png" width="500" />
 
-Now with ___g++ -O2 compilation flag, my Crc32 hash function optimization and List next/prev pointers getter inline___:
+Now with ___g++ -O2, my Crc32 hash and next/prev getter inline___:
 
-![](data/thirdTime.png)
 
-Works ___~1.3___ times faster now
+<img src="data/thirdTime.png" width="500" />
 
-Then I've profiled my hash table again:
+#### Works ___~1.3___ times faster now.
 
-![](data/thirdProfile.png)
+### Then I've profiled my hash table again:
+
+<img src="data/thirdProfile.png" width="1000" />
 
 As you can see, we need to optimize the strcmp function. I've refactored the hash table for fast comparations & written my strcmp function.
 
@@ -186,23 +187,25 @@ int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
 
 ```
 
-Also, check the refactor branch final commit for details.
+Also, check the refactor branch final commit for details:
+
+https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/edit/refactor/T06HASH/
 
 And here is the result:
 
-Were with ___g++ -O2 compilation flag and all previous optimizations___:
+Were with ___g++ -O2 and all previous optimizations___:
 
-![](data/thirdTime.png)
+<img src="data/thirdTime.png" width="500" />
 
-Now with ___g++ -O2 compilation flag, all previous optimization and fastStrCmp func___:
+Now with ___g++ -O2, all previous optimization and fastStrCmp___:
 
-![](data/fourthTime.png)
+<img src="data/fourthTime.png" width="500" />
 
-Works ___~1.5___ times faster now
+#### Works ___~1.5___ times faster now
 
-Then I've checked profile info for last time:
+### Then I've checked profile info for last time:
 
-![](data/fourtProfile.png)
+<img src="data/fourtProfile.png" width="1000" />
 
 As we can see, all slowest funcs are optimized now, the only place, that can be optimized is that cycle:
 
@@ -220,14 +223,33 @@ As we can see, all slowest funcs are optimized now, the only place, that can be 
 
 But I've checked ASM code, that g++ generates for this while:
 
-![](data/asmFirst.png)
+```ASM
+  ...
+
+.L48:
+	mov	rbx, QWORD PTR 40[rbx]
+	test	rbx, rbx
+	je	.L28
+.L30:
+	mov	rsi, rbp
+	mov	rdi, rbx
+	mov	r12, rbx
+	call	_Z10fastStrCmpRA32_KcS1_@PLT
+.LEHE2:
+	test	eax, eax
+	jne	.L48
+  
+  ...
+```
 
 And this ASM code is quite optimized. So I decided to stop with optimizations.
 
-### ___Final comparison:___
-
-![](data/unoptTime.png)
-![](data/fourthTime.png)
-
 ## ___Optimization results:___
-#### As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about <br/> 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
+
+### Final comparison:
+
+<img src="data/unoptTime.png" width="500" />
+
+<img src="data/fourthTime.png" width="500" />
+
+## As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
