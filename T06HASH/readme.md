@@ -46,17 +46,15 @@ I will compare 2 programs, both compiled with the ___g++ -O2 compilation flag___
 I've used ___Callgrind___ utility to profile my program and ___time___ utility to compare execution times of optimized and unoptimized versions.
 
 I've copied functions realization in an optimized folder:
->https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized. <br/>
+>https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized.
 
-Here are the first time tests results:
-
+Here are the first time tests results:<br/>
 <img src="data/timeCheck.png" width="500" />
 
-We can see that all works correctly and I can optimize my code and easily test performance improvements now.
-
+We can see that all works correctly and I can optimize my code and easily test performance improvements now.<br/>
 Now let's profile the test program with Callgrind.
-### Here are the first profile results:
 
+### Here are the first profile results:<br/>
 <img src="data/firstProfile.png" width="1000" />
 
 As you can see, the crc32 hash function has used ___~96%___ of all execution time.
@@ -114,18 +112,15 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 
 ### And you can see dramatic optimization results:
 
-Were with ___g++ -O2 and NO my optimizations___:
-
+Were with ___g++ -O2 and NO my optimizations___:<br/>
 <img src="data/unoptTime.png" width="500" />
 
-Now with ___g++ -O2 and my Crc32 hash___:
-
+Now with ___g++ -O2 and my Crc32 hash___:<br/>
 <img src="data/secondTime.png" width="500" />
 
 #### Code works ~ ___9.9___ times faster after Crc32 optimization.
 
-### Then we are profiling again:
-
+### Then we are profiling again:<br/>
 <img src="data/secondProfile.png" width="1000" />
 
 As you can see, the List class getter for left/right pointer is using  ___~25%___ of all execution time.
@@ -148,16 +143,15 @@ To this line:
 
 ### And performance became a bit better:
 
-Were with ___g++ -O2 and only my Crc32 hash___:
+Were with ___g++ -O2 and only my Crc32 hash___:<br/>
 <img src="data/secondTime.png" width="500" />
 
-Now with ___g++ -O2, my Crc32 hash and next/prev getter inline___:
+Now with ___g++ -O2, my Crc32 hash and next/prev getter inline___:<br/>
 <img src="data/thirdTime.png" width="500" />
 
 #### Works ___~1.3___ times faster now.
 
-### Then I've profiled my hash table again:
-
+### Then I've profiled my hash table again:<br/>
 <img src="data/thirdProfile.png" width="1000" />
 
 As you can see, we need to optimize the strcmp function. I've refactored the hash table for fast comparations & written my strcmp function.
@@ -187,28 +181,23 @@ int fastStrCmp( const HashableData_t& str1, const HashableData_t& str2 )
 
 ```
 
-Also, check the refactor branch final commit for refactor details:
-
+Also, check the refactor branch final commit for refactor details:<br/>
 >https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/edit/refactor/T06HASH/
 
 ### And here is the result:
 
-Were with ___g++ -O2 and all previous optimizations___:
-
+Were with ___g++ -O2 and all previous optimizations___:<br/>
 <img src="data/thirdTime.png" width="500" />
 
-Now with ___g++ -O2, all previous optimization and fastStrCmp___:
-
+Now with ___g++ -O2, all previous optimization and fastStrCmp___:<br/>
 <img src="data/fourthTime.png" width="500" />
 
 #### Works ___~1.5___ times faster now
 
-### Then I've checked profile info for last time:
-
+### Then I've checked profile info for last time:<br/>
 <img src="data/fourtProfile.png" width="1000" />
 
-As we can see, all slowest funcs are optimized now.
-
+As we can see, all slowest funcs are optimized now.<br/>
 The only place, that can be optimized is that cycle:
 
 ```c++
@@ -248,10 +237,8 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 
 ## ___Optimization results:___
 
-### Final comparison:
-
-<img src="data/unoptTime.png" width="500" />
-
+### Final comparison:<br/>
+<img src="data/unoptTime.png" width="500" /><br/>
 <img src="data/fourthTime.png" width="500" />
 
 ## As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
