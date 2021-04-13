@@ -59,7 +59,7 @@ Let's profile the test program with Callgrind.
 
 As you can see, the crc32 hash function has used ___~96%___ of all execution time.
 
-I've used _mm_crc32_u8 function to optimize crc32 hash function code.
+I've used _mm_crc32_u8 function to optimize crc32 hash.
 
 Old crc32Hash code:
 ```c++
@@ -112,10 +112,10 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 
 ### And you can see dramatic optimization results:
 
-Were with ___g++ -O2 and NO my optimizations___:<br/>
+Were with `g++ -O2` and NO my optimizations:<br/>
 <img src="data/unoptTime.png" width="500" />
 
-Now with ___g++ -O2 and my Crc32 hash___:<br/>
+Now with `g++ -O2` and my Crc32 hash:<br/>
 <img src="data/secondTime.png" width="500" />
 
 #### Code works ~ ___9.9___ times faster after Crc32 optimization.
@@ -143,10 +143,10 @@ To this line:
 
 ### And performance became a bit better:
 
-Were with ___g++ -O2 and only my Crc32 hash___:<br/>
+Were with `g++ -O2` and only my Crc32 hash:<br/>
 <img src="data/secondTime.png" width="500" />
 
-Now with ___g++ -O2, my Crc32 hash and next/prev getter inline___:<br/>
+Now with `g++ -O2`, my Crc32 hash and next/prev getter inline:<br/>
 <img src="data/thirdTime.png" width="500" />
 
 #### Works ___~1.3___ times faster now.
@@ -186,10 +186,10 @@ Also, check the refactor branch final commit for refactor details:<br/>
 
 ### And here is the result:
 
-Were with ___g++ -O2 and all previous optimizations___:<br/>
+Were with `g++ -O2` and all previous optimizations:<br/>
 <img src="data/thirdTime.png" width="500" />
 
-Now with ___g++ -O2, all previous optimization and fastStrCmp___:<br/>
+Now with `g++ -O2`, all previous optimization and fastStrCmp:<br/>
 <img src="data/fourthTime.png" width="500" />
 
 #### Works ___~1.5___ times faster now
@@ -212,7 +212,7 @@ The only place, that can be optimized is that cycle:
 
 ```
 
-But I've checked ASM code, that g++ generates for this while:
+But I've checked ASM code, that `g++` generates for this while with `-O2` option:
 
 ```ASM
   ...
