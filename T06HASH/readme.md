@@ -29,6 +29,10 @@ I've tested six hash functions:
 
 Here are the results:
 
+<img src = "data/oneValStat.png"     width = "470" /> <img src = "data/firstLetterStat.png" width = "470" /> 
+<img src = "data/lettersAvgStat.png" width = "470" /> <img src = "data/lettersSumStat.png"  width = "470" /> 
+<img src = "data/myStat.png"         width = "470" /> <img src = "data/crc32Stat.png"       width = "470" /> 
+
 ![](data/oneValStat.png)   |  ![](data/firstLetterStat.png)
 ---------------------------|------------------------------
 
