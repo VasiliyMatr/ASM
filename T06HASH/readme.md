@@ -95,9 +95,10 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
     char           symbol   = hashableData[0];
     HashTableKey_t hash     = 0xFFFFFFFF;
 
-    hash = _mm_crc32_u64 (hash, *(unsigned long long*) hashableData);
+    for (; symbol != '\0'; symbol = hashableData[++symbolId])
+        hash = _mm_crc32_u8 (hash, symbol);
 
-    return _mm_crc32_u64 (hash, *(((unsigned long long*) hashableData) + 1));
+    return hash;
 }
 
 ```
@@ -146,7 +147,8 @@ Now with `g++ -O2`, my Crc32 hash and next/prev getter inline:<br/>
 ### Then I've profiled my hash table again:<br/>
 <img src="data/thirdProfile.png" width="1000" />
 
-As you can see, we need to optimize the strcmp function. I've refactored the hash table for fast comparations & written my strcmp function.
+As you can see, we need to optimize the strcmp function.<br/>
+I've refactored the hash table for fast comparations & written my strcmp function.
 
 fastStrCmp function code:
 ```c++
@@ -185,6 +187,54 @@ Now with `g++ -O2`, all previous optimization and fastStrCmp:<br/>
 <img src="data/fourthTime.png" width="500" />
 
 #### Works ___~1.5___ times faster now
+
+Also, I've refactored hash function a bit:
+
+Old version:
+
+```c++
+
+HashTableKey_t crc32Hash( HashableData_t hashableData )
+{
+    int            symbolId = 0;
+    char           symbol   = hashableData[0];
+    HashTableKey_t hash     = 0xFFFFFFFF;
+
+    for (; symbol != '\0'; symbol = hashableData[++symbolId])
+        hash = _mm_crc32_u8 (hash, symbol);
+
+    return hash;
+}
+
+```
+
+New one with less number of calls:
+
+```c++
+
+HashTableKey_t crc32Hash( HashableData_t hashableData )
+{
+    int            symbolId = 0;
+    char           symbol   = hashableData[0];
+    HashTableKey_t hash     = 0xFFFFFFFF;
+
+    hash = _mm_crc32_u64 (hash, *(unsigned long long*) hashableData);
+
+    return _mm_crc32_u64 (hash, *(((unsigned long long*) hashableData) + 1));
+}
+
+```
+
+### And let's check times again:
+
+Were with `g++ -O2`, all previous optimization and fastStrCmp:<br/>
+<img src="data/fourthTime.png" width="500" />
+
+Now with `g++ -O2`, all previous optimization, fastStrCmp and refactored hash func:<br/>
+<img src="data/fifthTime.png" width="500" />
+
+#### Works ___~1.5___ times faster now
+
 
 ### Then I've checked profile info for last time:<br/>
 <img src="data/fourtProfile.png" width="1000" />
@@ -231,6 +281,6 @@ And this ASM code is quite optimized. So I decided to stop with optimizations.
 
 ### Final comparison:<br/>
 <img src="data/unoptTime.png" width="500" /><br/>
-<img src="data/fourthTime.png" width="500" />
+<img src="data/fifthTime.png" width="500" />
 
-## As you can see, profiling tools are quite useful and can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~20 times___ faster on the test words asset now.
+## As you can see, profiling tools are quite useful. They can help to easily increase code efficiency. I've changed only about 40 lines (thanks to Intel intrinsics) in my code and it is working ___~30 times___ faster on the test words asset now.
