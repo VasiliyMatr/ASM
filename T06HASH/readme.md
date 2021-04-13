@@ -60,20 +60,21 @@ Old crc32Hash code:
 HashTableKey_t crc32Hash( HashableData_t hashableData )
 {
   /* Not initing data for speed */
-    unsigned int crc32Table[256];
+    static unsigned int crc32Table[256] = { 1 };
     unsigned int crc32Hash;
     int i, j;
 
     int len = strlen (hashableData);
 
-    for (i = 0; i < 256; i++)
-    {
-        crc32Hash = i;
-        for (j = 0; j < 8; j++)
-            crc32Hash = crc32Hash & 1 ? (crc32Hash >> 1) ^ 0xEDB88320UL : crc32Hash >> 1;
+    if (crc32Table [0] == 1)
+        for (i = 0; i < 256; i++)
+        {
+            crc32Hash = i;
+            for (j = 0; j < 8; j++)
+                crc32Hash = crc32Hash & 1 ? (crc32Hash >> 1) ^ 0xEDB88320UL : crc32Hash >> 1;
 
-        crc32Table[i] = crc32Hash;
-    };
+            crc32Table[i] = crc32Hash;
+        };
 
     crc32Hash = 0xFFFFFFFFUL;
 
