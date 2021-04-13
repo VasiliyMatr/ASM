@@ -42,8 +42,8 @@ I decided to use crc32 for the next task, but I would like to note that my hash 
 
 ## ___Optimization:___
 
-I will compare 2 programs, both compiled with the ___g++ -O2 compilation flag___ : unoptimized and optimized versions (___hash___ and ___oHash___ respectively).
-I've used ___Callgrind___ utility to profile my program and ___time___ utility to compare execution times of optimized and unoptimized versions.
+I will compare 2 programs, both compiled with the `g++ -O2` compilation flag : unoptimized and optimized versions (`hash` and `oHash` respectively).
+I've used `Callgrind` utility to profile my program and `time` utility to compare execution times of optimized and unoptimized versions.
 
 I've copied functions realization in an optimized folder:
 >https://github.com/VasiliyMatr/ASM/tree/refactor/T06HASH/optimized.
@@ -52,7 +52,7 @@ Here are the first time tests results:<br/>
 <img src="data/timeCheck.png" width="500" />
 
 We can see that all works correctly and I can optimize my code and easily test performance improvements now.<br/>
-Now let's profile the test program with Callgrind.
+Let's profile the test program with Callgrind.
 
 ### Here are the first profile results:<br/>
 <img src="data/firstProfile.png" width="1000" />
