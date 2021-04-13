@@ -231,7 +231,7 @@ Were with `g++ -O2`, all previous optimization and fastStrCmp:<br/>
 <img src="data/fourthTime.png" width="500" />
 
 Now with `g++ -O2`, all previous optimization, fastStrCmp and refactored hash func:<br/>
-<img src="data/fourthTime.png" width="500" />
+<img src="data/fifthTime.png" width="500" />
 
 #### Works ___~1.5___ times faster now
 
