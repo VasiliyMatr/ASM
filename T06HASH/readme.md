@@ -61,8 +61,8 @@ HashTableKey_t crc32Hash( HashableData_t hashableData )
 {
   /* Not initing data for speed */
     static unsigned int crc32Table[256] = { 1 };
-    unsigned int crc32Hash;
-    int i, j;
+    unsigned int crc32Hash = 0;
+    int i = 0, j = 0;
 
     int len = strlen (hashableData);
 
