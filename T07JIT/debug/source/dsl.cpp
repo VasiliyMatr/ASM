@@ -1,23 +1,50 @@
 
 #include "dsl.hpp"
 
+/* num of registers */
+    static const size_t REG_NUM_ = 8;
+
 /* BINARY OPERATIONS STUFF */
 
     /* mask to check if second operand in binary operation cmd is number */
-        static const _AL_TYPE MASK_BIN_OP_SD_OPERAND_T_NUM_ = 1;
+        static const _AL_TYPE BIN_OP_SD_OPERAND_T_NUM_MASK_ = 1;
     /* mask to check if second operand in binary operation cmd is register */
-        static const _AL_TYPE MASK_BIN_OP_SD_OPERAND_T_REG_ = 1 << 1;
+        static const _AL_TYPE BIN_OP_SD_OPERAND_T_REG_MASK_ = 1 << 1;
 
     /* mask to get first register id for binary operation cmd */
-        static const _AL_TYPE MASK_BIN_OP_FT_REG_ = 0xF << 16;
+        static const _AL_TYPE BIN_OP_FT_REG_OFFSET_ = 16;
     /* mask to get second register id for binary operation cmd */
-        static const _AL_TYPE MASK_BIN_OP_FT_REG_ = 0xF << 8;
+        static const _AL_TYPE BIN_OP_SD_REG_OFFSET_ = 8;
 
     size_t putAdd     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
-        _AL_TYPE modifier = *inBuffP;
+        /* add reg to reg */
+        static const unsigned short ADD_RR_START_CODE_ = 0x01C0;
+        /* add number to reg */
+        static const unsigned short ADD_RN_START_CODE_ = 0x81C0;
 
-        return 0;
+        _AL_TYPE modifier = *inBuffP;
+        short opCode = 0;
+
+        if (modifier & BIN_OP_SD_OPERAND_T_REG_MASK_)
+        {
+            *(short*) outBuffP = ADD_RR_START_CODE_ +
+            REG_NUM_ * (modifier >>  BIN_OP_SD_REG_OFFSET_) & 0x7 +
+            (modifier >> BIN_OP_FT_REG_OFFSET_) & 0x7;
+
+            return 2;
+        }
+
+        else if (modifier & BIN_OP_SD_OPERAND_T_NUM_MASK_)
+        {
+            *(short*) outBuffP = ADD_RN_START_CODE_ + (modifier >> BIN_OP_FT_REG_OFFSET_) & 0x7;
+            *(int*) ((short*) outBuffP + 2) = *(inBuffP + 1);
+
+            return 6; 
+        }
+
+        else return 0;
+
     }
     size_t putSub     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {

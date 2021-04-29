@@ -45,7 +45,7 @@ enum class CMDId_t {
 
 };
 
-typedef size_t (*cmdPutFunc_t) ( _BYTE const * const inBuffP, _BYTE * outBuffP );
+typedef size_t (*cmdPutFunc_t) ( _AL_TYPE const * const inBuffP, _BYTE * outBuffP );
 
 struct CMD_t {
 
