@@ -5,11 +5,8 @@
 #ifndef ELF_HEADER_HPP_INCL_
 #define ELF_HEADER_HPP_INCL_
 
-typedef const unsigned char _BYTE;
-
-
 /* Struct with all ELF file header bytes */
-struct ELFHeader_t {
+class ELFHeader_t {
 
     /* ELF identifier */
 
@@ -118,7 +115,7 @@ struct ELFHeader_t {
 
 };
 
-struct ProgramHeader_t {
+class ProgramHeader_t {
 
     /* Segment type */
         _BYTE PH_TYPE_ [4] = {
@@ -178,6 +175,15 @@ struct ProgramHeader_t {
 
     /* Additional zeroes */
         _BYTE PH_ZEROES_ [8] = { };
+
+public:
+
+    /* Setter for program header size */
+    void setPHSize( size_t newSize )
+    {
+        PH_FSIZE_ = newSize;
+        PH_MSIZE_ = newSize;
+    }
 
 };
 

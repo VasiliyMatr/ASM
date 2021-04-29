@@ -10,7 +10,7 @@ bool isBadPtr( const void* const ptr )
 }
 
 Error_t readFile2Buff( const char*   const inFileNameP,
-                             char**  const buffPP ,
+                             _BYTE** const buffPP ,
                              size_t* const sizeP )
 {
   /* Pointers check */
@@ -28,7 +28,7 @@ Error_t readFile2Buff( const char*   const inFileNameP,
         return Error_t::FILE_ERR_;
 
   /* Allocating memory for buff */
-    char* buffP = (char* )calloc (sizeof (char), bytesNum + 1);
+    _BYTE* buffP = (_BYTE* )calloc (sizeof (_BYTE), bytesNum + 1);
     if (buffP == nullptr)
     {
         fclose (inFileP);
@@ -36,7 +36,7 @@ Error_t readFile2Buff( const char*   const inFileNameP,
     }
 
   /* Reading info and closing input file */
-    fread (buffP, sizeof (char), bytesNum, inFileP);
+    fread ((void* )buffP, sizeof (_BYTE), bytesNum, inFileP);
     fclose (inFileP);
 
   /* Values return stuff */
@@ -62,9 +62,9 @@ size_t getFileLength( FILE* const fileP )
 }
 
 /* To write buff to file */
-Error_t writeBuff2File( const char* const outFileNameP,
-                        const char* const buffP,
-                        const size_t      buffSize )
+Error_t writeBuff2File( const char*  const outFileNameP,
+                        const _BYTE* const buffP,
+                        const size_t       buffSize )
 {
   /* Pointers check */
     if (isBadPtr (outFileNameP) || isBadPtr (buffP))
@@ -76,7 +76,7 @@ Error_t writeBuff2File( const char* const outFileNameP,
         return Error_t::FILE_ERR_;
 
   /* Writing 2 file */
-    fwrite (buffP, buffSize, sizeof (char), outFileP);
+    fwrite (buffP, buffSize, sizeof (_BYTE), outFileP);
     fclose (outFileP);
 
     return Error_t::OK_;

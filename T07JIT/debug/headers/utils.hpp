@@ -24,17 +24,20 @@ enum class Error_t {
 
 };
 
+/* byte type */
+typedef unsigned char _BYTE;
+
 /* To check ptrs validity */
   bool isBadPtr( const void* const ptr );
 
 /* To read file to buff */
   Error_t readFile2Buff( const char*   const inFileNameP,
-                               char**  const buffPP,
+                               _BYTE** const buffPP,
                                size_t* const sizeP );
 
 /* To write buff to file */
-  Error_t writeBuff2File( const char* const outFileNameP,
-                          const char* const buffP,
+  Error_t writeBuff2File( const char*  const outFileNameP,
+                          const _BYTE* const buffP,
                           const size_t      buffSize );
 
 /* To get file length */

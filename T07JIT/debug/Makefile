@@ -19,3 +19,4 @@ dummy:
 
 run:
 	./jit-debug
+	sudo chmod 755 jit-out
