@@ -27,6 +27,9 @@ enum class Error_t {
 /* byte type */
 typedef unsigned char _BYTE;
 
+/* my binary format align type  */
+typedef long long _AL_TYPE;
+
 /* To check ptrs validity */
   bool isBadPtr( const void* const ptr );
 

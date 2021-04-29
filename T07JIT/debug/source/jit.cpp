@@ -5,13 +5,15 @@ Error_t JITCompiler::translate( char const * const inNameP,
                                 char const * const outNameP )
 {
 
-    Error_t error = readFile2Buff (inNameP, &inBuffP_, &inBuffSize_);
+    Error_t error = readFile2Buff (inNameP, (_BYTE**) &inBuffP_, &inBuffSize_);
     if (error != Error_t::OK_)
         return error;
 
     outBuffP_ = (_BYTE*) calloc (sizeof (_BYTE), inBuffSize_ + CODE_ENTRY_POINT_OFFSET_);
     if (outBuffP_ == nullptr)
         return Error_t::MEM_ERR_;
+
+    inBuffSize_ /= sizeof (_AL_TYPE);
 
     error = translateCode ();
     if (error != Error_t::OK_)

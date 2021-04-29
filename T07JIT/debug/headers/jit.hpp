@@ -18,8 +18,8 @@ private:
     ProgramHeader_t programHeader_;
 
   /* In & out buffers pointers */
-    _BYTE * inBuffP_  = nullptr;
-    _BYTE * outBuffP_ = nullptr;
+    _AL_TYPE * inBuffP_ = nullptr;
+    _BYTE * outBuffP_   = nullptr;
 
   /* In & out buffers sizes */
     size_t inBuffSize_  = 0;

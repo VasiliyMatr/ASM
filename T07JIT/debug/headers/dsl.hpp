@@ -58,32 +58,32 @@ struct CMD_t {
 
 /* TODO: use cmdPutFuncd_t !!? */
 
-size_t putAdd     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putSub     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putMul     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putDiv     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putAdds    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putSubs    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putMuls    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putDivs    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putPush    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putPop     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putCmps    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putCall    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putExit    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJe      ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJne     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJae     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJle     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJa      ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJl      ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putJmp     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putMov     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putIn      ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putOut     ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putPopa    ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putPusha   ( _BYTE const * inBuffP, _BYTE * outBuffP );
-size_t putRet     ( _BYTE const * inBuffP, _BYTE * outBuffP );
+size_t putAdd     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putSub     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putMul     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putDiv     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putAdds    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putSubs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putMuls    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putDivs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putPush    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putPop     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putCmps    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putCall    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putExit    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJe      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJne     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJae     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJle     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJa      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJl      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putJmp     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putMov     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putIn      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putOut     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putPopa    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putPusha   ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+size_t putRet     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
 
 const CMD_t CMDS_[] = {
 
