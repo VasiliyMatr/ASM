@@ -115,3 +115,61 @@ const CMD_t CMDS_[] = {
     { CMDId_t::CMD_RET_      , putRet     }
 
 };
+
+/* num of registers */
+    static const size_t REG_NUM_ = 8;
+
+/* MY FORMAT BINARY OPERATIONS STUFF */
+
+    /* mask to check if second operand in binary operation cmd is number */
+        static const _AL_TYPE BIN_OP_SD_OPERAND_T_NUM_MASK_ = 1;
+    /* mask to check if second operand in binary operation cmd is register */
+        static const _AL_TYPE BIN_OP_SD_OPERAND_T_REG_MASK_ = 1 << 1;
+
+    /* mask to get register id in first 4 bits */
+        static const _BYTE BIN_OP_REG_MASK_ = 0x7;
+
+    /* mask to get first register id for binary operation cmd */
+        static const _AL_TYPE BIN_OP_FT_REG_OFFSET_ = 16;
+    /* mask to get second register id for binary operation cmd */
+        static const _AL_TYPE BIN_OP_SD_REG_OFFSET_ = 8;
+
+/* X86-64 BINARY OPERATIONS STUFF */
+
+  /* MOV */
+    /* mov num to ebx */
+        static const _BYTE MOV_N_EBX_START_CODE_ = 0xb8;
+
+    /* mov reg to eax */
+        static const unsigned int MOV_R_EAX_START_CODE_ = 0x4489C0;
+    /* mov reg to ebx */
+        static const unsigned int MOV_R_EBX_START_CODE_ = 0x4489C3;
+
+    /* mov eax to reg */
+        static const unsigned int MOV_EAX_R_START_CODE_ = 0x4189C0;
+    
+  /* ADD */
+    /* add reg to reg first code */
+        static const unsigned int ADD_RR_START_CODE_ = 0x4501C0;
+    /* add number to reg first tode */
+        static const unsigned int ADD_RN_START_CODE_ = 0x4181C0;
+
+  /* SUB */
+    /* sub reg from reg first code */
+        static const unsigned int SUB_RR_START_CODE_ = 0x4529C0;
+    /* sub num from reg first code */
+        static const unsigned int SUB_RN_START_CODE_ = 0x4181E8;
+
+  /* XOR */
+    /* xor edx, edx - for div opr */
+        static const unsigned short XOR_EDX_EDX_ = 0x33D2;
+
+  /* POP */
+    /* pop to reg */
+        static const _BYTE POP_START_CODE_ = 0x58;
+    
+  /* PUSH */
+    /* push from reg */
+        static const _BYTE PUSH_START_CODE_ = 0x50;
+
+  
