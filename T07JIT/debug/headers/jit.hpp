@@ -1,5 +1,6 @@
 
 #include "elf-header.hpp"
+#include "dsl.hpp"
 
 #ifndef JIT_HPP_INCL_
 #define JIT_HPP_INCL_

@@ -2,7 +2,7 @@
 #include "utils.hpp"
 
 /* all cmds identifiers */
-enum class CMDId_t {
+enum class CMDId_t  : unsigned char {
 
     CMD_ADD_   = 0x00   ,
     CMD_SUB_   = 0x01   ,
@@ -41,11 +41,18 @@ enum class CMDId_t {
     
     CMD_RET_   = 0xF1   ,
 
-    CMD_UNDEF_ = -0xFF  ,
+    CMD_UNDEF_ = 0x12   ,
 
 };
 
-typedef size_t (*cmdPutFunc_t) ( _AL_TYPE const * const inBuffP, _BYTE * outBuffP );
+struct retOff_t {
+
+    size_t outBuffOff_ = 0;
+    size_t inBuffOff_ = 0;
+
+};
+
+typedef retOff_t (*cmdPutFunc_t) ( _AL_TYPE const * const inBuffP, _BYTE * outBuffP );
 
 struct CMD_t {
 
@@ -58,32 +65,32 @@ struct CMD_t {
 
 /* TODO: use cmdPutFuncd_t !!? */
 
-size_t putAdd     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putSub     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putMul     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putDiv     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putAdds    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putSubs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putMuls    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putDivs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putPush    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putPop     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putCmps    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putCall    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putExit    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJe      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJne     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJae     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJle     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJa      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJl      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putJmp     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putMov     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putIn      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putOut     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putPopa    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putPusha   ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-size_t putRet     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putAdd     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putSub     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putMul     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putDiv     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putAdds    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putSubs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putMuls    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putDivs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putPush    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putPop     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putCmps    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putCall    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putExit    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJe      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJne     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJae     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJle     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJa      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJl      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putJmp     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putMov     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putIn      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putOut     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putPopa    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putPusha   ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putRet     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
 
 const CMD_t CMDS_[] = {
 
@@ -138,27 +145,27 @@ const CMD_t CMDS_[] = {
 
   /* MOV */
     /* mov num to ebx */
-        static const _BYTE MOV_N_EBX_START_CODE_ = 0xb8;
+        static const _BYTE MOV_N_EBX_START_CODE_ = 0xBB;
 
     /* mov reg to eax */
-        static const unsigned int MOV_R_EAX_START_CODE_ = 0x4489C0;
+        static const unsigned int MOV_R_EAX_START_CODE_ = 0xC08944;
     /* mov reg to ebx */
-        static const unsigned int MOV_R_EBX_START_CODE_ = 0x4489C3;
+        static const unsigned int MOV_R_EBX_START_CODE_ = 0xC38944;
 
     /* mov eax to reg */
-        static const unsigned int MOV_EAX_R_START_CODE_ = 0x4189C0;
+        static const unsigned int MOV_EAX_R_START_CODE_ = 0xC08941;
     
   /* ADD */
     /* add reg to reg first code */
-        static const unsigned int ADD_RR_START_CODE_ = 0x4501C0;
+        static const unsigned int ADD_RR_START_CODE_ = 0xC00145;
     /* add number to reg first tode */
-        static const unsigned int ADD_RN_START_CODE_ = 0x4181C0;
+        static const unsigned int ADD_RN_START_CODE_ = 0xC08141;
 
   /* SUB */
     /* sub reg from reg first code */
-        static const unsigned int SUB_RR_START_CODE_ = 0x4529C0;
+        static const unsigned int SUB_RR_START_CODE_ = 0xC02945;
     /* sub num from reg first code */
-        static const unsigned int SUB_RN_START_CODE_ = 0x4181E8;
+        static const unsigned int SUB_RN_START_CODE_ = 0xE88141;
 
   /* XOR */
     /* xor edx, edx - for div opr */

@@ -21,6 +21,8 @@ enum class Error_t {
     MEM_ERR_                        ,
   /* Error with file (can't open, etc) */
     FILE_ERR_                       ,
+  /* Error with cmd parse */
+    CMD_ERR_                        ,
 
 };
 
@@ -28,7 +30,7 @@ enum class Error_t {
 typedef unsigned char _BYTE;
 
 /* my binary format align type  */
-typedef long long _AL_TYPE;
+typedef int _AL_TYPE;
 
 /* To check ptrs validity */
   bool isBadPtr( const void* const ptr );

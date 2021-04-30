@@ -18,5 +18,6 @@ dummy:
 	rm cmd/cmd-dummy.o
 
 run:
+	rm -f jit-out
 	./jit-debug
 	sudo chmod 755 jit-out

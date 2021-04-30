@@ -43,12 +43,54 @@ Error_t JITCompiler::putHeaders()
 
 Error_t JITCompiler::translateCode()
 {
-    _BYTE code [] = { 0x6A, 0x41, 0x48, 0x89, 0xE6, 0xBA, 0x01, 0x00, 0x00, 0x00, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x0F, 0x05, 0x48, 0x83, 0xC4, 0x08, 0xB8, 0x3C, 0x00, 0x00, 0x00, 0x48, 0x31, 0xFF, 0x0F, 0x05 };
+    size_t inBuffShift = 0;
+    size_t outBuffShift = CODE_ENTRY_POINT_OFFSET_;
 
-    outBuffSize_ = sizeof (code);
-    programHeader_.setPHSize (outBuffSize_);
+    for (; inBuffShift < inBuffSize_;)
+    {
+        retOff_t retOffset = { 0, 0 };
 
-    memcpy ((void*) (outBuffP_ + CODE_ENTRY_POINT_OFFSET_), code , sizeof (code));
+        switch ((CMDId_t)inBuffP_ [inBuffShift++])
+        {
+
+            case CMDId_t:: CMD_ADD_     : retOffset = putAdd     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_SUB_     : retOffset = putSub     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_MUL_     : retOffset = putMul     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_DIV_     : retOffset = putDiv     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_ADDS_    : retOffset = putAdds    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_SUBS_    : retOffset = putSubs    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_MULS_    : retOffset = putMuls    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_DIVS_    : retOffset = putDivs    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_PUSH_    : retOffset = putPush    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_POP_     : retOffset = putPop     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_CMPS_    : retOffset = putCmps    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_CALL_    : retOffset = putCall    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_EXIT_    : retOffset = putExit    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JE_      : retOffset = putJe      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JNE_     : retOffset = putJne     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JAE_     : retOffset = putJae     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JLE_     : retOffset = putJle     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JA_      : retOffset = putJa      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JL_      : retOffset = putJl      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_JMP_     : retOffset = putJmp     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_MOV_     : retOffset = putMov     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_IN_      : retOffset = putIn      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_OUT_     : retOffset = putOut     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_POPA_    : retOffset = putPopa    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_PUSHA_   : retOffset = putPusha   ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+            case CMDId_t:: CMD_RET_     : retOffset = putRet     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffShift ); break;
+        }
+
+        if (retOffset.outBuffOff_ == 0)
+            return Error_t::CMD_ERR_;
+
+        inBuffShift += retOffset.inBuffOff_;
+        outBuffShift += retOffset.outBuffOff_;
+
+    }
+
+    outBuffSize_ = outBuffShift - CODE_ENTRY_POINT_OFFSET_;
+    programHeader_.setPHSize (outBuffShift - CODE_ENTRY_POINT_OFFSET_);
 
     return Error_t::OK_;
 }
