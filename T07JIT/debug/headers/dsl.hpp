@@ -145,38 +145,57 @@ const CMD_t CMDS_[] = {
 
   /* MOV */
     /* mov num to ebx */
-        static const _BYTE MOV_N_EBX_START_CODE_ = 0xBB;
+        static const _BYTE MOV_N_EBX_CODE_ = 0xBB;
 
-    /* mov reg to eax */
+    /* mov reg to eax first code (r8b - r15b) */
         static const _DWRD MOV_R_EAX_START_CODE_ = 0xC08944;
-    /* mov reg to ebx */
+    /* mov reg to ebx first code (r8b - r15b) */
         static const _DWRD MOV_R_EBX_START_CODE_ = 0xC38944;
 
-    /* mov eax to reg */
+    /* mov eax to reg (r8b - r15b) */
         static const _DWRD MOV_EAX_R_START_CODE_ = 0xC08941;
     
   /* ADD */
-    /* add reg to reg first code */
+    /* add reg to reg first code (r8b - r15b) */
         static const _DWRD ADD_RR_START_CODE_ = 0xC00145;
-    /* add number to reg first tode */
+    /* add number to reg first tode (r8b - r15b) */
         static const _DWRD ADD_RN_START_CODE_ = 0xC08141;
 
   /* SUB */
-    /* sub reg from reg first code */
+    /* sub reg from reg first code (r8b - r15b) */
         static const _DWRD SUB_RR_START_CODE_ = 0xC02945;
-    /* sub num from reg first code */
+    /* sub num from reg first code (r8b - r15b) */
         static const _DWRD SUB_RN_START_CODE_ = 0xE88141;
 
   /* XOR */
     /* xor edx, edx - for div opr */
-        static const _WORD XOR_EDX_EDX_ = 0x33D2;
+        static const _WORD XOR_EDX_EDX_CODE_ = 0x33D2;
 
   /* PUSH */
     /* push from reg (r8 - r15) */
         static const _WORD PUSH_R_START_CODE_ = 0x5041;
 
+    /* also needed for stack oprs */
+        static const _BYTE PUSH_EAX_CODE_ = 0x50;
         static const _BYTE PUSH_NUM_CODE_ = 0x68;
 
   /* POP */
-    /* pop to reg */
-        static const _BYTE POP_START_CODE_ = 0x58;
+    /* pop to reg (r8 - r15) */
+        static const _WORD POP_START_CODE_ = 0x5841;
+
+    /* for empty pops */
+        static const _BYTE POP_EAX_CODE_ = 0x58;
+
+
+  /* CMP */
+    /* cmp eax, ebx */
+        static const _WORD CMP_EAX_EBX_CODE_ = 0x39D8;
+
+  /* RET */
+        static const _BYTE RET_CODE_ = 0xC3;
+
+  /* EXIT */
+        static const _BYTE MOV_EAX_NUM_CODE_ = 0xB8;
+        static const _DWRD EXIT_CODE_ = 0x3C;
+        static const _DWRD XOR_RDI_RDI_CODE_ = 0x4831FF;
+        static const _WORD SYSCALL_CODE_ = 0x0F05;

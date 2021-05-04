@@ -71,7 +71,7 @@
         else if (modifier & BIN_OP_SD_OPERAND_T_NUM_MASK_)
         {
             /* mov number to eax, mov reg to ebx, mul, mov result to dest */
-            *(_BYTE*) (outBuffP +  0) = MOV_N_EBX_START_CODE_;
+            outBuffP [0] = MOV_N_EBX_CODE_;
             *(_DWRD*) (outBuffP +  1) = inBuffP [1];
             *(_DWRD*) (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
 
@@ -96,7 +96,7 @@
             *(_DWRD*) (outBuffP +  0) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
             *(_DWRD*) (outBuffP +  3) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
 
-            *(_WORD*) (outBuffP +  6) = XOR_EDX_EDX_;
+            *(_WORD*) (outBuffP +  6) = XOR_EDX_EDX_CODE_;
             /* div ebx */
             *(_WORD*) (outBuffP +  8) = 0xF7F3;
 
@@ -108,11 +108,11 @@
         else if (modifier & BIN_OP_SD_OPERAND_T_NUM_MASK_)
         {
             /* mov number to eax, mov reg to ebx, div, mov result to dest */
-            *(_BYTE*) (outBuffP +  0) = MOV_N_EBX_START_CODE_;
+            outBuffP [0] = MOV_N_EBX_CODE_;
             *(_DWRD*) (outBuffP +  1) = inBuffP [1];
             *(_DWRD*) (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
 
-            *(_WORD*) (outBuffP +  8) = XOR_EDX_EDX_;
+            *(_WORD*) (outBuffP +  8) = XOR_EDX_EDX_CODE_;
             /* div ebx */
             *(_WORD*) (outBuffP + 10) = 0xF7F3;
             
@@ -129,53 +129,53 @@
     retOff_t putAdds    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, add, push */
-        *(_BYTE*) (outBuffP +  0) = POP_START_CODE_;
-        *(_BYTE*) (outBuffP +  1) = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_START_CODE_;
+        outBuffP [1] = POP_START_CODE_ + 3;
 
         /* add eax, ebx */
         *(_WORD*) (outBuffP +  2) = 0xD801;
 
-        *(_BYTE*) (outBuffP +  4) = PUSH_START_CODE_;
+        outBuffP [4] = PUSH_EAX_CODE_;
 
         return { 5, 0 };
     }
     retOff_t putSubs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, sub, push */
-        *(_BYTE*) (outBuffP +  0) = POP_START_CODE_;
-        *(_BYTE*) (outBuffP +  1) = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_START_CODE_;
+        outBuffP [1] = POP_START_CODE_ + 3;
 
         /* sub eax, ebx */
         *(_WORD*) (outBuffP +  2) = 0xC32B;
 
-        *(_BYTE*) (outBuffP +  4) = PUSH_START_CODE_;
+        outBuffP [4] = PUSH_EAX_CODE_;
 
         return { 5, 0 };
     }
     retOff_t putMuls    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
-        *(_BYTE*) (outBuffP +  0) = POP_START_CODE_;
-        *(_BYTE*) (outBuffP +  1) = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_START_CODE_;
+        outBuffP [1] = POP_START_CODE_ + 3;
 
         /* mul ebx */
         *(_WORD*) (outBuffP +  2) = 0xE3F7;
         
-        *(_BYTE*) (outBuffP +  4) = PUSH_START_CODE_;
+        outBuffP [4] = PUSH_EAX_CODE_;
 
         return { 5, 0 };
     }
     retOff_t putDivs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
-        *(_BYTE*) (outBuffP +  0) = POP_START_CODE_;
-        *(_BYTE*) (outBuffP +  1) = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_START_CODE_;
+        outBuffP [1] = POP_START_CODE_ + 3;
 
         /* div ebx */
-        *(_WORD*) (outBuffP +  2) = XOR_EDX_EDX_;
+        *(_WORD*) (outBuffP +  2) = XOR_EDX_EDX_CODE_;
         *(_WORD*) (outBuffP +  4) = 0xF3F7;
         
-        *(_BYTE*) (outBuffP +  6) = PUSH_START_CODE_;
+        outBuffP [6] = PUSH_EAX_CODE_;
 
         return { 7, 0 };
     }
@@ -184,21 +184,24 @@
 
     retOff_t putPush    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
-        /* arg info */
-        _AL_TYPE argInfo = inBuffP [0];
+        /* modifier info */
+        _AL_TYPE modifier = inBuffP [0];
 
         /* push number */
-        if (argInfo == 0)
+        if (modifier == 0)
         {
             /* num push code */
-            *(_BYTE*) (outBuffP + 0) = PUSH_NUM_CODE_;
+            outBuffP [0] = PUSH_NUM_CODE_;
 
             *(_DWRD*) (outBuffP + 1) = inBuffP [1];
 
             return { 5 , 2 };
         }
 
-        size_t regId = argInfo >> 16;
+        /* push reg */
+        size_t regId = modifier >> 16;
+        if (modifier >= REG_NUM_)
+            return { 0, 0 };
 
         *(_WORD*) (outBuffP + 0) = PUSH_R_START_CODE_ + regId;
 
@@ -209,16 +212,36 @@
 
     retOff_t putPop     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
+        /* cmd midifier */
+        _AL_TYPE modifier = inBuffP [0];
+        size_t regId = modifier;
 
-        return { 0, 0 };
+        /* pop reg */
+        if (regId < REG_NUM_)
+        {
+            /* reg pop code */
+            *(_WORD*) outBuffP = POP_START_CODE_ + regId;
+
+            return { 2, 1 };
+        }
+
+        /* empty pop */
+        outBuffP [0] = POP_EAX_CODE_;
+
+        return { 1, 1 };
     }
 
 /* ON-STACK CMP STUFF */
 
     retOff_t putCmps    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
+        /* pop to eax & ebx, cmp */
+        outBuffP [0] = POP_START_CODE_;
+        outBuffP [1] = POP_START_CODE_ + 3;
 
-        return { 0, 0 };
+        *(_WORD*) (outBuffP + 2) = CMP_EAX_EBX_CODE_;
+
+        return { 4, 0 };
     }
 
 /* CALL STUFF */
@@ -233,8 +256,13 @@
 
     retOff_t putExit    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
+        /* just hardcoded exit */
+        outBuffP [0] = MOV_EAX_NUM_CODE_;
+        *(_DWRD*) (outBuffP + 1) = EXIT_CODE_;
+        *(_DWRD*) (outBuffP + 5) = XOR_RDI_RDI_CODE_;
+        *(_WORD*) (outBuffP + 8) = SYSCALL_CODE_;
 
-        return { 0, 0 };
+        return { 10, 0 };
     }
 
 /* JUMPS STUFF */
@@ -301,12 +329,28 @@
     retOff_t putPopa    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
 
-        return { 0, 0 };
+        *(_WORD*) (outBuffP +  0) = POP_START_CODE_ + 6;
+        *(_WORD*) (outBuffP +  2) = POP_START_CODE_ + 5;
+        *(_WORD*) (outBuffP +  4) = POP_START_CODE_ + 4;
+        *(_WORD*) (outBuffP +  6) = POP_START_CODE_ + 3;
+        *(_WORD*) (outBuffP +  8) = POP_START_CODE_ + 2;
+        *(_WORD*) (outBuffP + 10) = POP_START_CODE_ + 1;
+        *(_WORD*) (outBuffP + 12) = POP_START_CODE_;
+
+        return { 14, 0 };
     }
     retOff_t putPusha   ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
 
-        return { 0, 0 };
+        *(_WORD*) (outBuffP +  0) = PUSH_R_START_CODE_;
+        *(_WORD*) (outBuffP +  2) = PUSH_R_START_CODE_ + 1;
+        *(_WORD*) (outBuffP +  4) = PUSH_R_START_CODE_ + 2;
+        *(_WORD*) (outBuffP +  6) = PUSH_R_START_CODE_ + 3;
+        *(_WORD*) (outBuffP +  8) = PUSH_R_START_CODE_ + 4;
+        *(_WORD*) (outBuffP + 10) = PUSH_R_START_CODE_ + 5;
+        *(_WORD*) (outBuffP + 12) = PUSH_R_START_CODE_ + 6;
+
+        return { 14, 0 };
     }
 
 /* RET STUFF */
@@ -314,5 +358,7 @@
     retOff_t putRet     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
 
-        return { 0, 0 };
+        outBuffP [0] = RET_CODE_;
+
+        return { 1, 0 };
     }
