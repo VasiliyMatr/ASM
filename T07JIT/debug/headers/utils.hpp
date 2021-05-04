@@ -26,8 +26,10 @@ enum class Error_t {
 
 };
 
-/* byte type */
-typedef unsigned char _BYTE;
+/* sized types */
+typedef unsigned char   _BYTE; /* one byte */
+typedef unsigned short  _WORD; /* two bytes */
+typedef unsigned int    _DWRD; /* four bytes */
 
 /* my binary format align type  */
 typedef int _AL_TYPE;

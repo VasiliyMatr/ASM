@@ -2,7 +2,7 @@
 #include "utils.hpp"
 
 /* all cmds identifiers */
-enum class CMDId_t  : unsigned char {
+enum class CMDId_t  : _BYTE {
 
     CMD_ADD_   = 0x00   ,
     CMD_SUB_   = 0x01   ,
@@ -148,35 +148,35 @@ const CMD_t CMDS_[] = {
         static const _BYTE MOV_N_EBX_START_CODE_ = 0xBB;
 
     /* mov reg to eax */
-        static const unsigned int MOV_R_EAX_START_CODE_ = 0xC08944;
+        static const _DWRD MOV_R_EAX_START_CODE_ = 0xC08944;
     /* mov reg to ebx */
-        static const unsigned int MOV_R_EBX_START_CODE_ = 0xC38944;
+        static const _DWRD MOV_R_EBX_START_CODE_ = 0xC38944;
 
     /* mov eax to reg */
-        static const unsigned int MOV_EAX_R_START_CODE_ = 0xC08941;
+        static const _DWRD MOV_EAX_R_START_CODE_ = 0xC08941;
     
   /* ADD */
     /* add reg to reg first code */
-        static const unsigned int ADD_RR_START_CODE_ = 0xC00145;
+        static const _DWRD ADD_RR_START_CODE_ = 0xC00145;
     /* add number to reg first tode */
-        static const unsigned int ADD_RN_START_CODE_ = 0xC08141;
+        static const _DWRD ADD_RN_START_CODE_ = 0xC08141;
 
   /* SUB */
     /* sub reg from reg first code */
-        static const unsigned int SUB_RR_START_CODE_ = 0xC02945;
+        static const _DWRD SUB_RR_START_CODE_ = 0xC02945;
     /* sub num from reg first code */
-        static const unsigned int SUB_RN_START_CODE_ = 0xE88141;
+        static const _DWRD SUB_RN_START_CODE_ = 0xE88141;
 
   /* XOR */
     /* xor edx, edx - for div opr */
-        static const unsigned short XOR_EDX_EDX_ = 0x33D2;
+        static const _WORD XOR_EDX_EDX_ = 0x33D2;
+
+  /* PUSH */
+    /* push from reg (r8 - r15) */
+        static const _WORD PUSH_R_START_CODE_ = 0x5041;
+
+        static const _BYTE PUSH_NUM_CODE_ = 0x68;
 
   /* POP */
     /* pop to reg */
         static const _BYTE POP_START_CODE_ = 0x58;
-    
-  /* PUSH */
-    /* push from reg */
-        static const _BYTE PUSH_START_CODE_ = 0x50;
-
-  

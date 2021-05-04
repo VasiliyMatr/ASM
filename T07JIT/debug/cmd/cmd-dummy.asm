@@ -11,14 +11,10 @@ _start:
 
     add     rsp                 ,   8
 
-    mov     r8d                 ,   eax   
-    mov     r9d                 ,   eax
-    mov     r10d                ,   eax
-    mov     r11d                ,   eax
-    mov     ebx                 ,   r8d
-    mov     ebx                 ,   r9d
-    mov     ebx                 ,   r10d
-    mov     ebx                 ,   r11d
+    push     r8
+    push     r9
+    push     r10
+    push     r11
 
     mov eax, 0x3C
     xor rdi, rdi
