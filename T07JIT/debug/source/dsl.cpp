@@ -58,12 +58,12 @@
         if (modifier & BIN_OP_SD_OPERAND_T_REG_MASK_)
         {
             /* mov ft reg to eax, mov sd reg to ebx, mul, mov result to dest */
-            *(_DWRD*)   (outBuffP + 0) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
-            *(_DWRD*)   (outBuffP + 3) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
+            *(_DWRD*) (outBuffP + 0) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
+            *(_DWRD*) (outBuffP + 3) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
 
             *(_WORD*) (outBuffP + 6) = 0xF7E3;
 
-            *(_DWRD*)   (outBuffP + 8) = MOV_EAX_R_START_CODE_ + ftRegId;
+            *(_DWRD*) (outBuffP + 8) = MOV_EAX_R_START_CODE_ + ftRegId;
             
             return { 11, 1 };
         }
@@ -72,12 +72,12 @@
         {
             /* mov number to eax, mov reg to ebx, mul, mov result to dest */
             *(_BYTE*) (outBuffP +  0) = MOV_N_EBX_START_CODE_;
-            *(_DWRD*)   (outBuffP +  1) = inBuffP [1];
-            *(_DWRD*)   (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
+            *(_DWRD*) (outBuffP +  1) = inBuffP [1];
+            *(_DWRD*) (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
 
             *(_WORD*) (outBuffP +  8) = 0xF7E3;
             
-            *(_DWRD*)   (outBuffP + 10) = MOV_EAX_R_START_CODE_ + ftRegId * REG_NUM_;
+            *(_DWRD*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + ftRegId * REG_NUM_;
 
             return { 13, 2 };
         }
@@ -93,14 +93,14 @@
         if (modifier & BIN_OP_SD_OPERAND_T_REG_MASK_)
         {
             /* mov ft reg to eax, mov sd reg to ebx, div, mov result to dest */
-            *(_DWRD*)   (outBuffP +  0) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
-            *(_DWRD*)   (outBuffP +  3) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
+            *(_DWRD*) (outBuffP +  0) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
+            *(_DWRD*) (outBuffP +  3) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
 
             *(_WORD*) (outBuffP +  6) = XOR_EDX_EDX_;
             /* div ebx */
             *(_WORD*) (outBuffP +  8) = 0xF7F3;
 
-            *(_DWRD*)   (outBuffP + 10) = MOV_EAX_R_START_CODE_ + ftRegId;
+            *(_DWRD*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + ftRegId;
 
             return { 13, 1 };
         }
@@ -109,14 +109,14 @@
         {
             /* mov number to eax, mov reg to ebx, div, mov result to dest */
             *(_BYTE*) (outBuffP +  0) = MOV_N_EBX_START_CODE_;
-            *(_DWRD*)   (outBuffP +  1) = inBuffP [1];
-            *(_DWRD*)   (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
+            *(_DWRD*) (outBuffP +  1) = inBuffP [1];
+            *(_DWRD*) (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
 
             *(_WORD*) (outBuffP +  8) = XOR_EDX_EDX_;
             /* div ebx */
             *(_WORD*) (outBuffP + 10) = 0xF7F3;
             
-            *(_DWRD*)   (outBuffP + 12) = MOV_EAX_R_START_CODE_ + ftRegId * REG_NUM_;
+            *(_DWRD*) (outBuffP + 12) = MOV_EAX_R_START_CODE_ + ftRegId * REG_NUM_;
 
             return { 15, 2 };
         }
@@ -193,7 +193,7 @@
             /* num push code */
             *(_BYTE*) (outBuffP + 0) = PUSH_NUM_CODE_;
 
-            *(_DWRD*  ) (outBuffP + 1) = inBuffP [1];
+            *(_DWRD*) (outBuffP + 1) = inBuffP [1];
 
             return { 5 , 2 };
         }
