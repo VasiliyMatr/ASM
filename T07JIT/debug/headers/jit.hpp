@@ -11,8 +11,10 @@ class JITCompiler
 /* Fields */
 private:
 
-  /* Where to write bin code */
-    static const size_t CODE_ENTRY_POINT_OFFSET_ = sizeof (ELFHeader_t) + sizeof (ProgramHeader_t);
+  /* Where to write executable bin code */
+    static const size_t HEADERS_SIZE_ = sizeof (ELFHeader_t) + sizeof (ProgramHeader_t);
+  /* Max translated cmd size */
+    static const size_t MAX_CMD_SIZE_ = 0x40;
 
   /* Headers for file */
     ELFHeader_t ELFHeader_;

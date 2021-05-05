@@ -129,8 +129,8 @@
     retOff_t putAdds    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, add, push */
-        outBuffP [0] = POP_START_CODE_;
-        outBuffP [1] = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_;
+        outBuffP [1] = POP_EAX_CODE_ + 3;
 
         /* add eax, ebx */
         *(_WORD*) (outBuffP +  2) = 0xD801;
@@ -142,8 +142,8 @@
     retOff_t putSubs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, sub, push */
-        outBuffP [0] = POP_START_CODE_;
-        outBuffP [1] = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_;
+        outBuffP [1] = POP_EAX_CODE_ + 3;
 
         /* sub eax, ebx */
         *(_WORD*) (outBuffP +  2) = 0xC32B;
@@ -155,8 +155,8 @@
     retOff_t putMuls    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
-        outBuffP [0] = POP_START_CODE_;
-        outBuffP [1] = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_;
+        outBuffP [1] = POP_EAX_CODE_ + 3;
 
         /* mul ebx */
         *(_WORD*) (outBuffP +  2) = 0xE3F7;
@@ -168,8 +168,8 @@
     retOff_t putDivs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
-        outBuffP [0] = POP_START_CODE_;
-        outBuffP [1] = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_;
+        outBuffP [1] = POP_EAX_CODE_ + 3;
 
         /* div ebx */
         *(_WORD*) (outBuffP +  2) = XOR_EDX_EDX_CODE_;
@@ -236,8 +236,8 @@
     retOff_t putCmps    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
         /* pop to eax & ebx, cmp */
-        outBuffP [0] = POP_START_CODE_;
-        outBuffP [1] = POP_START_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_;
+        outBuffP [1] = POP_EAX_CODE_ + 3;
 
         *(_WORD*) (outBuffP + 2) = CMP_EAX_EBX_CODE_;
 
@@ -256,13 +256,8 @@
 
     retOff_t putExit    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP )
     {
-        /* just hardcoded exit */
-        outBuffP [0] = MOV_EAX_NUM_CODE_;
-        *(_DWRD*) (outBuffP + 1) = EXIT_CODE_;
-        *(_DWRD*) (outBuffP + 5) = XOR_RDI_RDI_CODE_;
-        *(_WORD*) (outBuffP + 8) = SYSCALL_CODE_;
 
-        return { 10, 0 };
+        return { 0, 0 };
     }
 
 /* JUMPS STUFF */

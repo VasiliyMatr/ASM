@@ -3,6 +3,8 @@ global _start
 _start:
 
             call        scanDec
+            call        scanDec
+            call        scanDec
             call        printDec
             call        exit
 
@@ -15,6 +17,7 @@ _start:
 scanDec:    ; space for input
             sub         rsp,    16
 
+            xor         rdi,    rdi
             mov         rsi,    rsp
             mov         rdx,    10
             mov         rax,    0
@@ -59,6 +62,9 @@ printDec:   ; divider & symbols counter
             mov         rcx,    10
             xor         rbx,    rbx
 
+            ; \n
+            push        0x0A
+
 .LOOP       ; counting symbols number
             inc         rbx
 
@@ -77,6 +83,7 @@ printDec:   ; divider & symbols counter
             mov         rdx,    rbx
             shl         rdx,    3
             inc         rdx
+            inc         rbx
 
             mov         rsi,    rsp
             xor         rdi,    rdi

@@ -191,11 +191,8 @@ const CMD_t CMDS_[] = {
     /* cmp eax, ebx */
         static const _WORD CMP_EAX_EBX_CODE_ = 0x39D8;
 
-  /* RET */
-        static const _BYTE RET_CODE_ = 0xC3;
+  /* RET (far ret) */
+        static const _BYTE RET_CODE_ = 0xCD;
 
-  /* EXIT */
-        static const _BYTE MOV_EAX_NUM_CODE_ = 0xB8;
-        static const _DWRD EXIT_CODE_ = 0x3C;
-        static const _DWRD XOR_RDI_RDI_CODE_ = 0x4831FF;
-        static const _WORD SYSCALL_CODE_ = 0x0F05;
+  /* CALL (far call) / IN / OUT / EXIT */
+        static const _BYTE CALL_CODE_ = 0xE8;
