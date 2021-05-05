@@ -2,61 +2,97 @@ section .code
 global _start
 _start:
 
-            mov         eax,    131
+            call        scanDec
             call        printDec
-
-            mov         eax,    0x3C
-            xor         rdi,    rdi
-            syscall
+            call        exit
 
 ;========================================
 ; IN: NO
-; OUT: scaned num in eax
+; OUT: scanned num in rax
 ;
-; USES: EAX, EDX, ECX, EBX
+; USES: RAX, RDX, RCX, RBX, RSI, RDI
 ;========================================
-scanDec:
-            sub         rsp,    8
-            
+scanDec:    ; space for input
+            sub         rsp,    16
+
+            mov         rsi,    rsp
+            mov         rdx,    10
+            mov         rax,    0
+            syscall
+
+            ; input border
+            mov         rcx,    10
+            mov         rbx,    rax
+            add         rbx,    rsi
+            dec         rbx
+
+            ; for mul
+            mov         rax,    0
+            mov         rdx,    0
+
+.CALC:      ; calculating number
+            cmp         rsi,    rbx
+            je          .CALC_END
+            mul         rcx
+
+            ; getting next digit
+            mov         rdi,    [ rsi ]
+            and         rdi,    255
+            sub         rdi,    '0'
+
+            add         rax,    rdi
+            inc         rsi
+            jmp         .CALC
+.CALC_END   ; calculating end
+
+            add         rsp,    16
+
+            ret
 
 ;========================================
-; IN: EAX - num to print
+; IN: RAX - num to print
 ; OUT: NO
 ;
-; USES: EAX, EDX, ECX, EBX
+; USES: RAX, RDX, RCX, RBX
 ;========================================
-printDec:
+printDec:   ; divider & symbols counter
             mov         rcx,    10
-            xor         ebx,    ebx
+            xor         rbx,    rbx
 
 .LOOP       ; counting symbols number
-            inc         ebx
+            inc         rbx
 
             ; dividing
             xor         rdx,    rdx
-            div         ecx
+            div         rcx
             add         rdx,    '0'
             push        rdx
 
             ; dividing end check
-            cmp         eax,    0
+            cmp         rax,    0
             jne         .LOOP
 
 .END        ; symbols count end
 
-            mov         edx,    ebx
-            shl         edx,    3
-            inc         edx
+            mov         rdx,    rbx
+            shl         rdx,    3
+            inc         rdx
 
-            mov         rsi,   rsp
+            mov         rsi,    rsp
+            xor         rdi,    rdi
 
             mov         rax,    1
             syscall
 
 .STK_FREE   ; free stack
             add         rsp,    8
-            dec         ebx
-            cmp         ebx,    0
+            dec         rbx
+            cmp         rbx,    0
             jne         .STK_FREE
 
             ret
+
+exit:       ; exiting
+            mov         rax,    0x3C
+            xor         rdi,    rdi
+            syscall
