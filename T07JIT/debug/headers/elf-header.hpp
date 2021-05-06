@@ -6,7 +6,8 @@
 #define ELF_HEADER_HPP_INCL_
 
 /* IN / OUT / EXIT PROCS */
-    static const _BYTE IN_PROC_CODE_ [] = {
+    /* input proc bytecode */
+    static const BYTE__ IN_PROC_CODE_ [] = {
 
         0x48, 0x83, 0xEC, 0x10,
         0x48, 0x31, 0xFF, 0x48,
@@ -31,7 +32,8 @@
         0xC3
     };
 
-    static const _BYTE OUT_PROC_CODE_ [] = {
+    /* output proc bytecode */
+    static const BYTE__ OUT_PROC_CODE_ [] = {
 
         0xB9, 0x0A, 0x00, 0x00,
         0x00, 0x48, 0x31, 0xDB,
@@ -53,25 +55,24 @@
         0xF3, 0xC3
     };
 
-    static const _BYTE EXIT_PROC_CODE_ [] = {
+    /* exit proc bytecode */
+    static const BYTE__ EXIT_PROC_CODE_ [] = {
 
         0xB8, 0x3C, 0x00, 0x00,
         0x00, 0x48, 0x31, 0xFF,
         0x0F, 0x05
     };
 
-    /* size of in & out & exit procs bin code */
-    static const size_t PROCS_SIZE_ = sizeof (IN_PROC_CODE_)  +
-                                      sizeof (OUT_PROC_CODE_) +
-                                      sizeof (EXIT_PROC_CODE_);
+    /* addrs for calls (and entry point calc) */
+    static const DWRD__ IN_PROC_ADDR_ = 0x00;
+    static const DWRD__ OUT_PROC_ADDR_ = IN_PROC_ADDR_ + sizeof (IN_PROC_CODE_);
+    static const DWRD__ EXIT_PROC_ADDR_ = OUT_PROC_ADDR_ + sizeof (OUT_PROC_CODE_);
 
-    /* addrs for far calls */
-    static const _DWRD IN_PROC_ADDR_    = 0x400080;
-    static const _DWRD OUT_PROC_ADDR_   = IN_PROC_ADDR_ + sizeof (IN_PROC_CODE_);
-    static const _DWRD EXIT_PROC_ADDR_  = OUT_PROC_ADDR_ + sizeof (OUT_PROC_CODE_);
+/* progr load virtual offset to entry point */
+    static const DWRD__ CODE_OFFSET_ = EXIT_PROC_ADDR_ + sizeof (EXIT_PROC_CODE_) + 0x80;
 
-    /* entry point address - for header */
-    static const _DWRD ENTRY_POINT_ADDR_ = EXIT_PROC_ADDR_ + sizeof (EXIT_PROC_CODE_);
+/* progr load virtual addres */
+    static const QWRD__ LOAD_VIRT_ADDR_ = 0x400000;
 
 /* Struct with all ELF file header bytes */
 class ELFHeader_t {
@@ -79,171 +80,102 @@ class ELFHeader_t {
     /* ELF identifier */
 
       /* File signature */
-        _BYTE EH_MAG_ [4]       = {
+        BYTE__ EH_MAG_ [4]       = {
 
             0x7F, 'E', 'L', 'F'
         };
 
       /* File class */
-        _BYTE EH_CLASS_         = ELFCLASS64;
+        BYTE__ EH_CLASS_         = ELFCLASS64;
 
       /* Byte order */
-        _BYTE EH_BYTE_ORDER_    = ELFDATA2LSB;
+        BYTE__ EHBYTE___ORDER_    = ELFDATA2LSB;
 
       /* ELF header version */
-        _BYTE EH_VERSION_       = EV_CURRENT;
+        BYTE__ EH_VERSION_       = EV_CURRENT;
 
       /* OS ABI extentions */
-        _BYTE EH_OSABI_         = ELFOSABI_NONE;
+        BYTE__ EH_OSABI_         = ELFOSABI_NONE;
 
-      /* ABI Version - default one */
-        _BYTE EH_ABIVERSION_    = 0;
+      /* ABI Version - default */
+        BYTE__ EH_ABIVERSION_    = 0x00;
 
       /* Padding bytes - all zeroes */
-        _BYTE EH_PAD_ [7]       = { 0 };
+        BYTE__ EH_PAD_ [7]       = { 0x00 };
 
     /* ELF type */
-        _BYTE EH_TYPE_ [2]      = { ET_EXEC, 0 };
+        WORD__ EH_TYPE_          = ET_EXEC;
 
     /* Machine architecture */
-        _BYTE EH_MACHINE_ [2]   = { EM_X86_64, 0};
+        WORD__ EH_MACHINE_       = EM_X86_64;
 
     /* ELF format version */
-        _BYTE EH_F_VERSION_ [4] = { EV_CURRENT, 0, 0, 0 };
+        DWRD__ EH_F_VERSION_     = EV_CURRENT;
 
     /* Entry point address */
-        size_t EH_ENTRY_ = ENTRY_POINT_ADDR_;
+        QWRD__ EH_ENTRY_         = LOAD_VIRT_ADDR_ + CODE_OFFSET_;
 
     /* Programm headers tablet offset - default */
-        _BYTE EH_P_HEADERS_OFF_ [8] = {
-
-            0x40, 0x00,
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00
-        };
+        QWRD__ EH_P_HEADERS_OFF_ = 0x40;
 
     /* Sections headers tablet offset - default */
-        _BYTE EH_S_HEADERS_OFF_ [8] = {
-
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00
-        };
+        QWRD__ EH_S_HEADERS_OFF_ = 0x00;
 
     /* Processor dependent flags - default */
-        _BYTE EH_FLAGS_ [4] = {
-
-            0x00, 0x00,
-            0x00, 0x00
-        };
+        DWRD__ EH_FLAGS_         = 0x00;
 
     /* File header size - 64 bytes for 64 bit ELF */
-        _BYTE EH_FH_SIZE_ [2] = {
-
-            0x40, 0x00
-        };
+        WORD__ EH_FH_SIZE_       = 0x40;
 
     /* Programm header size - 56 bytes for 64 bit ELF */
-        _BYTE EH_PH_SIZE_ [2] = {
-
-            0x38, 0x00
-        };
+        WORD__ EH_PH_SIZE_       = 0x38;
 
     /* Number of programm headers */
-        _BYTE EH_PH_NUM_ [2] = {
-
-            0x01, 0x00
-        };
+        WORD__ EH_PH_NUM_        = 0x01;
 
     /* Section header size - 64 bytes for 64 bit ELF */
-        _BYTE EH_SH_SIZE_ [2] = {
-
-            0x40, 0x00
-        };
+        WORD__ EH_SH_SIZE_       = 0x40;
 
     /* Number of sections headers */
-        _BYTE EH_SH_NUM_ [2] = {
-
-            0x00, 0x00
-        };
+        WORD__ EH_SH_NUM_        = 0x00;
 
     /* SHSTRTAB index */
-        _BYTE EH_SHSTRT_ [2] = {
-
-            0x00, 0x00
-        };
-
+        WORD__ EH_SHSTRT_        = 0x00;
 };
 
 class ProgramHeader_t {
 
     /* Segment type */
-        _BYTE PH_TYPE_ [4] = {
-
-            PT_LOAD,
-            0x00,
-            0x00,
-            0x00
-        };
+        DWRD__ PH_TYPE_      = PT_LOAD;
 
     /* ELF64 flags */
-        _BYTE PH_FLAGS_ [4] = {
-
-            PF_X, 0x00,
-            0x00, 0x00
-        };
+        DWRD__ PH_FLAGS_     = PF_X;
 
     /* Program header offset */
-        _BYTE PH_OFFSET_ [8] = {
+        QWRD__ PH_OFFSET_    = 0x00;
 
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00
-        };
+    /* Load virtual address */
+        QWRD__ PH_VADDR_     = LOAD_VIRT_ADDR_;
 
-    /* Program header virtual address */
-        _BYTE PH_VADDR_ [8] = {
+    /* Load physical address */
+        QWRD__ PH_PADDR_     = LOAD_VIRT_ADDR_;
 
-            0x00, 0x00,
-            0x40, 0x00,
-            0x00, 0x00,
-            0x00, 0x00
-        };
+    /* Program header file size - just big enough */
+        QWRD__ PH_FSIZE_     = 0x1000;
 
-    /* Program header physical address */
-        _BYTE PH_PADDR_ [8] = {
-
-            0x00, 0x00,
-            0x40, 0x00,
-            0x00, 0x00,
-            0x00, 0x00
-        };
-
-    /* Program header file size */
-        unsigned long long PH_FSIZE_ = 0x1000;
-
-    /* Program header memory size */
-        unsigned long long PH_MSIZE_ = 0x1000;
+    /* Program header memory size - equal to file size */
+        QWRD__ PH_MSIZE_     = 0x1000;
 
     /* Program header align */
-        _BYTE PH_ALIGN_ [8] = {
+        QWRD__ PH_ALIGN_     = 0x1000;
 
-            0x00, 0x10,
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00
-        };
-
-    /* Additional zeroes */
-        _BYTE PH_ZEROES_ [8] = { };
+    /* Additional zeroes for align */
+        BYTE__ PH_ZEROES_ [8] = { };
 
 public:
 
     /* Setter for program header size */
-    void setPHSize( size_t newSize )
+    void setPHSize( QWRD__ newSize )
     {
         PH_FSIZE_ = newSize;
         PH_MSIZE_ = newSize;

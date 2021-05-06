@@ -22,7 +22,7 @@ private:
 
   /* In & out buffers pointers */
     _AL_TYPE * inBuffP_ = nullptr;
-    _BYTE * outBuffP_   = nullptr;
+    BYTE__ * outBuffP_   = nullptr;
 
   /* In & out buffers sizes */
     size_t inBuffSize_  = 0;

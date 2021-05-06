@@ -2,7 +2,7 @@
 #include "utils.hpp"
 
 /* all cmds identifiers */
-enum class CMDId_t  : _BYTE {
+enum class CMDId_t  : BYTE__ {
 
     CMD_ADD_   = 0x00   ,
     CMD_SUB_   = 0x01   ,
@@ -52,7 +52,7 @@ struct retOff_t {
 
 };
 
-typedef retOff_t (*cmdPutFunc_t) ( _AL_TYPE const * const inBuffP, _BYTE * outBuffP );
+typedef retOff_t (*cmdPutFunc_t) ( _AL_TYPE const * const inBuffP, BYTE__ * outBuffP );
 
 struct CMD_t {
 
@@ -64,33 +64,32 @@ struct CMD_t {
 };
 
 /* TODO: use cmdPutFuncd_t !!? */
-
-retOff_t putAdd     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putSub     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putMul     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putDiv     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putAdds    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putSubs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putMuls    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putDivs    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putPush    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putPop     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putCmps    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putCall    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putExit    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJe      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJne     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJae     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJle     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJa      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJl      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putJmp     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putMov     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putIn      ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putOut     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putPopa    ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putPusha   ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
-retOff_t putRet     ( _AL_TYPE const * inBuffP, _BYTE * outBuffP );
+retOff_t putAdd     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putSub     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putMul     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putDiv     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putAdds    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putSubs    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putMuls    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putDivs    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPush    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPop     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putCmps    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putCall    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putExit    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJe      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJne     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJae     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJle     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJa      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJl      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJmp     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putMov     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putIn      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putOut     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPopa    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPusha   ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putRet     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
 
 const CMD_t CMDS_[] = {
 
@@ -124,75 +123,105 @@ const CMD_t CMDS_[] = {
 };
 
 /* num of registers */
-    static const size_t REG_NUM_ = 8;
+    const size_t REG_NUM_ = 8;
 
 /* MY FORMAT BINARY OPERATIONS STUFF */
 
+  /* binary operations (except mov) */
     /* mask to check if second operand in binary operation cmd is number */
-        static const _AL_TYPE BIN_OP_SD_OPERAND_T_NUM_MASK_ = 1;
+        const _AL_TYPE BIN_OP_SD_OPERAND_T_NUM_MASK_ = 1;
     /* mask to check if second operand in binary operation cmd is register */
-        static const _AL_TYPE BIN_OP_SD_OPERAND_T_REG_MASK_ = 1 << 1;
+        const _AL_TYPE BIN_OP_SD_OPERAND_T_REG_MASK_ = 1 << 1;
 
     /* mask to get register id in first 4 bits */
-        static const _BYTE BIN_OP_REG_MASK_ = 0x7;
+        const BYTE__ BIN_OP_REG_MASK_ = 0x7;
 
     /* mask to get first register id for binary operation cmd */
-        static const _AL_TYPE BIN_OP_FT_REG_OFFSET_ = 16;
+        const _AL_TYPE BIN_OP_FT_REG_OFFSET_ = 16;
     /* mask to get second register id for binary operation cmd */
-        static const _AL_TYPE BIN_OP_SD_REG_OFFSET_ = 8;
+        const _AL_TYPE BIN_OP_SD_REG_OFFSET_ = 8;
+
+  /* mov props masks */
+        const _AL_TYPE FT_REG_ON_ = 1 << 15;
+        const _AL_TYPE SD_REG_ON_ = 1 << 14;
+
+        const _AL_TYPE FT_MEM_ON_ = 1 << 13;
+        const _AL_TYPE SD_MEM_ON_ = 1 << 12;
+
+        const _AL_TYPE FT_CONST_ON_ = 1 << 11;
+        const _AL_TYPE SD_CONST_ON_ = 1 << 10;
+
+        const _AL_TYPE FT_SIGN_PLUS_ = 1 << 9;
+        const _AL_TYPE SD_SIGN_PLUS_ = 1 << 8;
+
+        const _AL_TYPE FT_REG_ID_ = 0xF0;
+        const _AL_TYPE SD_REG_ID_ = 0x0F;
 
 /* X86-64 BINARY OPERATIONS STUFF */
 
   /* MOV */
     /* mov num to ebx */
-        static const _BYTE MOV_N_EBX_CODE_ = 0xBB;
+        const BYTE__ MOV_N_EBX_CODE_ = 0xBB;
 
     /* mov reg to eax first code (r8b - r15b) */
-        static const _DWRD MOV_R_EAX_START_CODE_ = 0xC08944;
+        const DWRD__ MOV_R_EAX_START_CODE_ = 0xC08944;
     /* mov reg to ebx first code (r8b - r15b) */
-        static const _DWRD MOV_R_EBX_START_CODE_ = 0xC38944;
+        const DWRD__ MOV_R_EBX_START_CODE_ = 0xC38944;
 
     /* mov eax to reg (r8b - r15b) */
-        static const _DWRD MOV_EAX_R_START_CODE_ = 0xC08941;
+        const DWRD__ MOV_EAX_R_START_CODE_ = 0xC08941;
     
   /* ADD */
     /* add reg to reg first code (r8b - r15b) */
-        static const _DWRD ADD_RR_START_CODE_ = 0xC00145;
+        const DWRD__ ADD_RR_START_CODE_ = 0xC00145;
     /* add number to reg first tode (r8b - r15b) */
-        static const _DWRD ADD_RN_START_CODE_ = 0xC08141;
+        const DWRD__ ADD_RN_START_CODE_ = 0xC08141;
 
   /* SUB */
     /* sub reg from reg first code (r8b - r15b) */
-        static const _DWRD SUB_RR_START_CODE_ = 0xC02945;
+        const DWRD__ SUB_RR_START_CODE_ = 0xC02945;
     /* sub num from reg first code (r8b - r15b) */
-        static const _DWRD SUB_RN_START_CODE_ = 0xE88141;
+        const DWRD__ SUB_RN_START_CODE_ = 0xE88141;
 
   /* XOR */
     /* xor edx, edx - for div opr */
-        static const _WORD XOR_EDX_EDX_CODE_ = 0x33D2;
+        const WORD__ XOR_EDX_EDX_CODE_ = 0x33D2;
 
   /* PUSH */
     /* push from reg (r8 - r15) */
-        static const _WORD PUSH_R_START_CODE_ = 0x5041;
+        const WORD__ PUSH_R_START_CODE_ = 0x5041;
 
     /* also needed for stack oprs */
-        static const _BYTE PUSH_EAX_CODE_ = 0x50;
-        static const _BYTE PUSH_NUM_CODE_ = 0x68;
+        const BYTE__ PUSH_EAX_CODE_ = 0x50;
+        const BYTE__ PUSH_NUM_CODE_ = 0x68;
 
   /* POP */
     /* pop to reg (r8 - r15) */
-        static const _WORD POP_START_CODE_ = 0x5841;
+        const WORD__ POP_START_CODE_ = 0x5841;
 
     /* for empty pops */
-        static const _BYTE POP_EAX_CODE_ = 0x58;
-
+        const BYTE__ POP_EAX_CODE_ = 0x58;
 
   /* CMP */
     /* cmp eax, ebx */
-        static const _WORD CMP_EAX_EBX_CODE_ = 0x39D8;
+        const WORD__ CMP_EAX_EBX_CODE_ = 0x39D8;
 
-  /* RET (far ret) */
-        static const _BYTE RET_CODE_ = 0xCD;
+  /* RET */
+        const BYTE__ RET_CODE_ = 0xC3;
 
-  /* CALL (far call) / IN / OUT / EXIT */
-        static const _BYTE CALL_CODE_ = 0xE8;
+  /* CALL */
+        const BYTE__ CALL_CODE_ = 0xE8;
+
+  /* JUMPS */
+        const BYTE__ JMP_CODE_ = 0xE9;
+
+        const WORD__ JAA_CODE_ = 0x0f87;
+        const WORD__ JAE_CODE_ = 0x0f83;
+        const WORD__ JLL_CODE_ = 0x0f82;
+        const WORD__ JLE_CODE_ = 0x0f86;
+        const WORD__ JEQ_CODE_ = 0x0f84;
+        const WORD__ JNE_CODE_ = 0x0f85;
+
+  /* MOV */
+    /* mov reg, reg (r8b - r15b) */
+        const WORD__ MOV_RR_

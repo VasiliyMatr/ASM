@@ -27,24 +27,25 @@ enum class Error_t {
 };
 
 /* sized types */
-typedef unsigned char   _BYTE; /* one byte */
-typedef unsigned short  _WORD; /* two bytes */
-typedef unsigned int    _DWRD; /* four bytes */
+typedef unsigned char       BYTE__; /* one byte */
+typedef unsigned short      WORD__; /* two bytes */
+typedef unsigned int        DWRD__; /* four bytes */
+typedef unsigned long long  QWRD__; /* eight bytes */
 
 /* my binary format align type  */
-typedef int _AL_TYPE;
+typedef unsigned int _AL_TYPE;
 
 /* To check ptrs validity */
   bool isBadPtr( const void* const ptr );
 
 /* To read file to buff */
   Error_t readFile2Buff( const char*   const inFileNameP,
-                               _BYTE** const buffPP,
+                               BYTE__** const buffPP,
                                size_t* const sizeP );
 
 /* To write buff to file */
   Error_t writeBuff2File( const char*  const outFileNameP,
-                          const _BYTE* const buffP,
+                          const BYTE__* const buffP,
                           const size_t      buffSize );
 
 /* To get file length */

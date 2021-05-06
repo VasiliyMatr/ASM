@@ -5,13 +5,13 @@ Error_t JITCompiler::translate( char const * const inNameP,
                                 char const * const outNameP )
 {
 
-    Error_t error = readFile2Buff (inNameP, (_BYTE**) &inBuffP_, &inBuffSize_);
+    Error_t error = readFile2Buff (inNameP, (BYTE__**) &inBuffP_, &inBuffSize_);
     if (error != Error_t::OK_)
         return error;
 
     inBuffSize_ /= sizeof (_AL_TYPE);
 
-    outBuffP_ = (_BYTE*) calloc (sizeof (_BYTE), inBuffSize_ * MAX_CMD_SIZE_ + HEADERS_SIZE_ );
+    outBuffP_ = (BYTE__*) calloc (sizeof (BYTE__), inBuffSize_ * MAX_CMD_SIZE_ + HEADERS_SIZE_ );
     if (outBuffP_ == nullptr)
         return Error_t::MEM_ERR_;
 
@@ -23,11 +23,12 @@ Error_t JITCompiler::translate( char const * const inNameP,
     // if (error != Error_t::OK_)
     //     return error;
 
-    outBuffP_ [outBuffSize_] = 0x9A;
-    *(_DWRD*) (outBuffP_ + outBuffSize_ + 1) = 0x00;
-    *(_WORD*) (outBuffP_ + outBuffSize_ + 5) = 0x80;
+    outBuffP_[outBuffSize_] = 0xE8; // 2e ff 14 00
+    *(DWRD__*) (outBuffP_ + outBuffSize_ + 1) = -0x0f - (int)sizeof (OUT_PROC_CODE_) - (int)sizeof (IN_PROC_CODE_);
 
-    outBuffSize_ += 7;
+    *(QWRD__*) (outBuffP_ + outBuffSize_ + 8) = 0;
+
+    outBuffSize_ += 15;
 
     error = writeBuff2File (outNameP, outBuffP_, outBuffSize_);
     if (error != Error_t::OK_)
@@ -38,7 +39,7 @@ Error_t JITCompiler::translate( char const * const inNameP,
 
 Error_t JITCompiler::putHeaders()
 {
-    void* writeP = (void*) outBuffP_;
+    BYTE__* writeP = outBuffP_;
 
   /* Writing data */
     /* Headers */
