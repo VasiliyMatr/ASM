@@ -21,7 +21,7 @@ private:
     ProgramHeader_t programHeader_;
 
   /* In & out buffers pointers */
-    _AL_TYPE * inBuffP_ = nullptr;
+    AL_TYPE__ * inBuffP_ = nullptr;
     BYTE__ * outBuffP_   = nullptr;
 
   /* In & out buffers sizes */

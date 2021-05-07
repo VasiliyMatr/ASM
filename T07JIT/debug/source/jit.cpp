@@ -9,7 +9,7 @@ Error_t JITCompiler::translate( char const * const inNameP,
     if (error != Error_t::OK_)
         return error;
 
-    inBuffSize_ /= sizeof (_AL_TYPE);
+    inBuffSize_ /= sizeof (AL_TYPE__);
 
     outBuffP_ = (BYTE__*) calloc (sizeof (BYTE__), inBuffSize_ * MAX_CMD_SIZE_ + HEADERS_SIZE_ );
     if (outBuffP_ == nullptr)

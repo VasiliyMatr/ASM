@@ -33,7 +33,7 @@ typedef unsigned int        DWRD__; /* four bytes */
 typedef unsigned long long  QWRD__; /* eight bytes */
 
 /* my binary format align type  */
-typedef unsigned int _AL_TYPE;
+typedef unsigned int AL_TYPE__;
 
 /* To check ptrs validity */
   bool isBadPtr( const void* const ptr );

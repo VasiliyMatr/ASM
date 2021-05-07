@@ -52,7 +52,7 @@ struct retOff_t {
 
 };
 
-typedef retOff_t (*cmdPutFunc_t) ( _AL_TYPE const * const inBuffP, BYTE__ * outBuffP );
+typedef retOff_t (*cmdPutFunc_t) ( AL_TYPE__ const * const inBuffP, BYTE__ * outBuffP );
 
 struct CMD_t {
 
@@ -64,32 +64,32 @@ struct CMD_t {
 };
 
 /* TODO: use cmdPutFuncd_t !!? */
-retOff_t putAdd     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putSub     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putMul     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putDiv     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putAdds    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putSubs    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putMuls    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putDivs    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putPush    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putPop     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putCmps    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putCall    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putExit    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJe      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJne     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJae     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJle     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJa      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJl      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putJmp     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putMov     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putIn      ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putOut     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putPopa    ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putPusha   ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
-retOff_t putRet     ( _AL_TYPE const * inBuffP, BYTE__ * outBuffP );
+retOff_t putAdd     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putSub     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putMul     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putDiv     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putAdds    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putSubs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putMuls    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putDivs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPush    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPop     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putCmps    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putCall    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putExit    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJe      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJne     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJae     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJle     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJa      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJl      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putJmp     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putMov     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putIn      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putOut     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPopa    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putPusha   ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
+retOff_t putRet     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP );
 
 const CMD_t CMDS_[] = {
 
@@ -129,33 +129,33 @@ const CMD_t CMDS_[] = {
 
   /* binary operations (except mov) */
     /* mask to check if second operand in binary operation cmd is number */
-        const _AL_TYPE BIN_OP_SD_OPERAND_T_NUM_MASK_ = 1;
+        const AL_TYPE__ BIN_OP_SD_OPERAND_T_NUM_MASK_ = 1;
     /* mask to check if second operand in binary operation cmd is register */
-        const _AL_TYPE BIN_OP_SD_OPERAND_T_REG_MASK_ = 1 << 1;
+        const AL_TYPE__ BIN_OP_SD_OPERAND_T_REG_MASK_ = 1 << 1;
 
     /* mask to get register id in first 4 bits */
         const BYTE__ BIN_OP_REG_MASK_ = 0x7;
 
     /* mask to get first register id for binary operation cmd */
-        const _AL_TYPE BIN_OP_FT_REG_OFFSET_ = 16;
+        const AL_TYPE__ BIN_OP_FT_REG_OFFSET_ = 16;
     /* mask to get second register id for binary operation cmd */
-        const _AL_TYPE BIN_OP_SD_REG_OFFSET_ = 8;
+        const AL_TYPE__ BIN_OP_SD_REG_OFFSET_ = 8;
 
   /* mov props masks */
-        const _AL_TYPE FT_REG_ON_ = 1 << 15;
-        const _AL_TYPE SD_REG_ON_ = 1 << 14;
+        const AL_TYPE__ FT_REG_ON_ = 1 << 15;
+        const AL_TYPE__ SD_REG_ON_ = 1 << 14;
 
-        const _AL_TYPE FT_MEM_ON_ = 1 << 13;
-        const _AL_TYPE SD_MEM_ON_ = 1 << 12;
+        const AL_TYPE__ FT_MEM_ON_ = 1 << 13;
+        const AL_TYPE__ SD_MEM_ON_ = 1 << 12;
 
-        const _AL_TYPE FT_CONST_ON_ = 1 << 11;
-        const _AL_TYPE SD_CONST_ON_ = 1 << 10;
+        const AL_TYPE__ FT_CONST_ON_ = 1 << 11;
+        const AL_TYPE__ SD_CONST_ON_ = 1 << 10;
 
-        const _AL_TYPE FT_SIGN_PLUS_ = 1 << 9;
-        const _AL_TYPE SD_SIGN_PLUS_ = 1 << 8;
+        const AL_TYPE__ FT_SIGN_PLUS_ = 1 << 9;
+        const AL_TYPE__ SD_SIGN_PLUS_ = 1 << 8;
 
-        const _AL_TYPE FT_REG_ID_ = 0xF0;
-        const _AL_TYPE SD_REG_ID_ = 0x0F;
+        const AL_TYPE__ FT_REG_ID_ = 0xF0;
+        const AL_TYPE__ SD_REG_ID_ = 0x0F;
 
 /* X86-64 BINARY OPERATIONS STUFF */
 
@@ -224,4 +224,4 @@ const CMD_t CMDS_[] = {
 
   /* MOV */
     /* mov reg, reg (r8b - r15b) */
-        const WORD__ MOV_RR_
+        const WORD__ MOV_RR_ = 0;
