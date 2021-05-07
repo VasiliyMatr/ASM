@@ -200,10 +200,10 @@
 
         /* push reg */
         size_t regId = modifier >> 16;
-        if (modifier >= REG_NUM_)
+        if (regId >= REG_NUM_)
             return { 0, 0 };
 
-        *(WORD__*) (outBuffP + 0) = PUSH_R_START_CODE_ + regId;
+        *(WORD__*) (outBuffP + 0) = PUSH_R_START_CODE_ + (regId << 8);
 
         return { 2, 1 };
     }
@@ -220,7 +220,7 @@
         if (regId < REG_NUM_)
         {
             /* reg pop code */
-            *(WORD__*) outBuffP = POP_START_CODE_ + regId;
+            *(WORD__*) outBuffP = POP_START_CODE_ + (regId << 8);
 
             return { 2, 1 };
         }
@@ -252,7 +252,7 @@
 
         *(DWRD__*) (outBuffP + 1) = 0;
 
-        return { 5, 0 };
+        return { 5, 1 };
     }
 
 /* EXIT STUFF */
@@ -325,16 +325,18 @@
         AL_TYPE__ modifier = inBuffP [0];
 
         AL_TYPE__ ftRegId = (modifier & FT_REG_ID_) >> 4;
-        AL_TYPE__ sdRegOn = (modifier & SD_REG_ID_);
+        AL_TYPE__ sdRegId = (modifier & SD_REG_ID_);
 
         /* nulling regs ids */
         modifier = (modifier >> 8) << 8;
 
         switch (modifier)
         {
-            case FT_REG_ON_ & SD_REG_ON_:
+            case FT_REG_ON_ | SD_REG_ON_:
+                *(DWRD__*) outBuffP = MOV_RR_CODE_ + ftRegId + sdRegId * REG_NUM_;
+                return { 3, 1 };
 
-
+            /* TODO: */
             default:
                 return { 0, 0 };
         }
@@ -373,27 +375,25 @@
 
     retOff_t putPopa    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
-
-        *(WORD__*) (outBuffP +  0) = POP_START_CODE_ + 6;
-        *(WORD__*) (outBuffP +  2) = POP_START_CODE_ + 5;
-        *(WORD__*) (outBuffP +  4) = POP_START_CODE_ + 4;
-        *(WORD__*) (outBuffP +  6) = POP_START_CODE_ + 3;
-        *(WORD__*) (outBuffP +  8) = POP_START_CODE_ + 2;
-        *(WORD__*) (outBuffP + 10) = POP_START_CODE_ + 1;
+        *(WORD__*) (outBuffP +  0) = POP_START_CODE_ + (6 << 8);
+        *(WORD__*) (outBuffP +  2) = POP_START_CODE_ + (5 << 8);
+        *(WORD__*) (outBuffP +  4) = POP_START_CODE_ + (4 << 8);
+        *(WORD__*) (outBuffP +  6) = POP_START_CODE_ + (3 << 8);
+        *(WORD__*) (outBuffP +  8) = POP_START_CODE_ + (2 << 8);
+        *(WORD__*) (outBuffP + 10) = POP_START_CODE_ + (1 << 8);
         *(WORD__*) (outBuffP + 12) = POP_START_CODE_;
 
         return { 14, 0 };
     }
     retOff_t putPusha   ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
-
         *(WORD__*) (outBuffP +  0) = PUSH_R_START_CODE_;
-        *(WORD__*) (outBuffP +  2) = PUSH_R_START_CODE_ + 1;
-        *(WORD__*) (outBuffP +  4) = PUSH_R_START_CODE_ + 2;
-        *(WORD__*) (outBuffP +  6) = PUSH_R_START_CODE_ + 3;
-        *(WORD__*) (outBuffP +  8) = PUSH_R_START_CODE_ + 4;
-        *(WORD__*) (outBuffP + 10) = PUSH_R_START_CODE_ + 5;
-        *(WORD__*) (outBuffP + 12) = PUSH_R_START_CODE_ + 6;
+        *(WORD__*) (outBuffP +  2) = PUSH_R_START_CODE_ + (1 << 8);
+        *(WORD__*) (outBuffP +  4) = PUSH_R_START_CODE_ + (2 << 8);
+        *(WORD__*) (outBuffP +  6) = PUSH_R_START_CODE_ + (3 << 8);
+        *(WORD__*) (outBuffP +  8) = PUSH_R_START_CODE_ + (4 << 8);
+        *(WORD__*) (outBuffP + 10) = PUSH_R_START_CODE_ + (5 << 8);
+        *(WORD__*) (outBuffP + 12) = PUSH_R_START_CODE_ + (6 << 8);
 
         return { 14, 0 };
     }

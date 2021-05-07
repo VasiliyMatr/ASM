@@ -204,7 +204,7 @@ const CMD_t CMDS_[] = {
 
   /* CMP */
     /* cmp eax, ebx */
-        const WORD__ CMP_EAX_EBX_CODE_ = 0x39D8;
+        const WORD__ CMP_EAX_EBX_CODE_ = 0xD839;
 
   /* RET */
         const BYTE__ RET_CODE_ = 0xC3;
@@ -215,13 +215,13 @@ const CMD_t CMDS_[] = {
   /* JUMPS */
         const BYTE__ JMP_CODE_ = 0xE9;
 
-        const WORD__ JAA_CODE_ = 0x0f87;
-        const WORD__ JAE_CODE_ = 0x0f83;
-        const WORD__ JLL_CODE_ = 0x0f82;
-        const WORD__ JLE_CODE_ = 0x0f86;
-        const WORD__ JEQ_CODE_ = 0x0f84;
-        const WORD__ JNE_CODE_ = 0x0f85;
+        const WORD__ JAA_CODE_ = 0x870f;
+        const WORD__ JAE_CODE_ = 0x830f;
+        const WORD__ JLL_CODE_ = 0x820f;
+        const WORD__ JLE_CODE_ = 0x860f;
+        const WORD__ JEQ_CODE_ = 0x840f;
+        const WORD__ JNE_CODE_ = 0x850f;
 
   /* MOV */
     /* mov reg, reg (r8b - r15b) */
-        const WORD__ MOV_RR_ = 0;
+        const DWRD__ MOV_RR_CODE_ = 0xC08845;

@@ -7,6 +7,16 @@
 
 class JITCompiler
 {
+/* Structs */
+public:
+  /* struct with cmd locations info (in my bin code and in x86 bin code) */
+    struct LocInfo_t
+    {
+      /* my format loc */
+          size_t inLoc_ = 0;
+      /* x86-64 format loc */
+          size_t outLoc_ = 0;
+    };
 
 /* Fields */
 private:
@@ -28,6 +38,12 @@ private:
     size_t inBuffSize_  = 0;
     size_t outBuffSize_ = 0;
 
+  /* Jumps & Calls stuff */
+    LocInfo_t JNCLocs_ [0x400] = { };
+    LocInfo_t JNCDestLocs_ [0x400] = { };
+
+    size_t JNCLocsNum_ = 0;
+    size_t JNCDestLocsNum_ = 0;
 
 /* Methods */
 public:
@@ -43,6 +59,12 @@ private:
 
     /* To translate my format bin code to x86-64 bin code */
     Error_t translateCode();
+
+    /* To get info about labels & funcs */
+    Error_t firstPass();
+
+    /* To place all counted addrs */
+    Error_t JITCompiler::addrsCount();
 
 };
 

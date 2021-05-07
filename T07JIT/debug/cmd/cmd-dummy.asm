@@ -2,6 +2,10 @@ section .code
 global _start
 _start:
 
+            cmp        eax,     ebx
+            pop        rdx
+            pop        r10
+
             call        scanDec
             call        scanDec
             call        scanDec
