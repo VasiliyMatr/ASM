@@ -13,25 +13,28 @@
 ## Создание ELF файла
 
 Я, как прирожденный ~~википедик~~ интернет серфер, воспользовался описаниями ELF файлов с следующего сайта:
-https://ru.wikipedia.org/wiki/Executable_and_Linkable_Format
+>https://ru.wikipedia.org/wiki/Executable_and_Linkable_Format
 
 Так же я написал 3 простых функции на nasm для поддержки такого необходимого функционала, как: ввод; вывод; завершение программы.
 
 И вот, мой ~~ELF~~ ORC файл готов. Ознакомиться с результатом можно здесь:
-https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/headers/elf-header.hpp
+>https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/headers/elf-header.hpp
 
 ## Трансляция
 Ну тут нужно просто взять и транслировать... На бинарщину можно посмотреть здесь:
-https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/headers/dsl.hpp ;
-https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/source/dsl.cpp
+>https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/headers/dsl.hpp ;
+>https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/source/dsl.cpp
 
 Также хочеся выразить благодарность компании Intel за little endian. __СПАСИБО, %$#@*&, БОЛЬШОЕ, ОЧЕНЬ УДОБНО.__
 
 ## Сравнение времени исполнения
 
-И вот, файл готов, давайте сравним время исполнения полученного файла и время исполнения транслируемого файла:
+И вот, файл готов, давайте сравним время исполнения на моем эмуляторе CPU и время исполнения транслированного ELF файла:
+При запуске на моем эмуляторе CPU:
+><img src = "picks/myFormat.png"         width = "460" />
+При запуске транслированного ELF файла:
+><img src = "picks/x86Format.png"         width = "460" />
 
---- КАРТИНКЕ ---
 
 Видно, что трансляция позволила получить коллосальный прирост скорости.
-Тестовая программа выполняется в __116__ раз быстрее. NICE!
+Тестовая программа выполняется в ~__100__ раз быстрее. NICE!
