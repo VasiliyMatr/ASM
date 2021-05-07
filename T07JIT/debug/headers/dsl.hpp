@@ -185,7 +185,7 @@ const CMD_t CMDS_[] = {
 
   /* XOR */
     /* xor edx, edx - for div opr */
-        const WORD__ XOR_EDX_EDX_CODE_ = 0x33D2;
+        const WORD__ XOR_EDX_EDX_CODE_ = 0xD233;
 
   /* PUSH */
     /* push from reg (r8 - r15) */

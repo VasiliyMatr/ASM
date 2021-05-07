@@ -107,49 +107,49 @@ Error_t JITCompiler::translateCode()
             case CMDId_t::CMD_POP_     : retOffset = putPop     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
             case CMDId_t::CMD_CMPS_    : retOffset = putCmps    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
             case CMDId_t::CMD_CALL_    : retOffset = putCall    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_EXIT_    : retOffset = putExit    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JE_      : retOffset = putJe      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JNE_     : retOffset = putJne     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JAE_     : retOffset = putJae     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JLE_     : retOffset = putJle     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JA_      : retOffset = putJa      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JL_      : retOffset = putJl      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_JMP_     : retOffset = putJmp     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_MOV_     : retOffset = putMov     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
 
             case CMDId_t::CMD_IN_      : retOffset = putIn      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_OUT_     : retOffset = putOut     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift, outBuffSize_ };
+                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
             case CMDId_t::CMD_POPA_    : retOffset = putPopa    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
@@ -260,5 +260,58 @@ Error_t JITCompiler::firstPass()
 
 Error_t JITCompiler::addrsCalcNPlace()
 {
+    size_t JNCDestLocsId = 0;
 
+    for (size_t JNCLocsId = 0; JNCLocsId < JNCLocsNum_; ++JNCLocsId)
+    {
+        LocInfo_t location = JNCLocs_ [JNCLocsId];
+
+        switch ((CMDId_t) inBuffP_ [location.inLoc_])
+        {
+            case CMDId_t::CMD_IN_   :
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
+                            HEADERS_SIZE_ + IN_PROC_ADDR_ - location.outLoc_ - 5;
+                break;
+            case CMDId_t::CMD_OUT_  :
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + 4) =
+                            HEADERS_SIZE_ + OUT_PROC_ADDR_ - location.outLoc_ - 8;
+                break;
+            case CMDId_t::CMD_EXIT_ :
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
+                            HEADERS_SIZE_ + EXIT_PROC_ADDR_ - location.outLoc_ - 5;
+                break;
+
+            case CMDId_t::CMD_CALL_ :
+            case CMDId_t::CMD_JMP_  :
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
+                            seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ - 5;
+                break;
+
+            case CMDId_t::CMD_JE_   :
+            case CMDId_t::CMD_JNE_  :
+            case CMDId_t::CMD_JAE_  :
+            case CMDId_t::CMD_JLE_  :
+            case CMDId_t::CMD_JA_   :
+            case CMDId_t::CMD_JL_   :
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + 2) =
+                            seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ - 6;
+                break;
+
+            default:
+                return Error_t::CMD_ERR_;
+        }
+    }
+
+    return Error_t::OK_;
+}
+
+int JITCompiler::seekOutLoc (size_t inLoc)
+{
+    for (size_t locId = 0; locId < JNCDestLocsNum_; ++locId)
+    {
+        if (inLoc == JNCDestLocs_ [locId].inLoc_)
+            return JNCDestLocs_ [locId].outLoc_;
+    }
+
+    return BAD_LOC_;
 }

@@ -58,14 +58,15 @@
         if (modifier & BIN_OP_SD_OPERAND_T_REG_MASK_)
         {
             /* mov ft reg to eax, mov sd reg to ebx, mul, mov result to dest */
-            *(DWRD__*) (outBuffP + 0) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
-            *(DWRD__*) (outBuffP + 3) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
+            *(WORD__*) (outBuffP) = XOR_EDX_EDX_CODE_;
+            *(DWRD__*) (outBuffP + 2) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
+            *(DWRD__*) (outBuffP + 5) = MOV_R_EBX_START_CODE_ + REG_NUM_ * sdRegId;
 
-            *(WORD__*) (outBuffP + 6) = 0xF7E3;
+            *(WORD__*) (outBuffP + 8) = 0xF7E3;
 
-            *(DWRD__*) (outBuffP + 8) = MOV_EAX_R_START_CODE_ + ftRegId;
+            *(DWRD__*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + (ftRegId << 16);
             
-            return { 11, 1 };
+            return { 13, 1 };
         }
 
         else if (modifier & BIN_OP_SD_OPERAND_T_NUM_MASK_)
@@ -77,7 +78,7 @@
 
             *(WORD__*) (outBuffP +  8) = 0xF7E3;
             
-            *(DWRD__*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + ftRegId * REG_NUM_;
+            *(DWRD__*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + (ftRegId << 16);
 
             return { 13, 2 };
         }
@@ -100,7 +101,7 @@
             /* div ebx */
             *(WORD__*) (outBuffP +  8) = 0xF7F3;
 
-            *(DWRD__*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + ftRegId;
+            *(DWRD__*) (outBuffP + 10) = MOV_EAX_R_START_CODE_ + (ftRegId << 16);
 
             return { 13, 1 };
         }
@@ -110,13 +111,13 @@
             /* mov number to eax, mov reg to ebx, div, mov result to dest */
             outBuffP [0] = MOV_N_EBX_CODE_;
             *(DWRD__*) (outBuffP +  1) = inBuffP [1];
-            *(DWRD__*) (outBuffP +  5) = MOV_R_EAX_START_CODE_ + REG_NUM_ * ftRegId;
+            *(DWRD__*) (outBuffP +  5) = MOV_R_EAX_START_CODE_ + ((REG_NUM_ * ftRegId) << 16);
 
             *(WORD__*) (outBuffP +  8) = XOR_EDX_EDX_CODE_;
             /* div ebx */
             *(WORD__*) (outBuffP + 10) = 0xF7F3;
             
-            *(DWRD__*) (outBuffP + 12) = MOV_EAX_R_START_CODE_ + ftRegId * REG_NUM_;
+            *(DWRD__*) (outBuffP + 12) = MOV_EAX_R_START_CODE_ + (ftRegId << 16);
 
             return { 15, 2 };
         }
@@ -129,8 +130,8 @@
     retOff_t putAdds    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, add, push */
-        outBuffP [0] = POP_EAX_CODE_;
-        outBuffP [1] = POP_EAX_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_ + 3;
+        outBuffP [1] = POP_EAX_CODE_;
 
         /* add eax, ebx */
         *(WORD__*) (outBuffP +  2) = 0xD801;
@@ -142,8 +143,8 @@
     retOff_t putSubs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, sub, push */
-        outBuffP [0] = POP_EAX_CODE_;
-        outBuffP [1] = POP_EAX_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_ + 3;
+        outBuffP [1] = POP_EAX_CODE_;
 
         /* sub eax, ebx */
         *(WORD__*) (outBuffP +  2) = 0xC32B;
@@ -155,21 +156,23 @@
     retOff_t putMuls    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
-        outBuffP [0] = POP_EAX_CODE_;
-        outBuffP [1] = POP_EAX_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_ + 3;
+        outBuffP [1] = POP_EAX_CODE_;
+
+        *(WORD__*) (outBuffP + 2) = XOR_EDX_EDX_CODE_;
 
         /* mul ebx */
-        *(WORD__*) (outBuffP +  2) = 0xE3F7;
+        *(WORD__*) (outBuffP + 4) = 0xE3F7;
         
-        outBuffP [4] = PUSH_EAX_CODE_;
+        outBuffP [6] = PUSH_EAX_CODE_;
 
-        return { 5, 0 };
+        return { 7, 0 };
     }
     retOff_t putDivs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
-        outBuffP [0] = POP_EAX_CODE_;
-        outBuffP [1] = POP_EAX_CODE_ + 3;
+        outBuffP [0] = POP_EAX_CODE_ + 3;
+        outBuffP [1] = POP_EAX_CODE_;
 
         /* div ebx */
         *(WORD__*) (outBuffP +  2) = XOR_EDX_EDX_CODE_;
@@ -250,7 +253,7 @@
     {
         outBuffP [0] = CALL_CODE_;
 
-        *(DWRD__*) (outBuffP + 1) = 0;
+        *(DWRD__*) (outBuffP + 1) = inBuffP [0];
 
         return { 5, 1 };
     }
@@ -333,7 +336,7 @@
         switch (modifier)
         {
             case FT_REG_ON_ | SD_REG_ON_:
-                *(DWRD__*) outBuffP = MOV_RR_CODE_ + ftRegId + sdRegId * REG_NUM_;
+                *(DWRD__*) outBuffP = MOV_RR_CODE_ + ((ftRegId + sdRegId * REG_NUM_) << 16);
                 return { 3, 1 };
 
             /* TODO: */
@@ -354,7 +357,7 @@
 
         *(DWRD__*) (outBuffP + 1) = 0;
 
-        *(DWRD__*) (outBuffP + 5) = MOV_EAX_R_START_CODE_ + regId * REG_NUM_;
+        *(DWRD__*) (outBuffP + 5) = MOV_EAX_R_START_CODE_ + (regId << 16);
 
         return { 8, 1 };
     }
@@ -362,7 +365,7 @@
     {
         AL_TYPE__ regId = inBuffP [0];
 
-        *(DWRD__*) outBuffP = MOV_R_EAX_START_CODE_ + regId * REG_NUM_;
+        *(DWRD__*) outBuffP = MOV_R_EAX_START_CODE_ + (regId << 16);
 
         outBuffP [3] = CALL_CODE_;
 

@@ -63,8 +63,12 @@ private:
     /* To get info about labels & funcs */
     Error_t firstPass();
 
-    /* To place all counted addrs */
-    Error_t JITCompiler::addrsCount();
+    /* To calculate & place all addrs */
+    Error_t addrsCalcNPlace();
+
+    static const int BAD_LOC_ = -1;
+    /* To seek out loc by in loc in dest locs massive */
+    int seekOutLoc (size_t inLoc);
 
 };
 
