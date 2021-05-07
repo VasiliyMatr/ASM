@@ -72,6 +72,9 @@ private:
     /* To seek out loc by in loc in dest locs massive */
     int seekOutLoc (size_t inLoc);
 
+    /* Optimize */
+    Error_t optPass();
+
 };
 
 #endif

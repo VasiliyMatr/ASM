@@ -2,7 +2,7 @@
 INCLUDE_PATH_ = -Iheaders
 SOURCE_PATH_  = source/
 
-GPP_FLAGS_    = -g -O0
+GPP_FLAGS_    = -g -O0 -std=c++14
 OUT_NAME_     = jit-debug
 
 .PHONY: all build dummy

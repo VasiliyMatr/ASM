@@ -183,10 +183,10 @@ Error_t JITCompiler::firstPass()
     for (size_t inBuffOff = 0; inBuffOff < inBuffSize_;)
         switch ((CMDId_t) inBuffP_ [inBuffOff])
         {
-            case CMDId_t::CMD_ADD_     :
-            case CMDId_t::CMD_SUB_     :
-            case CMDId_t::CMD_MUL_     :
-            case CMDId_t::CMD_DIV_     :
+            case ADD__.id_ :
+            case SUB__.id_ :
+            case MUL__.id_ :
+            case DIV__.id_ :
 
                 {
                     AL_TYPE__ modifier = inBuffP_ [++inBuffOff];
@@ -194,15 +194,15 @@ Error_t JITCompiler::firstPass()
                 }
                 break;
 
-            case CMDId_t::CMD_ADDS_    :
-            case CMDId_t::CMD_SUBS_    :
-            case CMDId_t::CMD_MULS_    :
-            case CMDId_t::CMD_DIVS_    :
+            case ADDS__.id_ :
+            case SUBS__.id_ :
+            case MULS__.id_ :
+            case DIVS__.id_ :
 
                 ++inBuffOff;
                 break;
 
-            case CMDId_t::CMD_PUSH_    :
+            case PUSH__.id_ :
 
                 {
                     AL_TYPE__ modifier = inBuffP_ [++inBuffOff];
@@ -210,45 +210,45 @@ Error_t JITCompiler::firstPass()
                 }
                 break;
 
-            case CMDId_t::CMD_POP_     :
+            case POP__.id_ :
 
                 inBuffOff += 2;
                 break;
 
-            case CMDId_t::CMD_EXIT_    :
-            case CMDId_t::CMD_CMPS_    :
+            case EXIT__.id_ :
+            case CMPS__.id_ :
 
                 inBuffOff += 1;
                 break;
 
-            case CMDId_t::CMD_CALL_    :
-            case CMDId_t::CMD_JE_      :
-            case CMDId_t::CMD_JNE_     :
-            case CMDId_t::CMD_JAE_     :
-            case CMDId_t::CMD_JLE_     :
-            case CMDId_t::CMD_JA_      :
-            case CMDId_t::CMD_JL_      :
-            case CMDId_t::CMD_JMP_     :
+            case CALL__ .id_ :
+            case JEQ__  .id_ :
+            case JNE__  .id_ :
+            case JAE__  .id_ :
+            case JLE__  .id_ :
+            case JAA__  .id_ :
+            case JLL__  .id_ :
+            case JMP__  .id_ :
 
                 JnCArgs_ [JnCArgsNum_++].inLoc_ = inBuffP_ [inBuffOff + 1];
 
                 inBuffOff += 2;
                 break;
 
-            case CMDId_t::CMD_MOV_     :
+            case MOV__.id_ :
 
                 inBuffOff += 2;
                 break;
 
-            case CMDId_t::CMD_IN_      :
-            case CMDId_t::CMD_OUT_     :
+            case IN__   .id_ :
+            case OUT__  .id_ :
 
                 inBuffOff += 2;
                 break;
 
-            case CMDId_t::CMD_POPA_    :
-            case CMDId_t::CMD_PUSHA_   :
-            case CMDId_t::CMD_RET_     :
+            case POPA__ .id_ :
+            case PUSHA__.id_ :
+            case RET__  .id_ :
 
                 inBuffOff += 1;
                 break;
@@ -271,32 +271,32 @@ Error_t JITCompiler::addrsCalcNPlace()
 
         switch ((CMDId_t) inBuffP_ [location.inLoc_])
         {
-            case CMDId_t::CMD_IN_   : /* check in cmd put func for 5 value explanation */
+            case IN__  .id_ : /* check in cmd put func for 5 value explanation */
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
                             HEADERS_SIZE_ + IN_PROC_ADDR_ - location.outLoc_ - 5;
                 break;
-            case CMDId_t::CMD_OUT_  :/* check in cmd put func for 8 value explanation */
+            case OUT__ .id_ :/* check in cmd put func for 8 value explanation */
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + 4) =
                             HEADERS_SIZE_ + OUT_PROC_ADDR_ - location.outLoc_ - 8;
                 break;
-            case CMDId_t::CMD_EXIT_ :/* check in cmd put func for 5 value explanation */
+            case EXIT__.id_ :/* check in cmd put func for 5 value explanation */
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
                             HEADERS_SIZE_ + EXIT_PROC_ADDR_ - location.outLoc_ - 5;
                 break;
 
-            case CMDId_t::CMD_CALL_ :
-            case CMDId_t::CMD_JMP_  :
+            case CALL__.id_ :
+            case JMP__ .id_ :
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + sizeof (CALL_CODE_)) =
                             seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ -
                             (sizeof (CALL_CODE_) + sizeof (DWRD__));
                 break;
 
-            case CMDId_t::CMD_JE_   :
-            case CMDId_t::CMD_JNE_  :
-            case CMDId_t::CMD_JAE_  :
-            case CMDId_t::CMD_JLE_  :
-            case CMDId_t::CMD_JA_   :
-            case CMDId_t::CMD_JL_   :
+            case JEQ__.id_  :
+            case JNE__.id_  :
+            case JAE__.id_  :
+            case JLE__.id_  :
+            case JAA__.id_  :
+            case JLL__.id_  :
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + sizeof (JEQ_CODE_)) =
                             seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ -
                             (sizeof (JEQ_CODE_) + sizeof (DWRD__));
@@ -320,4 +320,9 @@ int JITCompiler::seekOutLoc (size_t inLoc)
     }
 
     return BAD_LOC_;
+}
+
+Error_t JITCompiler::optPass()
+{
+    return Error_t::OK_;
 }
