@@ -38,12 +38,14 @@ private:
     size_t inBuffSize_  = 0;
     size_t outBuffSize_ = 0;
 
-  /* Jumps & Calls stuff */
-    LocInfo_t JNCLocs_ [0x400] = { };
-    LocInfo_t JNCDestLocs_ [0x400] = { };
+  /* Jumps & Calls locations stuff */
+    /* Jumps and calls locations */
+    LocInfo_t JnCLocs_ [0x400] = { };
+    /* Jumps and calls arg locations */
+    LocInfo_t JnCArgs_ [0x400] = { };
 
-    size_t JNCLocsNum_ = 0;
-    size_t JNCDestLocsNum_ = 0;
+    size_t JnCLocsNum_ = 0;
+    size_t JnCArgsNum_ = 0;
 
 /* Methods */
 public:

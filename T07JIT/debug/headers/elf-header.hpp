@@ -64,8 +64,8 @@
     };
 
     /* addrs for calls (and entry point calc) */
-    static const DWRD__ IN_PROC_ADDR_ = 0x00;
-    static const DWRD__ OUT_PROC_ADDR_ = IN_PROC_ADDR_ + sizeof (IN_PROC_CODE_);
+    static const DWRD__ IN_PROC_ADDR_   = 0x00;
+    static const DWRD__ OUT_PROC_ADDR_  = IN_PROC_ADDR_ + sizeof (IN_PROC_CODE_);
     static const DWRD__ EXIT_PROC_ADDR_ = OUT_PROC_ADDR_ + sizeof (OUT_PROC_CODE_);
 
 /* progr load virtual offset to entry point */
@@ -101,7 +101,7 @@ class ELFHeader_t {
         BYTE__ EH_ABIVERSION_    = 0x00;
 
       /* Padding bytes - all zeroes */
-        BYTE__ EH_PAD_ [7]       = { 0x00 };
+        BYTE__ EH_PAD_ [7]       = {  };
 
     /* ELF type */
         WORD__ EH_TYPE_          = ET_EXEC;
@@ -146,40 +146,31 @@ class ELFHeader_t {
 class ProgramHeader_t {
 
     /* Segment type */
-        DWRD__ PH_TYPE_      = PT_LOAD;
+        DWRD__ PH_TYPE_         = PT_LOAD;
 
     /* ELF64 flags */
-        DWRD__ PH_FLAGS_     = PF_X;
+        DWRD__ PH_FLAGS_        = PF_X;
 
     /* Program header offset */
-        QWRD__ PH_OFFSET_    = 0x00;
+        QWRD__ PH_OFFSET_       = 0x00;
 
     /* Load virtual address */
-        QWRD__ PH_VADDR_     = LOAD_VIRT_ADDR_;
+        QWRD__ PH_VADDR_        = LOAD_VIRT_ADDR_;
 
     /* Load physical address */
-        QWRD__ PH_PADDR_     = LOAD_VIRT_ADDR_;
+        QWRD__ PH_PADDR_        = LOAD_VIRT_ADDR_;
 
     /* Program header file size - just big enough */
-        QWRD__ PH_FSIZE_     = 0x1000;
+        QWRD__ PH_FSIZE_        = 0x1000;
 
     /* Program header memory size - equal to file size */
-        QWRD__ PH_MSIZE_     = 0x1000;
+        QWRD__ PH_MSIZE_        = 0x1000;
 
     /* Program header align */
-        QWRD__ PH_ALIGN_     = 0x1000;
+        QWRD__ PH_ALIGN_        = 0x1000;
 
     /* Additional zeroes for align */
-        BYTE__ PH_ZEROES_ [8] = { };
-
-public:
-
-    /* Setter for program header size */
-    void setPHSize( QWRD__ newSize )
-    {
-        PH_FSIZE_ = newSize;
-        PH_MSIZE_ = newSize;
-    }
+        BYTE__ PH_ZEROES_ [8]   = { };
 
 };
 

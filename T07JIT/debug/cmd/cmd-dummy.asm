@@ -3,10 +3,10 @@ global _start
 _start:
 
 
-            mov         r8d, eax
-            mov         r9d, eax
-            mov         r10d, eax
-            mov         r11d, eax
+            mov         r8d, r8d
+            mov         r9d, r8d
+            mov         r10d, r8d
+            mov         r8d, r9d
 
 
             call        scanDec

@@ -1,7 +1,8 @@
 
 #include "jit.hpp"
 
-int JNCLocCmp ( const void * a, const void * b );
+/* compare func for Jumps & Calls arguments sort */
+int JnCArgsCmp ( const void * a, const void * b );
 
 Error_t JITCompiler::translate( char const * const inNameP,
                                 char const * const outNameP )
@@ -30,8 +31,8 @@ Error_t JITCompiler::translate( char const * const inNameP,
     if (error != Error_t::OK_)
         return error;
 
-    /* sorting jumps & calls dest locations - to recount it in translateCode func */
-    qsort (JNCDestLocs_, JNCDestLocsNum_, sizeof (LocInfo_t), JNCLocCmp);
+    /* sorting jumps & calls args locations - to recount it in translateCode func */
+    qsort (JnCArgs_, JnCArgsNum_, sizeof (LocInfo_t), JnCArgsCmp);
 
     /* Translating code AND
      * recounting offsets of all jumps & calls dests AND
@@ -53,7 +54,7 @@ Error_t JITCompiler::translate( char const * const inNameP,
     return Error_t::OK_;
 }
 
-int JNCLocCmp ( const void * a, const void * b )
+int JnCArgsCmp ( const void * a, const void * b )
 {
     return ((JITCompiler::LocInfo_t*) a)->inLoc_ - ((JITCompiler::LocInfo_t*) b)->inLoc_;
 }
@@ -83,92 +84,92 @@ Error_t JITCompiler::putHeaders()
 Error_t JITCompiler::translateCode()
 {
     size_t inBuffShift = 0;
-    size_t JNCId = 0;
+    size_t JnCId = 0;
 
     for (; inBuffShift < inBuffSize_;)
     {
-        if (JNCDestLocs_ [JNCId].inLoc_ == inBuffShift)
-            JNCDestLocs_ [JNCId++].outLoc_ = outBuffSize_;
+        /* Calculating out format callable and jumpable locations */
+        if (JnCArgs_ [JnCId].inLoc_ == inBuffShift)
+            JnCArgs_ [JnCId++].outLoc_ = outBuffSize_;
 
-        retOff_t retOffset = { 0, 0 };
+        cmdSizes_t cmdSizes = { 0, 0 };
 
+        /* translating code & remembering all jumps & calls locations */
         switch ((CMDId_t) inBuffP_ [inBuffShift++])
         {
+            case ADD__  .id_: cmdSizes = ADD__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case SUB__  .id_: cmdSizes = SUB__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case MUL__  .id_: cmdSizes = MUL__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case DIV__  .id_: cmdSizes = DIV__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case ADDS__ .id_: cmdSizes = ADDS__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case SUBS__ .id_: cmdSizes = SUBS__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case MULS__ .id_: cmdSizes = MULS__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case DIVS__ .id_: cmdSizes = DIVS__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case PUSH__ .id_: cmdSizes = PUSH__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case POP__  .id_: cmdSizes = POP__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case CMPS__ .id_: cmdSizes = CMPS__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
 
-            case CMDId_t::CMD_ADD_     : retOffset = putAdd     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_SUB_     : retOffset = putSub     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_MUL_     : retOffset = putMul     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_DIV_     : retOffset = putDiv     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_ADDS_    : retOffset = putAdds    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_SUBS_    : retOffset = putSubs    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_MULS_    : retOffset = putMuls    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_DIVS_    : retOffset = putDivs    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_PUSH_    : retOffset = putPush    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_POP_     : retOffset = putPop     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_CMPS_    : retOffset = putCmps    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_CALL_    : retOffset = putCall    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case CALL__ .id_: cmdSizes = CALL__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_EXIT_    : retOffset = putExit    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case EXIT__ .id_: cmdSizes = EXIT__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JE_      : retOffset = putJe      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JEQ__  .id_: cmdSizes = JEQ__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JNE_     : retOffset = putJne     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JNE__  .id_: cmdSizes = JNE__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JAE_     : retOffset = putJae     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JAE__  .id_: cmdSizes = JAE__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JLE_     : retOffset = putJle     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JLE__  .id_: cmdSizes = JLE__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JA_      : retOffset = putJa      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JAA__  .id_: cmdSizes = JAA__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JL_      : retOffset = putJl      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JLL__  .id_: cmdSizes = JLL__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_JMP_     : retOffset = putJmp     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case JMP__  .id_: cmdSizes = JMP__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_MOV_     : retOffset = putMov     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case MOV__  .id_: cmdSizes = MOV__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
 
-            case CMDId_t::CMD_IN_      : retOffset = putIn      ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case IN__   .id_: cmdSizes = IN__   .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_OUT_     : retOffset = putOut     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
-                                         JNCLocs_ [JNCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
+            case OUT__  .id_: cmdSizes = OUT__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ );
+                                         JnCLocs_ [JnCLocsNum_++] = { inBuffShift - 1, outBuffSize_ };
                                          break;
 
-            case CMDId_t::CMD_POPA_    : retOffset = putPopa    ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_PUSHA_   : retOffset = putPusha   ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
-            case CMDId_t::CMD_RET_     : retOffset = putRet     ( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case POPA__ .id_: cmdSizes = POPA__ .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case PUSHA__.id_: cmdSizes = PUSHA__.putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
+            case RET__  .id_: cmdSizes = RET__  .putF_( inBuffP_ + inBuffShift, outBuffP_ + outBuffSize_ ); break;
 
             default:
                 break;
         }
 
-        if (retOffset.outBuffOff_ == 0)
+        if (cmdSizes.outBuffSize_ == 0)
             return Error_t::CMD_ERR_;
 
-        inBuffShift += retOffset.inBuffOff_;
-        outBuffSize_ += retOffset.outBuffOff_;
-
+        /* adding translated cmd sizes */
+        inBuffShift  += cmdSizes.inBuffSize_;
+        outBuffSize_ += cmdSizes.outBuffSize_;
     }
-
-    programHeader_.setPHSize (outBuffSize_ - HEADERS_SIZE_);
 
     return Error_t::OK_;
 }
@@ -178,6 +179,7 @@ Error_t JITCompiler::firstPass()
     if (isBadPtr (inBuffP_))
         return Error_t::PTR_ERR_;
 
+    /* getting all callable and jumpable locations (in input format for now) */
     for (size_t inBuffOff = 0; inBuffOff < inBuffSize_;)
         switch ((CMDId_t) inBuffP_ [inBuffOff])
         {
@@ -228,7 +230,7 @@ Error_t JITCompiler::firstPass()
             case CMDId_t::CMD_JL_      :
             case CMDId_t::CMD_JMP_     :
 
-                JNCDestLocs_ [JNCDestLocsNum_++].inLoc_ = inBuffP_ [inBuffOff + 1];
+                JnCArgs_ [JnCArgsNum_++].inLoc_ = inBuffP_ [inBuffOff + 1];
 
                 inBuffOff += 2;
                 break;
@@ -260,31 +262,33 @@ Error_t JITCompiler::firstPass()
 
 Error_t JITCompiler::addrsCalcNPlace()
 {
-    size_t JNCDestLocsId = 0;
+    size_t JnCDestLocsId = 0;
 
-    for (size_t JNCLocsId = 0; JNCLocsId < JNCLocsNum_; ++JNCLocsId)
+    /* Calculating calls & jumps arguments */
+    for (size_t JnCLocsId = 0; JnCLocsId < JnCLocsNum_; ++JnCLocsId)
     {
-        LocInfo_t location = JNCLocs_ [JNCLocsId];
+        LocInfo_t location = JnCLocs_ [JnCLocsId];
 
         switch ((CMDId_t) inBuffP_ [location.inLoc_])
         {
-            case CMDId_t::CMD_IN_   :
+            case CMDId_t::CMD_IN_   : /* check in cmd put func for 5 value explanation */
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
                             HEADERS_SIZE_ + IN_PROC_ADDR_ - location.outLoc_ - 5;
                 break;
-            case CMDId_t::CMD_OUT_  :
+            case CMDId_t::CMD_OUT_  :/* check in cmd put func for 8 value explanation */
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + 4) =
                             HEADERS_SIZE_ + OUT_PROC_ADDR_ - location.outLoc_ - 8;
                 break;
-            case CMDId_t::CMD_EXIT_ :
+            case CMDId_t::CMD_EXIT_ :/* check in cmd put func for 5 value explanation */
                 *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
                             HEADERS_SIZE_ + EXIT_PROC_ADDR_ - location.outLoc_ - 5;
                 break;
 
             case CMDId_t::CMD_CALL_ :
             case CMDId_t::CMD_JMP_  :
-                *(DWRD__*) (outBuffP_ + location.outLoc_ + 1) =
-                            seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ - 5;
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + sizeof (CALL_CODE_)) =
+                            seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ -
+                            (sizeof (CALL_CODE_) + sizeof (DWRD__));
                 break;
 
             case CMDId_t::CMD_JE_   :
@@ -293,8 +297,9 @@ Error_t JITCompiler::addrsCalcNPlace()
             case CMDId_t::CMD_JLE_  :
             case CMDId_t::CMD_JA_   :
             case CMDId_t::CMD_JL_   :
-                *(DWRD__*) (outBuffP_ + location.outLoc_ + 2) =
-                            seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ - 6;
+                *(DWRD__*) (outBuffP_ + location.outLoc_ + sizeof (JEQ_CODE_)) =
+                            seekOutLoc (inBuffP_ [location.inLoc_ + 1]) - location.outLoc_ -
+                            (sizeof (JEQ_CODE_) + sizeof (DWRD__));
                 break;
 
             default:
@@ -307,10 +312,11 @@ Error_t JITCompiler::addrsCalcNPlace()
 
 int JITCompiler::seekOutLoc (size_t inLoc)
 {
-    for (size_t locId = 0; locId < JNCDestLocsNum_; ++locId)
+    /* TODO: bin search */
+    for (size_t locId = 0; locId < JnCArgsNum_; ++locId)
     {
-        if (inLoc == JNCDestLocs_ [locId].inLoc_)
-            return JNCDestLocs_ [locId].outLoc_;
+        if (inLoc == JnCArgs_ [locId].inLoc_)
+            return JnCArgs_ [locId].outLoc_;
     }
 
     return BAD_LOC_;

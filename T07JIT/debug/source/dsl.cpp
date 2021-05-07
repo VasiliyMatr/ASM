@@ -1,7 +1,7 @@
 
 #include "dsl.hpp"
 
-    retOff_t putAdd     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putAdd     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ modifier = inBuffP [0];
         size_t ftRegId = ((modifier >> BIN_OP_FT_REG_OFFSET_) & BIN_OP_REG_MASK_) << 16;
@@ -25,7 +25,7 @@
         return { 0, 0 };
 
     }
-    retOff_t putSub     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putSub     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ modifier = inBuffP[0];
         size_t ftRegId = ((modifier >> BIN_OP_FT_REG_OFFSET_) & BIN_OP_REG_MASK_) << 16;
@@ -49,7 +49,7 @@
         return { 0, 0 };
 
     }
-    retOff_t putMul     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putMul     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ modifier = inBuffP [0];
         size_t ftRegId = ((modifier >> BIN_OP_FT_REG_OFFSET_) & BIN_OP_REG_MASK_) << 16;
@@ -85,7 +85,7 @@
 
         return { 0, 0 };
     }
-    retOff_t putDiv     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putDiv     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ modifier = inBuffP [0];
         DWRD__ ftRegId = ((modifier >> BIN_OP_FT_REG_OFFSET_) & BIN_OP_REG_MASK_) << 16;
@@ -127,7 +127,7 @@
 
 /* ON-STACK BINARY OPERATIONS STUFF */
 
-    retOff_t putAdds    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putAdds    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, add, push */
         outBuffP [0] = POP_EAX_CODE_ + 3;
@@ -140,7 +140,7 @@
 
         return { 5, 0 };
     }
-    retOff_t putSubs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putSubs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, sub, push */
         outBuffP [0] = POP_EAX_CODE_ + 3;
@@ -153,7 +153,7 @@
 
         return { 5, 0 };
     }
-    retOff_t putMuls    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putMuls    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
         outBuffP [0] = POP_EAX_CODE_ + 3;
@@ -168,7 +168,7 @@
 
         return { 7, 0 };
     }
-    retOff_t putDivs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putDivs    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, mul, push */
         outBuffP [0] = POP_EAX_CODE_ + 3;
@@ -185,7 +185,7 @@
 
 /* PUSH STUFF */
 
-    retOff_t putPush    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putPush    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* modifier info */
         AL_TYPE__ modifier = inBuffP [0];
@@ -213,7 +213,7 @@
 
 /* POP STUFF */
 
-    retOff_t putPop     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putPop     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* cmd midifier */
         AL_TYPE__ modifier = inBuffP [0];
@@ -236,7 +236,7 @@
 
 /* ON-STACK CMP STUFF */
 
-    retOff_t putCmps    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putCmps    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         /* pop to eax & ebx, cmp */
         outBuffP [0] = POP_EAX_CODE_;
@@ -249,7 +249,7 @@
 
 /* CALL STUFF */
 
-    retOff_t putCall    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putCall    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         outBuffP [0] = CALL_CODE_;
 
@@ -260,7 +260,7 @@
 
 /* EXIT STUFF */
 
-    retOff_t putExit    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putExit    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         outBuffP [0] = CALL_CODE_;
 
@@ -271,49 +271,49 @@
 
 /* JUMPS STUFF */
 
-    retOff_t putJe      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJe      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) outBuffP = JEQ_CODE_;
         *(DWRD__*) (outBuffP + 2) = inBuffP [0];
 
         return { 6, 1 };
     }
-    retOff_t putJne     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJne     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) outBuffP = JNE_CODE_;
         *(DWRD__*) (outBuffP + 2) = inBuffP [0];
 
         return { 6, 1 };
     }
-    retOff_t putJae     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJae     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) outBuffP = JAE_CODE_;
         *(DWRD__*) (outBuffP + 2) = inBuffP [0];
 
         return { 6, 1 };
     }
-    retOff_t putJle     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJle     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) outBuffP = JLE_CODE_;
         *(DWRD__*) (outBuffP + 2) = inBuffP [0];
 
         return { 6, 1 };
     }
-    retOff_t putJa      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJa      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) outBuffP = JAA_CODE_;
         *(DWRD__*) (outBuffP + 2) = inBuffP [0];
 
         return { 6, 1 };
     }
-    retOff_t putJl      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJl      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) outBuffP = JLL_CODE_;
         *(DWRD__*) (outBuffP + 2) = inBuffP [0];
 
         return { 6, 1 };
     }
-    retOff_t putJmp     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putJmp     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         outBuffP [0] = JMP_CODE_;
         *(DWRD__*) (outBuffP + 1) = inBuffP [0];
@@ -323,7 +323,7 @@
 
 /* MOV STUFF */
 
-    retOff_t putMov     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putMov     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ modifier = inBuffP [0];
 
@@ -349,7 +349,7 @@
 
 /* IN/OUT STUFF */
 
-    retOff_t putIn      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putIn      ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ regId = inBuffP [0];
 
@@ -361,7 +361,7 @@
 
         return { 8, 1 };
     }
-    retOff_t putOut     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putOut     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         AL_TYPE__ regId = inBuffP [0];
 
@@ -376,7 +376,7 @@
 
 /* POPA/PUSHA STUFF */
 
-    retOff_t putPopa    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putPopa    ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) (outBuffP +  0) = POP_START_CODE_ + (6 << 8);
         *(WORD__*) (outBuffP +  2) = POP_START_CODE_ + (5 << 8);
@@ -388,7 +388,7 @@
 
         return { 14, 0 };
     }
-    retOff_t putPusha   ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putPusha   ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         *(WORD__*) (outBuffP +  0) = PUSH_R_START_CODE_;
         *(WORD__*) (outBuffP +  2) = PUSH_R_START_CODE_ + (1 << 8);
@@ -403,7 +403,7 @@
 
 /* RET STUFF */
 
-    retOff_t putRet     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
+    cmdSizes_t putRet     ( AL_TYPE__ const * inBuffP, BYTE__ * outBuffP )
     {
         outBuffP [0] = RET_CODE_;
 
