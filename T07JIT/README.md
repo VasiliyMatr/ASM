@@ -25,8 +25,6 @@
 >https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/headers/dsl.hpp ;
 >https://github.com/VasiliyMatr/MIPT_PROG_2ndTERM/blob/master/T07JIT/debug/source/dsl.cpp
 
-Также хочеся выразить благодарность компании Intel за little endian. __СПАСИБО, %$#@*&, БОЛЬШОЕ, ОЧЕНЬ УДОБНО.__
-
 ## Сравнение времени исполнения
 
 Для тестирования была использована программа, подсчитывающая факториал введенного числа 10 000 000 раз.
