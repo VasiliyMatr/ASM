@@ -4,6 +4,18 @@ _start:
 
 
             mov         r8d, r8d
+            mov         r8d, r8d
+            mov         r9d, r8d
+            mov         r10d, r8d
+            mov         r8d, r9d
+
+
+            call        scanDec
+            call        scanDec
+            call        scanDec
+            call        printDec
+            call        exit
+
             mov         r9d, r8d
             mov         r10d, r8d
             mov         r8d, r9d

@@ -7,7 +7,7 @@
 
 /* IN / OUT / EXIT PROCS */
     /* input proc bytecode */
-    static const BYTE__ IN_PROC_CODE_ [] = {
+    static const BYTE__ IN_PROC_CODE_ [] = { /* TODO obj dump */
 
         0x48, 0x83, 0xEC, 0x10,
         0x48, 0x31, 0xFF, 0x48,
@@ -89,7 +89,7 @@ class ELFHeader_t {
         BYTE__ EH_CLASS_         = ELFCLASS64;
 
       /* Byte order */
-        BYTE__ EHBYTE___ORDER_    = ELFDATA2LSB;
+        BYTE__ EH_BYTE_ORDER_    = ELFDATA2LSB;
 
       /* ELF header version */
         BYTE__ EH_VERSION_       = EV_CURRENT;

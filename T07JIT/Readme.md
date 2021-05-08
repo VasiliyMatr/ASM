@@ -33,7 +33,7 @@
 При запуске на моем эмуляторе CPU:
 ><img src = "picks/myFormat.png"         width = "460" />
 При запуске транслированного ELF файла:
-><img src = "picks/x86Format.png"         width = "460" />
+><img src = "picks/x86Unopt.png"         width = "460" />
 
 
 Видно, что трансляция позволила получить коллосальный прирост скорости.
